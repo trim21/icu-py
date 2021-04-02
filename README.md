@@ -10,7 +10,7 @@ They implement much of the Unicode Standard,
 many of its companion Unicode Technical Standards,
 and much of Unicode CLDR.
 
-The PyICU source code is hosted on GitHub at https://github.com/ovalhub/pyicu.
+The PyICU source code is hosted at https://gitlab.pyicu.org/main/pyicu.
 
 The ICU homepage is http://site.icu-project.org/
 
