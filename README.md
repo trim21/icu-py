@@ -21,7 +21,9 @@ See also the CLDR homepage at http://cldr.unicode.org/
 PyICU is a python extension implemented in C++ that wraps the C/C++ ICU library.
 It is known to also work as a [PyPy](https://www.pypy.org/) extension.
 Unless ``pkg-config`` and the ICU libraries and headers are already installed,
-the PyICU installation involves more than just a ``pip`` call.
+building PyICU from the sources on [PyPI](https://pypi.org/project/PyICU/)
+involves more than just a ``pip`` call. Many operating systems distribute
+pre-built binary packages of ICU and PyICU, see below.
 
   - Mac OS X
     - Ensure ICU is installed and can be found by `pkg-config` (as `icu-config` was [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles) as of ICU 63.1), either by following [ICU build instructions](https://htmlpreview.github.io/?https://github.com/unicode-org/icu/blob/master/icu4c/readme.html#HowToBuild), or by using Homebrew:
@@ -54,6 +56,24 @@ the PyICU installation involves more than just a ``pip`` call.
     apt-get install pkg-config libicu-dev
     pip install --no-binary=:pyicu: pyicu
     ```
+
+  - Ubuntu
+    Similar to Debian, there is a
+    [pyicu](https://packages.ubuntu.com/source/xenial/python/pyicu) package
+    available via ``apt``.
+
+  - Alpine Linux
+    There is a
+    [pyicu](https://pkgs.alpinelinux.org/package/edge/community/x86/py3-icu)
+    package available via ``apk``.
+
+  - NetBSD
+    There is a [pyicu](https://pkgsrc.se/textproc/py-ICU) package available
+    via ``pkg_add``.
+
+  - OpenBSD
+    There is a [pyicu](https://openports.se/textproc/py-ICU) package available
+    via ``pkg_add``.
 
   - Other operating systems, see below.
 
