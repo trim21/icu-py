@@ -18,6 +18,11 @@ See also the CLDR homepage at http://cldr.unicode.org/
 
 ## Installing PyICU
 
+PyICU is a python extension implemented in C++ that wraps the C/C++ ICU library.
+It is known to also work as a [PyPy](https://www.pypy.org/) extension.
+Unless ``pkg-config`` and the ICU libraries and headers are already installed,
+the PyICU installation involves more than just a ``pip`` call.
+
   - Mac OS X
     - Ensure ICU is installed and can be found by `pkg-config` (as `icu-config` was [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles) as of ICU 63.1), either by following [ICU build instructions](https://htmlpreview.github.io/?https://github.com/unicode-org/icu/blob/master/icu4c/readme.html#HowToBuild), or by using Homebrew:
       ```sh
@@ -49,6 +54,8 @@ See also the CLDR homepage at http://cldr.unicode.org/
     apt-get install pkg-config libicu-dev
     pip install --no-binary=:pyicu: pyicu
     ```
+
+  - Other operating systems, see below.
 
 ## Building PyICU
 
