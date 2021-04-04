@@ -57,25 +57,21 @@ pre-built binary packages of ICU and PyICU, see below.
     pip install --no-binary=:pyicu: pyicu
     ```
 
-  - Ubuntu
-    Similar to Debian, there is a
+  - Ubuntu: similar to Debian, there is a
     [pyicu](https://packages.ubuntu.com/source/xenial/python/pyicu) package
     available via ``apt``.
 
-  - Alpine Linux
-    There is a
+  - Alpine Linux: there is a
     [pyicu](https://pkgs.alpinelinux.org/package/edge/community/x86/py3-icu)
     package available via ``apk``.
 
-  - NetBSD
-    There is a [pyicu](https://pkgsrc.se/textproc/py-ICU) package available
-    via ``pkg_add``.
+  - NetBSD: there is a [pyicu](https://pkgsrc.se/textproc/py-ICU) package
+    available via ``pkg_add``.
 
-  - OpenBSD
-    There is a [pyicu](https://openports.se/textproc/py-ICU) package available
-    via ``pkg_add``.
+  - OpenBSD: there is a [pyicu](https://openports.se/textproc/py-ICU) package
+    available via ``pkg_add``.
 
-  - Other operating systems, see below.
+  - Other operating systems: see below.
 
 ## Building PyICU
 
