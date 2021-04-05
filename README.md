@@ -82,7 +82,7 @@ PyICU is built with setuptools:
 
    - verify that ``pkg-config`` is available (the ``icu-config`` program is
      [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles)
-     as of ICU 63.1):
+     as of ICU 63.1)
      ```sh
      pkg-config --cflags --libs icu-i18n
      ```
