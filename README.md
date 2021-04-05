@@ -116,14 +116,16 @@ PyICU is built with setuptools:
 
 ## What's available
 
-See the ``CHANGES`` file for an up to date log of changes and additions.
+See the [CHANGES](https://gitlab.pyicu.org/main/pyicu/-/blob/main/CHANGES) file
+for an up to date log of changes and additions.
 
 
 ## API Documentation
 
 There is no API documentation for PyICU. The API for ICU is documented at
-http://icu-project.org/apiref/icu4c/ and the following patterns can be
-used to translate from the C++ APIs to the corresponding Python APIs.
+https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/ and the
+following patterns can be used to translate from the C++ APIs to the
+corresponding Python APIs.
 
 ### strings
 
@@ -148,10 +150,9 @@ When an ICU C++ API is documented to accept a ``UnicodeString`` reference
 parameter, it is safe to assume that there are several corresponding
 PyICU python APIs making it accessible in simpler ways:
 
-For example, the
-``'UnicodeString &Locale::getDisplayName(UnicodeString &)'`` API,
-documented at
-http://icu-project.org/apiref/icu4c/classLocale.html
+For example, the ``'UnicodeString &Locale::getDisplayName(UnicodeString &)'``
+API, documented
+[here](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1Locale.html#a61def321a9cfd9904b59e3f1897f835e),
 can be invoked from Python in several ways:
 
 1. The ICU way
@@ -214,9 +215,8 @@ taking both a ``ParseError`` and a ``UErrorCode``, they are both to be
 omitted.
 
 For example, the ``'UnicodeString &DateFormat::format(const Formattable &,
-UnicodeString &, UErrorCode &)'`` API, documented at
-http://icu-project.org/apiref/icu4c/classDateFormat.html
-is invoked from Python with:
+UnicodeString &, FieldPosition &, UErrorCode &)'`` API, documented
+[here](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1DateFormat.html#aae63209f1202550c91e2beed5691b062) is invoked from Python with:
 
     >>> from icu import DateFormat, Formattable
     >>> df = DateFormat.createInstance()
@@ -227,8 +227,8 @@ is invoked from Python with:
     u'10/18/99 3:04 PM'
 
 Of course, the simpler ``'UnicodeString &DateFormat::format(UDate,
-UnicodeString &)'`` documented here:
-http://icu-project.org/apiref/icu4c/classDateFormat.html
+UnicodeString &)'`` documented
+[here](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1DateFormat.html#a5940ccf5676d3fa043d8255c55b7ddd1)
 can be used too:
 
     >>> from icu import DateFormat
