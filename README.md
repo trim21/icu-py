@@ -82,7 +82,10 @@ PyICU is built with distutils or setuptools:
 
    - verify that ``pkg-config`` is available (the ``icu-config`` program is
      [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles)
-     as of ICU 63.1): ``pkg-config --cflags --libs icu-i18n``
+     as of ICU 63.1):
+     ```sh
+     pkg-config --cflags --libs icu-i18n
+     ```
      If this commands returns an error or doesn't return the paths expected
      then ensure that the ``INCLUDES``, ``LFLAGS``, ``CFLAGS`` and ``LIBRARIES``
      dictionaries in ``setup.py`` contain correct values for your platform.
