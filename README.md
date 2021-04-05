@@ -86,7 +86,7 @@ PyICU is built with distutils or setuptools:
      ```sh
      pkg-config --cflags --libs icu-i18n
      ```
-     If this commands returns an error or doesn't return the paths expected
+     If this command returns an error or doesn't return the paths expected
      then ensure that the ``INCLUDES``, ``LFLAGS``, ``CFLAGS`` and ``LIBRARIES``
      dictionaries in ``setup.py`` contain correct values for your platform.
      Starting with ICU 60, -std=c++11 must appear in your CFLAGS or be the
