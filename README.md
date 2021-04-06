@@ -57,18 +57,18 @@ pre-built binary packages of ICU and PyICU, see below.
     pip install --no-binary=:pyicu: pyicu
     ```
 
-  - Ubuntu: similar to Debian, there is a
-    [pyicu](https://packages.ubuntu.com/source/xenial/python/pyicu) package
+  - Ubuntu: similar to Debian, there is a pyicu
+    [package](https://packages.ubuntu.com/source/xenial/python/pyicu)
     available via ``apt``.
 
-  - Alpine Linux: there is a
-    [pyicu](https://pkgs.alpinelinux.org/package/edge/community/x86/py3-icu)
-    package available via ``apk``.
+  - Alpine Linux: there is a pyicu
+    [package](https://pkgs.alpinelinux.org/package/edge/community/x86/py3-icu)
+    available via ``apk``.
 
-  - NetBSD: there is a [pyicu](https://pkgsrc.se/textproc/py-ICU) package
+  - NetBSD: there is a pyicu [package](https://pkgsrc.se/textproc/py-ICU)
     available via ``pkg_add``.
 
-  - OpenBSD: there is a [pyicu](https://openports.se/textproc/py-ICU) package
+  - OpenBSD: there is a pyicu [package](https://openports.se/textproc/py-ICU)
     available via ``pkg_add``.
 
   - Other operating systems: see below.
@@ -130,15 +130,28 @@ corresponding Python APIs.
 ### strings
 
 The ICU string type, [UnicodeString](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html), is a type pointing at a mutable
-array of [UChar](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/umachine_8h.html#a6bb9fad572d65b305324ef288165e2ac) Unicode 16-bit wide characters and is described [here](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html#details). The Python 3 [str](https://docs.python.org/3/library/stdtypes.html#str) type is described [here](https://docs.python.org/3/library/stdtypes.html#index-26)
-and [here](https://docs.python.org/3/howto/unicode.html). The Python 2 [unicode](https://docs.python.org/2.7/reference/datamodel.html#index-23) is described [here](https://docs.python.org/2.7/library/stdtypes.html#sequence-types-str-unicode-list-tuple-bytearray-buffer-xrange).
+array of
+[UChar](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/umachine_8h.html#a6bb9fad572d65b305324ef288165e2ac)
+Unicode 16-bit wide characters and is described
+[here](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html#details). The
+Python 3 [str](https://docs.python.org/3/library/stdtypes.html#str) type is
+described [here](https://docs.python.org/3/library/stdtypes.html#index-26)
+and [here](https://docs.python.org/3/howto/unicode.html). The Python 2
+[unicode](https://docs.python.org/2.7/reference/datamodel.html#index-23) type
+is described
+[here](https://docs.python.org/2.7/library/stdtypes.html#sequence-types-str-unicode-list-tuple-bytearray-buffer-xrange).
 
-Because of these differences, ICU's and Python's string types are not merged into the same type when crossing the C++ boundary.
+Because of their differences, ICU's and Python's string types are not merged
+into the same type when crossing the C++ boundary but converted.
+
 ICU APIs taking ``UnicodeString`` arguments have been overloaded to also
-accept Python 3 ``str`` or Python 2 ``unicode`` type arguments. Python 2 ``str``
-objects are auto-decoded into ICU strings using the ``utf-8`` encoding.
+accept arguments that are Python 3 ``str`` or Python 2 ``unicode`` objects.
+Python 2 ``str`` objects are auto-decoded into ICU strings using the ``utf-8``
+encoding.
 
-To convert a Python 3 ``bytes`` or a Python 2 ``str`` object encoded in an encoding other than ``utf-8`` to an ICU ``UnicodeString`` use the ``UnicodeString(str, encodingName)`` constructor.
+To convert a Python 3 ``bytes`` or a Python 2 ``str`` object encoded in an
+encoding other than ``utf-8`` to an ICU ``UnicodeString`` use the
+``UnicodeString(str, encodingName)`` constructor.
 
 ICU's C++ APIs accept and return ``UnicodeString`` arguments in several
 ways: by value, by pointer or by reference.
@@ -158,7 +171,7 @@ can be invoked from Python in several ways:
         >>> string = UnicodeString()
         >>> name = locale.getDisplayName(string)
         >>> name
-        <UnicodeString: Portuguese (Brazil)>
+        <UnicodeString: 'Portuguese (Brazil)'>
         >>> name is string
         True                  <-- string arg was returned, modified in place
 
@@ -168,38 +181,38 @@ can be invoked from Python in several ways:
         >>> locale = Locale('pt_BR')
         >>> name = locale.getDisplayName()
         >>> name
-        u'Portuguese (Brazil)'
+        'Portuguese (Brazil)'
 
     A ``UnicodeString`` object was allocated and converted to a Python
-    ``unicode`` object.
+    ``str`` object.
 
-A UnicodeString can be coerced to a Python unicode string with Python's
-``unicode()`` constructor. The usual ``len()``, ``str()``, comparison,
-``[]`` and ``[:]`` operators are all available, with the additional
-twists that slicing is not read-only and that ``+=`` is also available
-since a UnicodeString is mutable. For example:
+A UnicodeString can be converted to a Python unicode string with Python 3's
+``str()`` or Python 2's ``unicode()`` constructor. The usual ``len()``,
+comparison, `[]`` and ``[:]`` operators are all available, with the additional
+twists that slicing is not read-only and that ``+=`` is also available since a
+UnicodeString is mutable. For example:
 
     >>> name = locale.getDisplayName()
-    u'Portuguese (Brazil)'
+    'Portuguese (Brazil)'
     >>> name = UnicodeString(name)
     >>> name
-    <UnicodeString: Portuguese (Brazil)>
-    >>> unicode(name)
-    u'Portuguese (Brazil)'
+    <UnicodeString: 'Portuguese (Brazil)'>
+    >>> str(name)
+    'Portuguese (Brazil)'
     >>> len(name)
     19
-    >>> str(name)           <-- works when chars fit with default encoding
+    >>> str(name)
     'Portuguese (Brazil)'
     >>> name[3]
-    u't'
+    't'
     >>> name[12:18]
-    <UnicodeString: Brazil>
+    <UnicodeString: 'Brazil'>
     >>> name[12:18] = 'the country of Brasil'
     >>> name
-    <UnicodeString: Portuguese (the country of Brasil)>
+    <UnicodeString: 'Portuguese (the country of Brasil)'>
     >>> name += ' oh joy'
     >>> name
-    <UnicodeString: Portuguese (the country of Brasil) oh joy>
+    <UnicodeString: 'Portuguese (the country of Brasil) oh joy'>
 
 ### error reporting
 
@@ -220,7 +233,7 @@ UnicodeString &, FieldPosition &, UErrorCode &)'`` API, documented
     <SimpleDateFormat: M/d/yy h:mm a>
     >>> f = Formattable(940284258.0, Formattable.kIsDate)
     >>> df.format(f)
-    u'10/18/99 3:04 PM'
+    '10/18/99 3:04 PM'
 
 Of course, the simpler ``'UnicodeString &DateFormat::format(UDate,
 UnicodeString &)'`` documented
@@ -232,7 +245,7 @@ can be used too:
     >>> df
     <SimpleDateFormat: M/d/yy h:mm a>
     >>> df.format(940284258.0)
-    u'10/18/99 3:04 PM'
+    '10/18/99 3:04 PM'
 
 ### dates
 
@@ -264,9 +277,10 @@ built-in ``iter`` function.
 For example, let ``e`` be a ``StringEnumeration`` instance::
 
 ```python
-[s for s in e] is a list of 'str' objects
-[s for s in iter(e.unext, None)] is a list of 'unicode' objects
-[s for s in iter(e.snext, None)] is a list of 'UnicodeString' objects
+e = TimeZone.createEnumeration()
+[s for s in e] is a list of ``str`` objects
+[s for s in iter(e.unext, '')] is a list of ``str`` objects
+[s for s in iter(e.snext, '')] is a list of ``UnicodeString`` objects
 ```
 
 ### timezones
@@ -275,6 +289,7 @@ The ICU ``TimeZone`` type may be wrapped with an ``ICUtzinfo`` type for
 usage with Python's ``datetime`` type. For example::
 
 ```python
+from datetime import datetime
 tz = ICUtzinfo(TimeZone.createTimeZone('US/Mountain'))
 datetime.now(tz)
 ```
