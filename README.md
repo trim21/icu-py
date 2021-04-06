@@ -35,11 +35,12 @@ pre-built binary packages of ICU and PyICU, see below.
       export PATH="/usr/local/opt/icu4c/bin:/usr/local/opt/icu4c/sbin:$PATH"
       export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/icu4c/lib/pkgconfig"
       ```
-    - Install PyICU **with the same C-compiler as your Python distribution** ([more info](https://github.com/ovalhub/pyicu/pull/140#issuecomment-782283491)):
+    - Install PyICU **with the same C++ compiler as your Python distribution**
+      ([more info](https://gitlab.pyicu.org/main/pyicu/merge_requests/140#issuecomment-782283491)):
       ```sh
       # EITHER - when using a gcc-built CPython (e.g. from Homebrew)
       export CC="$(which gcc)" CXX="$(which g++)"
-      # OR - when using system CPython or another clang-based CPython, ensure system clang is used (for proper libstdc++ https://github.com/ovalhub/pyicu/issues/5#issuecomment-291631507):
+      # OR - when using system CPython or another clang-based CPython, ensure system clang is used (for proper libstdc++ https://gitlab.pyicu.org/main/pyicu/issues/5#issuecomment-291631507):
       unset CC CXX
 
       # avoid wheels from previous runs or PyPI
@@ -116,7 +117,7 @@ PyICU is built with setuptools:
 
 ## What's available
 
-See the [CHANGES](https://gitlab.pyicu.org/main/pyicu/-/blob/main/CHANGES) file
+See the [CHANGES](https://gitlab.pyicu.org/main/pyicu/blob/main/CHANGES) file
 for an up to date log of changes and additions.
 
 
