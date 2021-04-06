@@ -39,6 +39,11 @@ DECLARE_CONSTANTS_TYPE(UCalendarDaysOfWeek)
 DECLARE_CONSTANTS_TYPE(UCalendarMonths)
 DECLARE_CONSTANTS_TYPE(UCalendarAMPMs)
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+DECLARE_CONSTANTS_TYPE(UTimeZoneLocalOption)
+#endif
+
+
 /* TimeZone */
 
 static PyObject *t_timezone_getOffset(t_timezone *self, PyObject *args);
@@ -92,6 +97,45 @@ static PyMethodDef t_timezone_methods[] = {
 
 DECLARE_TYPE(TimeZone, t_timezone, UObject, TimeZone, abstract_init, NULL)
 
+/* BasicTimeZone */
+
+class t_basictimezone : public _wrapper {
+public:
+    BasicTimeZone *object;
+};
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+static PyObject *t_basictimezone_getOffsetFromLocal(t_basictimezone *self,
+                                                    PyObject *args);
+#endif
+
+static PyMethodDef t_basictimezone_methods[] = {
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    DECLARE_METHOD(t_basictimezone, getOffsetFromLocal, METH_VARARGS),
+#endif
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(BasicTimeZone, t_basictimezone, TimeZone, BasicTimeZone,
+             abstract_init, NULL)
+
+
+/* RuleBasedTimeZone */
+
+class t_rulebasedtimezone : public _wrapper {
+public:
+    RuleBasedTimeZone *object;
+};
+
+static PyMethodDef t_rulebasedtimezone_methods[] = {
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(RuleBasedTimeZone,
+             t_rulebasedtimezone, BasicTimeZone, RuleBasedTimeZone,
+             abstract_init, NULL)
+
+
 /* SimpleTimeZone */
 
 class t_simpletimezone : public _wrapper {
@@ -121,8 +165,42 @@ static PyMethodDef t_simpletimezone_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(SimpleTimeZone, t_simpletimezone, TimeZone, SimpleTimeZone,
+DECLARE_TYPE(SimpleTimeZone, t_simpletimezone, BasicTimeZone, SimpleTimeZone,
              t_simpletimezone_init, NULL)
+
+
+/* VTimeZone */
+
+class t_vtimezone : public _wrapper {
+public:
+    VTimeZone *object;
+};
+
+static PyObject *t_vtimezone_getTZURL(t_vtimezone *self);
+static PyObject *t_vtimezone_getLastModified(t_vtimezone *self);
+static PyObject *t_vtimezone_write(t_vtimezone *self, PyObject *args);
+static PyObject *t_vtimezone_writeSimple(t_vtimezone *self, PyObject *arg);
+static PyObject *t_vtimezone_createVTimeZone(PyTypeObject *type, PyObject *arg);
+static PyObject *t_vtimezone_createVTimeZoneByID(PyTypeObject *type, PyObject *arg);
+#if U_ICU_VERSION_HEX >= 0x04060000
+static PyObject *t_vtimezone_createVTimeZoneFromBasicTimeZone(PyTypeObject *type, PyObject *arg);
+#endif
+
+static PyMethodDef t_vtimezone_methods[] = {
+  DECLARE_METHOD(t_vtimezone, getTZURL, METH_NOARGS),
+  DECLARE_METHOD(t_vtimezone, getLastModified, METH_NOARGS),
+  DECLARE_METHOD(t_vtimezone, write, METH_VARARGS),
+  DECLARE_METHOD(t_vtimezone, writeSimple, METH_O),
+  DECLARE_METHOD(t_vtimezone, createVTimeZone, METH_O | METH_CLASS),
+  DECLARE_METHOD(t_vtimezone, createVTimeZoneByID, METH_O | METH_CLASS),
+#if U_ICU_VERSION_HEX >= 0x04060000
+  DECLARE_METHOD(t_vtimezone, createVTimeZoneFromBasicTimeZone, METH_O | METH_CLASS),
+#endif
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(VTimeZone, t_vtimezone, BasicTimeZone, VTimeZone,
+             abstract_init, NULL)
 
 
 /* Calendar */
@@ -241,7 +319,10 @@ DECLARE_TYPE(GregorianCalendar, t_gregoriancalendar, Calendar,
 
 PyObject *wrap_TimeZone(TimeZone *tz)
 {
+    RETURN_WRAPPED_IF_ISINSTANCE(tz, RuleBasedTimeZone);
     RETURN_WRAPPED_IF_ISINSTANCE(tz, SimpleTimeZone);
+    RETURN_WRAPPED_IF_ISINSTANCE(tz, VTimeZone);
+    RETURN_WRAPPED_IF_ISINSTANCE(tz, BasicTimeZone);
     return wrap_TimeZone(tz, T_OWNED);
 }
 
@@ -282,7 +363,7 @@ static PyObject *t_timezone_getOffset(t_timezone *self, PyObject *args)
         }
         break;
     }
-    
+
     return PyErr_SetArgsError((PyObject *) self, "getOffset", args);
 }
 
@@ -306,8 +387,7 @@ static PyObject *t_timezone_setRawOffset(t_timezone *self, PyObject *arg)
 
 static PyObject *t_timezone_getID(t_timezone *self, PyObject *args)
 {
-    UnicodeString *u;
-    UnicodeString _u;
+    UnicodeString *u, _u;
 
     switch (PyTuple_Size(args)) {
       case 0:
@@ -571,8 +651,7 @@ static PyObject *t_timezone_getIDForWindowsID(PyTypeObject *type,
 
 static PyObject *t_timezone_getWindowsID(PyTypeObject *type, PyObject *arg)
 {
-    UnicodeString *id;
-    UnicodeString _id;
+    UnicodeString *id, _id;
 
     if (!parseArg(arg, "S", &id, &_id))
     {
@@ -622,6 +701,37 @@ static PyObject *t_timezone_str(t_timezone *self)
 }
 
 DEFINE_RICHCMP(TimeZone, t_timezone)
+
+
+/* BasicTimeZone */
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+
+static PyObject *t_basictimezone_getOffsetFromLocal(t_basictimezone *self,
+                                                    PyObject *args)
+{
+    UDate date;
+    UTimeZoneLocalOption nonExistingOpt, duplicateOpt;
+
+    switch (PyTuple_Size(args)) {
+      case 3:
+        if (!parseArgs(args, "Dii", &date, &nonExistingOpt, &duplicateOpt))
+        {
+            int32_t rawOffset, dstOffset;
+
+            STATUS_CALL(self->object->getOffsetFromLocal(
+                date, nonExistingOpt, duplicateOpt,
+                rawOffset, dstOffset, status));
+
+            return Py_BuildValue("(ii)", (int) rawOffset, (int) dstOffset);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getOffsetFromLocal", args);
+}
+
+#endif  // ICU 69
 
 
 /* SimpleTimeZone */
@@ -856,6 +966,119 @@ static PyObject *t_simpletimezone_setDSTSavings(t_simpletimezone *self,
 
     return PyErr_SetArgsError((PyObject *) self, "setDSTSavings", arg);
 }
+
+
+/* VTimeZone */
+
+static PyObject *t_vtimezone_getTZURL(t_vtimezone *self)
+{
+    UnicodeString url;
+    UBool result = self->object->getTZURL(url);
+
+    if (result)
+        return PyUnicode_FromUnicodeString(&url);
+
+    Py_RETURN_NONE;
+}
+
+static PyObject *t_vtimezone_getLastModified(t_vtimezone *self)
+{
+    UDate date;
+    UBool result = self->object->getLastModified(date);
+
+    if (result)
+        return PyFloat_FromDouble(date / 1000.0);
+
+    Py_RETURN_NONE;
+}
+
+static PyObject *t_vtimezone_write(t_vtimezone *self, PyObject *args)
+{
+    UDate start;
+    UnicodeString data;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        STATUS_CALL(self->object->write(data, status));
+        return PyUnicode_FromUnicodeString(&data);
+
+      case 1:
+        if (!parseArgs(args, "D", &start))
+        {
+            STATUS_CALL(self->object->writeSimple(start, data, status));
+            return PyUnicode_FromUnicodeString(&data);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "write", args);
+}
+
+static PyObject *t_vtimezone_writeSimple(t_vtimezone *self, PyObject *arg)
+{
+    UDate date;
+
+    if (!parseArg(arg, "D", &date))
+    {
+        UnicodeString data;
+        STATUS_CALL(self->object->writeSimple(date, data, status));
+
+        return PyUnicode_FromUnicodeString(&data);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "writeSimple", arg);
+}
+
+static PyObject *t_vtimezone_createVTimeZone(PyTypeObject *type, PyObject *arg)
+{
+    UnicodeString *u, _u;
+
+    if (!parseArg(arg, "S", &u, &_u))
+    {
+        VTimeZone *vtz;
+        STATUS_CALL(vtz = VTimeZone::createVTimeZone(*u, status));
+
+        return wrap_VTimeZone(vtz, T_OWNED);
+    }
+
+    return PyErr_SetArgsError(type, "createVTimeZone", arg);
+}
+
+static PyObject *t_vtimezone_createVTimeZoneByID(
+    PyTypeObject *type, PyObject *arg)
+{
+    UnicodeString *id, _id;
+
+    if (!parseArg(arg, "S", &id, &_id))
+    {
+        VTimeZone *vtz = VTimeZone::createVTimeZoneByID(*id);
+
+        if (vtz != NULL)
+            return wrap_VTimeZone(vtz, T_OWNED);
+
+        Py_RETURN_NONE;
+    }
+
+    return PyErr_SetArgsError(type, "createVTimeZoneByID", arg);
+}
+
+#if U_ICU_VERSION_HEX >= 0x04060000
+static PyObject *t_vtimezone_createVTimeZoneFromBasicTimeZone(
+    PyTypeObject *type, PyObject *arg)
+{
+    BasicTimeZone *tz;
+
+    if (!parseArg(arg, "P", TYPE_CLASSID(BasicTimeZone), &tz))
+    {
+        VTimeZone *vtz;
+        STATUS_CALL(vtz = VTimeZone::createVTimeZoneFromBasicTimeZone(
+            *tz, status));
+
+        return wrap_VTimeZone(vtz, T_OWNED);
+    }
+
+    return PyErr_SetArgsError(type, "createVTimeZoneFromBasicTimeZone", arg);
+}
+#endif
 
 
 /* Calendar */
@@ -1508,8 +1731,14 @@ void _init_calendar(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UCalendarDaysOfWeek, m);
     INSTALL_CONSTANTS_TYPE(UCalendarMonths, m);
     INSTALL_CONSTANTS_TYPE(UCalendarAMPMs, m);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UTimeZoneLocalOption, m);
+#endif
     REGISTER_TYPE(TimeZone, m);
+    REGISTER_TYPE(BasicTimeZone, m);
+    REGISTER_TYPE(RuleBasedTimeZone, m);
     REGISTER_TYPE(SimpleTimeZone, m);
+    REGISTER_TYPE(VTimeZone, m);
     INSTALL_TYPE(Calendar, m);
     REGISTER_TYPE(GregorianCalendar, m);
 
@@ -1561,6 +1790,15 @@ void _init_calendar(PyObject *m)
 
     INSTALL_ENUM(UCalendarAMPMs, "AM", UCAL_AM);
     INSTALL_ENUM(UCalendarAMPMs, "PM", UCAL_PM);
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    INSTALL_ENUM(UTimeZoneLocalOption, "FORMER", UCAL_TZ_LOCAL_FORMER);
+    INSTALL_ENUM(UTimeZoneLocalOption, "LATTER", UCAL_TZ_LOCAL_LATTER);
+    INSTALL_ENUM(UTimeZoneLocalOption, "STANDARD_FORMER", UCAL_TZ_LOCAL_STANDARD_FORMER);
+    INSTALL_ENUM(UTimeZoneLocalOption, "STANDARD_LATTER", UCAL_TZ_LOCAL_STANDARD_LATTER);
+    INSTALL_ENUM(UTimeZoneLocalOption, "DAYLIGHT_FORMER", UCAL_TZ_LOCAL_DAYLIGHT_FORMER);
+    INSTALL_ENUM(UTimeZoneLocalOption, "DAYLIGHT_LATTER", UCAL_TZ_LOCAL_DAYLIGHT_LATTER);
+#endif
 
     INSTALL_STATIC_INT(TimeZone, SHORT);
     INSTALL_STATIC_INT(TimeZone, LONG);

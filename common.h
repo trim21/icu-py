@@ -127,7 +127,10 @@ typedef intintobjargproc ssizessizeobjargproc;
 #include <unicode/currunit.h>
 #include <unicode/curramt.h>
 #include <unicode/timezone.h>
+#include <unicode/basictz.h>
+#include <unicode/rbtz.h>
 #include <unicode/simpletz.h>
+#include <unicode/vtzone.h>
 #include <unicode/dtfmtsym.h>
 #include <unicode/dcfmtsym.h>
 #include <unicode/strenum.h>
