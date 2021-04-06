@@ -279,9 +279,9 @@ For example, let ``e`` be a ``StringEnumeration`` instance:
 
 ```python
 e = TimeZone.createEnumeration()
-[s for s in e] # a list of ``str`` objects
-[s for s in iter(e.unext, '')] # a list of ``str`` objects
-[s for s in iter(e.snext, '')] # a list of ``UnicodeString`` objects
+[s for s in e] # a list of 'str' objects
+[s for s in iter(e.unext, '')] # a list of 'str' or 'unicode' objects
+[s for s in iter(e.snext, '')] # a list of 'UnicodeString' objects
 ```
 
 ### timezones
