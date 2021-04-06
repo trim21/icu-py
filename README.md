@@ -26,7 +26,7 @@ involves more than just a ``pip`` call. Many operating systems distribute
 pre-built binary packages of ICU and PyICU, see below.
 
   - Mac OS X
-    - Ensure ICU is installed and can be found by `pkg-config` (as `icu-config` was [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles) as of ICU 63.1), either by following [ICU build instructions](https://htmlpreview.github.io/?https://github.com/unicode-org/icu/blob/master/icu4c/readme.html#HowToBuild), or by using Homebrew:
+    - Ensure ICU is installed and can be found by `pkg-config` (as `icu-config` was [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles) as of ICU 63.1), either by following [ICU build instructions](https://htmlpreview.github.io/?https://github.com/unicode-org/icu/blob/maint/maint-68/icu4c/readme.html#HowToBuild), or by using Homebrew:
       ```sh
       # install libicu (keg-only)
       brew install pkg-config icu4c
@@ -130,17 +130,7 @@ corresponding Python APIs.
 
 ### strings
 
-The ICU string type, [UnicodeString](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html), is a type pointing at a mutable
-array of
-[UChar](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/umachine_8h.html#a6bb9fad572d65b305324ef288165e2ac)
-Unicode 16-bit wide characters and is described
-[here](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html#details). The
-Python 3 [str](https://docs.python.org/3/library/stdtypes.html#str) type is
-described [here](https://docs.python.org/3/library/stdtypes.html#index-26)
-and [here](https://docs.python.org/3/howto/unicode.html). The Python 2
-[unicode](https://docs.python.org/2.7/reference/datamodel.html#index-23) type
-is described
-[here](https://docs.python.org/2.7/library/stdtypes.html#sequence-types-str-unicode-list-tuple-bytearray-buffer-xrange).
+The ICU string type, [UnicodeString](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html), is a type pointing at a mutable array of [UChar](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/umachine_8h.html#a6bb9fad572d65b305324ef288165e2ac) Unicode 16-bit wide characters and is described [here](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html#details). The Python 3 [str](https://docs.python.org/3/library/stdtypes.html#str) type is described [here](https://docs.python.org/3/library/stdtypes.html#index-26) and [here](https://docs.python.org/3/howto/unicode.html). The Python 2 [unicode](https://docs.python.org/2.7/reference/datamodel.html#index-23) type is described [here](https://docs.python.org/2.7/library/stdtypes.html#sequence-types-str-unicode-list-tuple-bytearray-buffer-xrange).
 
 Because of their differences, ICU's and Python's string types are not merged
 into the same type when crossing the C++ boundary but converted.
@@ -224,9 +214,7 @@ APIs are wrapped by Python APIs that omit this argument and throw an
 taking both a ``ParseError`` and a ``UErrorCode``, they are both to be
 omitted.
 
-For example, the ``'UnicodeString &DateFormat::format(const Formattable &,
-UnicodeString &, FieldPosition &, UErrorCode &)'`` API, documented
-[here](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1DateFormat.html#aae63209f1202550c91e2beed5691b062) is invoked from Python with:
+For example, the ``'UnicodeString &DateFormat::format(const Formattable &, UnicodeString &, FieldPosition &, UErrorCode &)'`` API, documented [here](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1DateFormat.html#aae63209f1202550c91e2beed5691b062) is invoked from Python with:
 
     >>> from icu import DateFormat, Formattable
     >>> df = DateFormat.createInstance()
@@ -236,10 +224,7 @@ UnicodeString &, FieldPosition &, UErrorCode &)'`` API, documented
     >>> df.format(f)
     '10/18/99 3:04 PM'
 
-Of course, the simpler ``'UnicodeString &DateFormat::format(UDate,
-UnicodeString &)'`` documented
-[here](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1DateFormat.html#a5940ccf5676d3fa043d8255c55b7ddd1)
-can be used too:
+Of course, the simpler ``'UnicodeString &DateFormat::format(UDate, UnicodeString &)'`` documented [here](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1DateFormat.html#a5940ccf5676d3fa043d8255c55b7ddd1) can be used too:
 
     >>> from icu import DateFormat
     >>> df = DateFormat.createInstance()
