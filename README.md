@@ -269,18 +269,19 @@ element types is to be passed from Python.
 ### StringEnumeration
 
 An ICU ``StringEnumeration`` has three ``next`` methods: ``next()`` which
-returns a ``str`` objects, ``unext()`` which returns ``unicode`` objects
-and ``snext()`` which returns ``UnicodeString`` objects.
+returns a ``str`` objects, ``unext()`` which returns ``str`` objects in Python 3
+or ``unicode`` objects in Python 2 and ``snext()`` which returns
+or ``unicode`` objects in Python 2``UnicodeString`` objects.
 Any of these methods can be used as an iterator, using the Python
 built-in ``iter`` function.
 
-For example, let ``e`` be a ``StringEnumeration`` instance::
+For example, let ``e`` be a ``StringEnumeration`` instance:
 
 ```python
 e = TimeZone.createEnumeration()
-[s for s in e] is a list of ``str`` objects
-[s for s in iter(e.unext, '')] is a list of ``str`` objects
-[s for s in iter(e.snext, '')] is a list of ``UnicodeString`` objects
+[s for s in e] # a list of ``str`` objects
+[s for s in iter(e.unext, '')] # a list of ``str`` objects
+[s for s in iter(e.snext, '')] # a list of ``UnicodeString`` objects
 ```
 
 ### timezones
