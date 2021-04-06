@@ -129,20 +129,16 @@ corresponding Python APIs.
 
 ### strings
 
-The ICU string type, ``UnicodeString``, is a type pointing at a mutable
-array of ``UChar`` Unicode 16-bit wide characters. The Python unicode type
-is an immutable string of 16-bit or 32-bit wide Unicode characters.
+The ICU string type, [UnicodeString](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html), is a type pointing at a mutable
+array of [UChar](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/umachine_8h.html#a6bb9fad572d65b305324ef288165e2ac) Unicode 16-bit wide characters and is described [here](https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/classicu_1_1UnicodeString.html#details). The Python 3 [str](https://docs.python.org/3/library/stdtypes.html#str) type is described [here](https://docs.python.org/3/library/stdtypes.html#index-26)
+and [here](https://docs.python.org/3/howto/unicode.html). The Python 2 [unicode](https://docs.python.org/2.7/reference/datamodel.html#index-23) is described [here](https://docs.python.org/2.7/library/stdtypes.html#sequence-types-str-unicode-list-tuple-bytearray-buffer-xrange).
 
-Because of these differences, ``UnicodeString`` and Python's ``unicode``
-type are not merged into the same type when crossing the C++ boundary.
+Because of these differences, ICU's and Python's string types are not merged into the same type when crossing the C++ boundary.
 ICU APIs taking ``UnicodeString`` arguments have been overloaded to also
-accept Python str or unicode type arguments. In the case of ``str``
-objects, the ``utf-8`` encoding is assumed when converting them to
-``UnicodeString`` objects.
+accept Python 3 ``str`` or Python 2 ``unicode`` type arguments. Python 2 ``str``
+objects are auto-decoded into ICU strings using the ``utf-8`` encoding.
 
-To convert a Python ``str`` encoded in an encoding other than ``utf-8`` to
-an ICU ``UnicodeString`` use the ``UnicodeString(str, encodingName)``
-constructor.
+To convert a Python 3 ``bytes`` or a Python 2 ``str`` object encoded in an encoding other than ``utf-8`` to an ICU ``UnicodeString`` use the ``UnicodeString(str, encodingName)`` constructor.
 
 ICU's C++ APIs accept and return ``UnicodeString`` arguments in several
 ways: by value, by pointer or by reference.
