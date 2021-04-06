@@ -269,11 +269,10 @@ element types is to be passed from Python.
 ### StringEnumeration
 
 An ICU ``StringEnumeration`` has three ``next`` methods: ``next()`` which
-returns a ``str`` objects, ``unext()`` which returns ``str`` objects in Python 3
+returns ``str`` objects, ``unext()`` which returns ``str`` objects in Python 3
 or ``unicode`` objects in Python 2 and ``snext()`` which returns
-or ``unicode`` objects in Python 2``UnicodeString`` objects.
-Any of these methods can be used as an iterator, using the Python
-built-in ``iter`` function.
+``UnicodeString`` objects. Any of these methods can be used as an iterator,
+using the Python built-in ``iter`` function.
 
 For example, let ``e`` be a ``StringEnumeration`` instance:
 
@@ -287,7 +286,7 @@ e = TimeZone.createEnumeration()
 ### timezones
 
 The ICU ``TimeZone`` type may be wrapped with an ``ICUtzinfo`` type for
-usage with Python's ``datetime`` type. For example::
+usage with Python's ``datetime`` type. For example:
 
 ```python
 from datetime import datetime
@@ -295,21 +294,21 @@ tz = ICUtzinfo(TimeZone.createTimeZone('US/Mountain'))
 datetime.now(tz)
 ```
 
-or, even simpler::
+or, even simpler:
 
 ```python
 tz = ICUtzinfo.getInstance('Pacific/Fiji')
 datetime.now(tz)
 ```
 
-To get the default time zone use::
+To get the default time zone use:
 
 ```python
 defaultTZ = ICUtzinfo.getDefault()
 ```
 
 To get the time zone's id, use the ``tzid`` attribute or coerce the time
-zone to a string::
+zone to a string:
 
 ```python
 ICUtzinfo.getInstance('Pacific/Fiji').tzid -> 'Pacific/Fiji'
