@@ -131,6 +131,8 @@ typedef intintobjargproc ssizessizeobjargproc;
 #include <unicode/rbtz.h>
 #include <unicode/simpletz.h>
 #include <unicode/vtzone.h>
+#include <unicode/tzrule.h>
+#include <unicode/tztrans.h>
 #include <unicode/dtfmtsym.h>
 #include <unicode/dcfmtsym.h>
 #include <unicode/strenum.h>

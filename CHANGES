@@ -8,6 +8,10 @@ Version 2.6 ->
   - added wrapper for BasicTimeZone.getOffsetFromLocal
   - added wrappers for VTimeZone creation methods
   - added wrappers for VTimeZone.write, writeSimple, getTZURL, getLastModified
+  - added wrappers for TimeZoneRule.getName, getRawOffset, getDSTSavings
+  - added wrapper for TimeZoneRule.isEquivalentTo
+  - added wrapper for TimeZoneTransition.getTime, getFrom, getTo
+  - added wrapper for BasicTimeZone.getNextTransition, getPreviousTransition
   - 
 
 Version 2.5 -> 2.6
