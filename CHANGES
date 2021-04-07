@@ -6,12 +6,15 @@ Version 2.6 ->
   - implemented *, /, **, 1/m for MeasureUnit in terms of product and reciprocal
   - added wrappers for RuleBasedTimeZone, VTimeZone, BasicTimeZone
   - added wrapper for BasicTimeZone.getOffsetFromLocal
+  - added wrapper for BasicTimeZone.getTimeZoneRules, getSimpleRulesNear
   - added wrappers for VTimeZone creation methods
   - added wrappers for VTimeZone.write, writeSimple, getTZURL, getLastModified
   - added wrappers for TimeZoneRule.getName, getRawOffset, getDSTSavings
   - added wrapper for TimeZoneRule.isEquivalentTo
   - added wrapper for TimeZoneTransition.getTime, getFrom, getTo
   - added wrapper for BasicTimeZone.getNextTransition, getPreviousTransition
+  - added wrapper for BasicTimeZone.hasEquivalentTransitions
+  - added wrappers for DateTimeRule, DateRuleType, TimeRuleType
   - 
 
 Version 2.5 -> 2.6

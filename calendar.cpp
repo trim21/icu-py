@@ -38,6 +38,8 @@ DECLARE_CONSTANTS_TYPE(UCalendarDateFields)
 DECLARE_CONSTANTS_TYPE(UCalendarDaysOfWeek)
 DECLARE_CONSTANTS_TYPE(UCalendarMonths)
 DECLARE_CONSTANTS_TYPE(UCalendarAMPMs)
+DECLARE_CONSTANTS_TYPE(DateRuleType)
+DECLARE_CONSTANTS_TYPE(TimeRuleType)
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
 DECLARE_CONSTANTS_TYPE(UTimeZoneLocalOption)
@@ -65,6 +67,90 @@ static PyMethodDef t_timezonerule_methods[] = {
 };
 
 DECLARE_TYPE(TimeZoneRule, t_timezonerule, UObject, TimeZoneRule,
+             abstract_init, NULL)
+
+/* AnnualTimeZoneRule */
+
+class t_annualtimezonerule : public _wrapper {
+public:
+    AnnualTimeZoneRule *object;
+};
+
+static PyObject *t_annualtimezonerule_getStartYear(t_annualtimezonerule *self);
+static PyObject *t_annualtimezonerule_getEndYear(t_annualtimezonerule *self);
+static PyObject *t_annualtimezonerule_getRule(t_annualtimezonerule *self);
+
+static PyMethodDef t_annualtimezonerule_methods[] = {
+    DECLARE_METHOD(t_annualtimezonerule, getStartYear, METH_NOARGS),
+    DECLARE_METHOD(t_annualtimezonerule, getEndYear, METH_NOARGS),
+    DECLARE_METHOD(t_annualtimezonerule, getRule, METH_NOARGS),
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(AnnualTimeZoneRule, t_annualtimezonerule,
+             TimeZoneRule, AnnualTimeZoneRule,
+             abstract_init, NULL)
+
+/* InitialTimeZoneRule */
+
+class t_initialtimezonerule : public _wrapper {
+public:
+    InitialTimeZoneRule *object;
+};
+
+static PyMethodDef t_initialtimezonerule_methods[] = {
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(InitialTimeZoneRule, t_initialtimezonerule,
+             TimeZoneRule, InitialTimeZoneRule,
+             abstract_init, NULL)
+
+/* TimeArrayTimeZoneRule */
+
+class t_timearraytimezonerule : public _wrapper {
+public:
+    TimeArrayTimeZoneRule *object;
+};
+
+static PyObject *t_timearraytimezonerule_getTimeType(t_timearraytimezonerule *self);
+
+static PyMethodDef t_timearraytimezonerule_methods[] = {
+    DECLARE_METHOD(t_timearraytimezonerule, getTimeType, METH_NOARGS),
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(TimeArrayTimeZoneRule, t_timearraytimezonerule,
+             TimeZoneRule, TimeArrayTimeZoneRule,
+             abstract_init, NULL)
+
+/* DateTimeRule */
+
+class t_datetimerule : public _wrapper {
+public:
+    DateTimeRule *object;
+};
+
+static PyObject *t_datetimerule_getDateRuleType(t_datetimerule *self);
+static PyObject *t_datetimerule_getTimeRuleType(t_datetimerule *self);
+static PyObject *t_datetimerule_getRuleMonth(t_datetimerule *self);
+static PyObject *t_datetimerule_getRuleDayOfMonth(t_datetimerule *self);
+static PyObject *t_datetimerule_getRuleDayOfWeek(t_datetimerule *self);
+static PyObject *t_datetimerule_getRuleWeekInMonth(t_datetimerule *self);
+static PyObject *t_datetimerule_getRuleMillisInDay(t_datetimerule *self);
+
+static PyMethodDef t_datetimerule_methods[] = {
+    DECLARE_METHOD(t_datetimerule, getDateRuleType, METH_NOARGS),
+    DECLARE_METHOD(t_datetimerule, getTimeRuleType, METH_NOARGS),
+    DECLARE_METHOD(t_datetimerule, getRuleMonth, METH_NOARGS),
+    DECLARE_METHOD(t_datetimerule, getRuleDayOfMonth, METH_NOARGS),
+    DECLARE_METHOD(t_datetimerule, getRuleDayOfWeek, METH_NOARGS),
+    DECLARE_METHOD(t_datetimerule, getRuleWeekInMonth, METH_NOARGS),
+    DECLARE_METHOD(t_datetimerule, getRuleMillisInDay, METH_NOARGS),
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(DateTimeRule, t_datetimerule, UObject, DateTimeRule,
              abstract_init, NULL)
 
 /* TimeZoneTransition */
@@ -151,6 +237,9 @@ public:
 
 static PyObject *t_basictimezone_getNextTransition(t_basictimezone *self, PyObject *args);
 static PyObject *t_basictimezone_getPreviousTransition(t_basictimezone *self, PyObject *args);
+static PyObject *t_basictimezone_hasEquivalentTransitions(t_basictimezone *self, PyObject *args);
+static PyObject *t_basictimezone_getTimeZoneRules(t_basictimezone *self);
+static PyObject *t_basictimezone_getSimpleRulesNear(t_basictimezone *self, PyObject *arg);
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
 static PyObject *t_basictimezone_getOffsetFromLocal(t_basictimezone *self,
@@ -160,6 +249,9 @@ static PyObject *t_basictimezone_getOffsetFromLocal(t_basictimezone *self,
 static PyMethodDef t_basictimezone_methods[] = {
     DECLARE_METHOD(t_basictimezone, getNextTransition, METH_VARARGS),
     DECLARE_METHOD(t_basictimezone, getPreviousTransition, METH_VARARGS),
+    DECLARE_METHOD(t_basictimezone, hasEquivalentTransitions, METH_VARARGS),
+    DECLARE_METHOD(t_basictimezone, getTimeZoneRules, METH_NOARGS),
+    DECLARE_METHOD(t_basictimezone, getSimpleRulesNear, METH_O),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
     DECLARE_METHOD(t_basictimezone, getOffsetFromLocal, METH_VARARGS),
 #endif
@@ -367,6 +459,19 @@ DECLARE_TYPE(GregorianCalendar, t_gregoriancalendar, Calendar,
 
 /* TimeZoneRule */
 
+PyObject *wrap_TimeZoneRule(TimeZoneRule *tzr)
+{
+    RETURN_WRAPPED_IF_ISINSTANCE(tzr, AnnualTimeZoneRule);
+    RETURN_WRAPPED_IF_ISINSTANCE(tzr, InitialTimeZoneRule);
+    RETURN_WRAPPED_IF_ISINSTANCE(tzr, TimeArrayTimeZoneRule);
+    return wrap_TimeZoneRule(tzr, T_OWNED);
+}
+
+PyObject *wrap_TimeZoneRule(const TimeZoneRule &tz)
+{
+    return wrap_TimeZoneRule(tz.clone());
+}
+
 static PyObject *t_timezonerule_getName(t_timezonerule *self)
 {
     UnicodeString u;
@@ -409,6 +514,76 @@ static PyObject *t_timezonerule_str(t_timezonerule *self)
 
 DEFINE_RICHCMP(TimeZoneRule, t_timezonerule)
 
+
+/* AnnualTimeZoneRule */
+
+static PyObject *t_annualtimezonerule_getStartYear(t_annualtimezonerule *self)
+{
+    return PyInt_FromLong(self->object->getStartYear());
+}
+
+static PyObject *t_annualtimezonerule_getEndYear(t_annualtimezonerule *self)
+{
+    return PyInt_FromLong(self->object->getEndYear());
+}
+
+static PyObject *t_annualtimezonerule_getRule(t_annualtimezonerule *self)
+{
+    const DateTimeRule *dtr = self->object->getRule();
+
+    if (dtr)
+        return wrap_DateTimeRule((DateTimeRule *) (dtr->clone()), T_OWNED);
+
+    Py_RETURN_NONE;
+}
+
+
+/* TimeArrayTimeZoneRule */
+
+static PyObject *t_timearraytimezonerule_getTimeType(
+    t_timearraytimezonerule *self) {
+    return PyInt_FromLong(self->object->getTimeType());
+}
+
+
+/* DateTimeRule */
+
+static PyObject *t_datetimerule_getDateRuleType(t_datetimerule *self)
+{
+    return PyInt_FromLong(self->object->getDateRuleType());
+}
+
+static PyObject *t_datetimerule_getTimeRuleType(t_datetimerule *self)
+{
+    return PyInt_FromLong(self->object->getTimeRuleType());
+}
+
+static PyObject *t_datetimerule_getRuleMonth(t_datetimerule *self)
+{
+    return PyInt_FromLong(self->object->getRuleMonth());
+}
+
+static PyObject *t_datetimerule_getRuleDayOfMonth(t_datetimerule *self)
+{
+    return PyInt_FromLong(self->object->getRuleDayOfMonth());
+}
+
+static PyObject *t_datetimerule_getRuleDayOfWeek(t_datetimerule *self)
+{
+    return PyInt_FromLong(self->object->getRuleDayOfWeek());
+}
+
+static PyObject *t_datetimerule_getRuleWeekInMonth(t_datetimerule *self)
+{
+    return PyInt_FromLong(self->object->getRuleWeekInMonth());
+}
+
+static PyObject *t_datetimerule_getRuleMillisInDay(t_datetimerule *self)
+{
+    return PyInt_FromLong(self->object->getRuleMillisInDay());
+}
+
+
 /* TimeZoneTransition */
 
 static PyObject *t_timezonetransition_getTime(t_timezonetransition *self)
@@ -421,7 +596,7 @@ static PyObject *t_timezonetransition_getFrom(t_timezonetransition *self)
     const TimeZoneRule *tzr = self->object->getFrom();
 
     if (tzr != NULL)
-        return wrap_TimeZoneRule((TimeZoneRule *) (tzr->clone()), T_OWNED);
+        return wrap_TimeZoneRule(*tzr);
 
     Py_RETURN_NONE;
 }
@@ -431,7 +606,7 @@ static PyObject *t_timezonetransition_getTo(t_timezonetransition *self)
     const TimeZoneRule *tzr = self->object->getTo();
 
     if (tzr != NULL)
-        return wrap_TimeZoneRule((TimeZoneRule *) (tzr->clone()), T_OWNED);
+        return wrap_TimeZoneRule(*tzr);
 
     Py_RETURN_NONE;
 }
@@ -904,6 +1079,119 @@ static PyObject *t_basictimezone_getPreviousTransition(t_basictimezone *self,
     }
 
     return PyErr_SetArgsError((PyObject *) self, "getPreviousTransition", args);
+}
+
+static PyObject *t_basictimezone_hasEquivalentTransitions(t_basictimezone *self,
+                                                          PyObject *args)
+{
+    BasicTimeZone *tz;
+    UDate start, end;
+    UBool ignoreDstAmount, result;
+
+    switch (PyTuple_Size(args)) {
+      case 3:
+        if (!parseArgs(args, "PDD", TYPE_CLASSID(BasicTimeZone), &tz,
+                       &start, &end))
+        {
+            STATUS_CALL(result = self->object->hasEquivalentTransitions(
+                *tz, start, end, false, status));
+
+            Py_RETURN_BOOL(result);
+        }
+        break;
+
+      case 4:
+        if (!parseArgs(args, "PDDb", TYPE_CLASSID(BasicTimeZone), &tz,
+                       &start, &end, &ignoreDstAmount))
+        {
+            STATUS_CALL(result = self->object->hasEquivalentTransitions(
+                *tz, start, end, ignoreDstAmount, status));
+
+            Py_RETURN_BOOL(result);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError(
+        (PyObject *) self, "hasEquivalentTransitions", args);
+}
+
+static PyObject *t_basictimezone_getTimeZoneRules(t_basictimezone *self)
+{
+    int32_t count = 0;
+    STATUS_CALL(count = self->object->countTransitionRules(status));
+
+    const InitialTimeZoneRule *initial;
+    const TimeZoneRule **rules =
+        (const TimeZoneRule **) calloc(count, sizeof(const TimeZoneRule *));
+    if (rules == NULL)
+        return PyErr_NoMemory();
+
+    UErrorCode status = U_ZERO_ERROR;
+
+    self->object->getTimeZoneRules(initial, rules, count, status);
+    if (U_FAILURE(status))
+    {
+        free(rules);
+        return ICUException(status).reportError();
+    }
+
+    PyObject *result = PyTuple_New(count + 1);
+
+    if (result == NULL)
+    {
+        free(rules);
+        return NULL;
+    }
+
+    PyTuple_SET_ITEM(result, 0, wrap_TimeZoneRule(*initial));
+    for (int i = 0; i < count; ++i)
+      PyTuple_SET_ITEM(result, i + 1, wrap_TimeZoneRule(*rules[i]));
+
+    free(rules);
+
+    return result;
+}
+
+static PyObject *t_basictimezone_getSimpleRulesNear(t_basictimezone *self,
+                                                    PyObject *arg) {
+    UDate date;
+
+    if (!parseArg(arg, "D", &date))
+    {
+        InitialTimeZoneRule *initial;
+        AnnualTimeZoneRule *std = NULL, *dst = NULL;
+
+        STATUS_CALL(self->object->getSimpleRulesNear(
+            date, initial, std, dst, status));
+
+        PyObject *result = PyTuple_New(3);
+
+        if (result == NULL)
+            return NULL;
+
+        PyTuple_SET_ITEM(result, 0, wrap_TimeZoneRule(initial));
+
+        if (std != NULL)
+            PyTuple_SET_ITEM(result, 1, wrap_TimeZoneRule(std));
+        else
+        {
+            PyTuple_SET_ITEM(result, 1, Py_None);
+            Py_INCREF(Py_None);
+        }
+
+        if (dst != NULL)
+            PyTuple_SET_ITEM(result, 2, wrap_TimeZoneRule(dst));
+        else
+        {
+            PyTuple_SET_ITEM(result, 2, Py_None);
+            Py_INCREF(Py_None);
+        }
+
+        return result;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getSimpleRulesNear", arg);
 }
 
 
@@ -1936,10 +2224,16 @@ void _init_calendar(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UCalendarDaysOfWeek, m);
     INSTALL_CONSTANTS_TYPE(UCalendarMonths, m);
     INSTALL_CONSTANTS_TYPE(UCalendarAMPMs, m);
+    INSTALL_CONSTANTS_TYPE(DateRuleType, m);
+    INSTALL_CONSTANTS_TYPE(TimeRuleType, m);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
     INSTALL_CONSTANTS_TYPE(UTimeZoneLocalOption, m);
 #endif
     REGISTER_TYPE(TimeZoneRule, m);
+    REGISTER_TYPE(AnnualTimeZoneRule, m);
+    REGISTER_TYPE(InitialTimeZoneRule, m);
+    REGISTER_TYPE(TimeArrayTimeZoneRule, m);
+    REGISTER_TYPE(DateTimeRule, m);
     REGISTER_TYPE(TimeZoneTransition, m);
     REGISTER_TYPE(TimeZone, m);
     REGISTER_TYPE(BasicTimeZone, m);
@@ -2007,12 +2301,23 @@ void _init_calendar(PyObject *m)
     INSTALL_ENUM(UTimeZoneLocalOption, "DAYLIGHT_LATTER", UCAL_TZ_LOCAL_DAYLIGHT_LATTER);
 #endif
 
+    INSTALL_ENUM(DateRuleType, "DOM", DateTimeRule::DOM);
+    INSTALL_ENUM(DateRuleType, "DOW", DateTimeRule::DOW);
+    INSTALL_ENUM(DateRuleType, "DOW_GEQ_DOM", DateTimeRule::DOW_GEQ_DOM);
+    INSTALL_ENUM(DateRuleType, "DOW_LEQ_DOM", DateTimeRule::DOW_LEQ_DOM);
+
+    INSTALL_ENUM(TimeRuleType, "WALL_TIME", DateTimeRule::WALL_TIME);
+    INSTALL_ENUM(TimeRuleType, "STANDARD_TIME", DateTimeRule::STANDARD_TIME);
+    INSTALL_ENUM(TimeRuleType, "UTC_TIME", DateTimeRule::UTC_TIME);
+
     INSTALL_STATIC_INT(TimeZone, SHORT);
     INSTALL_STATIC_INT(TimeZone, LONG);
 
     INSTALL_STATIC_INT(SimpleTimeZone, WALL_TIME);
     INSTALL_STATIC_INT(SimpleTimeZone, STANDARD_TIME);
     INSTALL_STATIC_INT(SimpleTimeZone, UTC_TIME);
+
+    INSTALL_STATIC_INT(AnnualTimeZoneRule, MAX_YEAR);
 
     INSTALL_STATIC_INT(Calendar, ERA);
     INSTALL_STATIC_INT(Calendar, YEAR);
