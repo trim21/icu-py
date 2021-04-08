@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2004-2019 Open Source Applications Foundation.
+ * Copyright (c) 2004-2021 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -57,17 +57,25 @@ static PyObject *t_timezonerule_getName(t_timezonerule *self);
 static PyObject *t_timezonerule_getRawOffset(t_timezonerule *self);
 static PyObject *t_timezonerule_getDSTSavings(t_timezonerule *self);
 static PyObject *t_timezonerule_isEquivalentTo(t_timezonerule *self, PyObject *arg);
+static PyObject *t_timezonerule_getFirstStart(t_timezonerule *self, PyObject *args);
+static PyObject *t_timezonerule_getFinalStart(t_timezonerule *self, PyObject *args);
+static PyObject *t_timezonerule_getNextStart(t_timezonerule *self, PyObject *args);
+static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self, PyObject *args);
 
 static PyMethodDef t_timezonerule_methods[] = {
     DECLARE_METHOD(t_timezonerule, getName, METH_NOARGS),
     DECLARE_METHOD(t_timezonerule, getRawOffset, METH_NOARGS),
     DECLARE_METHOD(t_timezonerule, getDSTSavings, METH_NOARGS),
     DECLARE_METHOD(t_timezonerule, isEquivalentTo, METH_O),
+    DECLARE_METHOD(t_timezonerule, getFirstStart, METH_VARARGS),
+    DECLARE_METHOD(t_timezonerule, getFinalStart, METH_VARARGS),
+    DECLARE_METHOD(t_timezonerule, getNextStart, METH_VARARGS),
+    DECLARE_METHOD(t_timezonerule, getPreviousStart, METH_VARARGS),
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeZoneRule, t_timezonerule, UObject, TimeZoneRule,
-             abstract_init, NULL)
+DECLARE_TYPE(TimeZoneRule, t_timezonerule,
+             UObject, TimeZoneRule, abstract_init, NULL)
 
 /* AnnualTimeZoneRule */
 
@@ -78,18 +86,19 @@ public:
 
 static PyObject *t_annualtimezonerule_getStartYear(t_annualtimezonerule *self);
 static PyObject *t_annualtimezonerule_getEndYear(t_annualtimezonerule *self);
+static PyObject *t_annualtimezonerule_getStartInYear(t_annualtimezonerule *self, PyObject *args);
 static PyObject *t_annualtimezonerule_getRule(t_annualtimezonerule *self);
 
 static PyMethodDef t_annualtimezonerule_methods[] = {
     DECLARE_METHOD(t_annualtimezonerule, getStartYear, METH_NOARGS),
     DECLARE_METHOD(t_annualtimezonerule, getEndYear, METH_NOARGS),
+    DECLARE_METHOD(t_annualtimezonerule, getStartInYear, METH_VARARGS),
     DECLARE_METHOD(t_annualtimezonerule, getRule, METH_NOARGS),
     { NULL, NULL, 0, NULL }
 };
 
 DECLARE_TYPE(AnnualTimeZoneRule, t_annualtimezonerule,
-             TimeZoneRule, AnnualTimeZoneRule,
-             abstract_init, NULL)
+             TimeZoneRule, AnnualTimeZoneRule, abstract_init, NULL)
 
 /* InitialTimeZoneRule */
 
@@ -103,8 +112,7 @@ static PyMethodDef t_initialtimezonerule_methods[] = {
 };
 
 DECLARE_TYPE(InitialTimeZoneRule, t_initialtimezonerule,
-             TimeZoneRule, InitialTimeZoneRule,
-             abstract_init, NULL)
+             TimeZoneRule, InitialTimeZoneRule, abstract_init, NULL)
 
 /* TimeArrayTimeZoneRule */
 
@@ -114,15 +122,18 @@ public:
 };
 
 static PyObject *t_timearraytimezonerule_getTimeType(t_timearraytimezonerule *self);
+static PyObject *t_timearraytimezonerule_countStartTimes(t_timearraytimezonerule *self);
+static PyObject *t_timearraytimezonerule_getStartTimeAt(t_timearraytimezonerule *self, PyObject *arg);
 
 static PyMethodDef t_timearraytimezonerule_methods[] = {
     DECLARE_METHOD(t_timearraytimezonerule, getTimeType, METH_NOARGS),
+    DECLARE_METHOD(t_timearraytimezonerule, countStartTimes, METH_NOARGS),
+    DECLARE_METHOD(t_timearraytimezonerule, getStartTimeAt, METH_O),
     { NULL, NULL, 0, NULL }
 };
 
 DECLARE_TYPE(TimeArrayTimeZoneRule, t_timearraytimezonerule,
-             TimeZoneRule, TimeArrayTimeZoneRule,
-             abstract_init, NULL)
+             TimeZoneRule, TimeArrayTimeZoneRule, abstract_init, NULL)
 
 /* DateTimeRule */
 
@@ -238,6 +249,7 @@ public:
 static PyObject *t_basictimezone_getNextTransition(t_basictimezone *self, PyObject *args);
 static PyObject *t_basictimezone_getPreviousTransition(t_basictimezone *self, PyObject *args);
 static PyObject *t_basictimezone_hasEquivalentTransitions(t_basictimezone *self, PyObject *args);
+static PyObject *t_basictimezone_countTransitionRules(t_basictimezone *self);
 static PyObject *t_basictimezone_getTimeZoneRules(t_basictimezone *self);
 static PyObject *t_basictimezone_getSimpleRulesNear(t_basictimezone *self, PyObject *arg);
 
@@ -250,6 +262,7 @@ static PyMethodDef t_basictimezone_methods[] = {
     DECLARE_METHOD(t_basictimezone, getNextTransition, METH_VARARGS),
     DECLARE_METHOD(t_basictimezone, getPreviousTransition, METH_VARARGS),
     DECLARE_METHOD(t_basictimezone, hasEquivalentTransitions, METH_VARARGS),
+    DECLARE_METHOD(t_basictimezone, countTransitionRules, METH_NOARGS),
     DECLARE_METHOD(t_basictimezone, getTimeZoneRules, METH_NOARGS),
     DECLARE_METHOD(t_basictimezone, getSimpleRulesNear, METH_O),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
@@ -504,6 +517,204 @@ static PyObject *t_timezonerule_isEquivalentTo(t_timezonerule *self,
     return PyErr_SetArgsError((PyObject *) self, "isEquivalentTo", arg);
 }
 
+static PyObject *t_timezonerule_getFirstStart(t_timezonerule *self,
+                                              PyObject *args)
+{
+    int prevRawOffset, prevDSTSavings;
+    UDate date;
+    UBool result;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        STATUS_CALL(result = self->object->getFirstStart(0, 0, date));
+
+        if (result)
+            return PyFloat_FromDouble(date / 1000.0);
+
+        Py_RETURN_FALSE;
+        break;
+
+      case 2:
+        if (!parseArgs(args, "ii", &prevRawOffset, &prevDSTSavings))
+        {
+          STATUS_CALL(result = self->object->getFirstStart(
+              prevRawOffset, prevDSTSavings, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getFirstStart", args);
+}
+
+static PyObject *t_timezonerule_getFinalStart(t_timezonerule *self,
+                                              PyObject *args)
+{
+    int prevRawOffset, prevDSTSavings;
+    UDate date;
+    UBool result;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        STATUS_CALL(result = self->object->getFinalStart(0, 0, date));
+
+        if (result)
+            return PyFloat_FromDouble(date / 1000.0);
+
+        Py_RETURN_FALSE;
+        break;
+
+      case 2:
+        if (!parseArgs(args, "ii", &prevRawOffset, &prevDSTSavings))
+        {
+          STATUS_CALL(result = self->object->getFinalStart(
+              prevRawOffset, prevDSTSavings, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getFinalStart", args);
+}
+
+static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
+                                             PyObject *args)
+{
+    UDate base, date;
+    int prevRawOffset, prevDSTSavings;
+    UBool result, inclusive;
+
+    switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "D", &base))
+        {
+            STATUS_CALL(result = self->object->getNextStart(
+                base, 0, 0, false, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+
+      case 2:
+        if (!parseArgs(args, "Db", &base, &inclusive))
+        {
+            STATUS_CALL(result = self->object->getNextStart(
+                base, 0, 0, inclusive, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+
+      case 3:
+        if (!parseArgs(args, "Dii", &base, &prevRawOffset, &prevDSTSavings))
+        {
+            STATUS_CALL(result = self->object->getNextStart(
+                base, prevRawOffset, prevDSTSavings, false, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+
+      case 4:
+        if (!parseArgs(args, "Diib", &base, &prevRawOffset, &prevDSTSavings,
+                       &inclusive))
+        {
+            STATUS_CALL(result = self->object->getNextStart(
+                base, prevRawOffset, prevDSTSavings, inclusive, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getNextStart", args);
+}
+
+static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
+                                                 PyObject *args)
+{
+    UDate base, date;
+    int prevRawOffset, prevDSTSavings;
+    UBool result, inclusive;
+
+    switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "D", &base))
+        {
+            STATUS_CALL(result = self->object->getPreviousStart(
+                base, 0, 0, false, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+
+      case 2:
+        if (!parseArgs(args, "Db", &base, &inclusive))
+        {
+            STATUS_CALL(result = self->object->getPreviousStart(
+                base, 0, 0, inclusive, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+
+      case 3:
+        if (!parseArgs(args, "Dii", &base, &prevRawOffset, &prevDSTSavings))
+        {
+            STATUS_CALL(result = self->object->getPreviousStart(
+                base, prevRawOffset, prevDSTSavings, false, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+
+      case 4:
+        if (!parseArgs(args, "Diib", &base, &prevRawOffset, &prevDSTSavings,
+                       &inclusive))
+        {
+            STATUS_CALL(result = self->object->getPreviousStart(
+                base, prevRawOffset, prevDSTSavings, inclusive, date));
+
+          if (result)
+              return PyFloat_FromDouble(date / 1000.0);
+
+          Py_RETURN_FALSE;
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getPreviousStart", args);
+}
+
 static PyObject *t_timezonerule_str(t_timezonerule *self)
 {
     UnicodeString u;
@@ -527,6 +738,38 @@ static PyObject *t_annualtimezonerule_getEndYear(t_annualtimezonerule *self)
     return PyInt_FromLong(self->object->getEndYear());
 }
 
+static PyObject *t_annualtimezonerule_getStartInYear(t_annualtimezonerule *self,
+                                                     PyObject *args)
+{
+    int year, prevRawOffset, prevDSTSavings;
+    UDate date;
+
+    switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "i", &year))
+        {
+            if (self->object->getStartInYear(year, 0, 0, date))
+                return PyFloat_FromDouble(date / 1000.0);
+
+            Py_RETURN_FALSE;
+        }
+        break;
+
+      case 3:
+        if (!parseArgs(args, "iii", &year, &prevRawOffset, &prevDSTSavings))
+        {
+            if (self->object->getStartInYear(
+                    year, prevRawOffset, prevDSTSavings, date))
+                return PyFloat_FromDouble(date / 1000.0);
+
+            Py_RETURN_FALSE;
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getStartInYear", args);
+}
+
 static PyObject *t_annualtimezonerule_getRule(t_annualtimezonerule *self)
 {
     const DateTimeRule *dtr = self->object->getRule();
@@ -543,6 +786,29 @@ static PyObject *t_annualtimezonerule_getRule(t_annualtimezonerule *self)
 static PyObject *t_timearraytimezonerule_getTimeType(
     t_timearraytimezonerule *self) {
     return PyInt_FromLong(self->object->getTimeType());
+}
+
+static PyObject *t_timearraytimezonerule_countStartTimes(
+    t_timearraytimezonerule *self) {
+    return PyInt_FromLong(self->object->countStartTimes());
+}
+
+static PyObject *t_timearraytimezonerule_getStartTimeAt(
+    t_timearraytimezonerule *self, PyObject *arg)
+{
+    int index;
+
+    if (!parseArg(arg, "i", &index))
+    {
+        UDate date;
+
+        if (self->object->getStartTimeAt(index, date))
+            return PyFloat_FromDouble(date / 1000.0);
+
+        Py_RETURN_FALSE;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getStartTimeAt", arg);
 }
 
 
@@ -1116,6 +1382,14 @@ static PyObject *t_basictimezone_hasEquivalentTransitions(t_basictimezone *self,
         (PyObject *) self, "hasEquivalentTransitions", args);
 }
 
+static PyObject *t_basictimezone_countTransitionRules(t_basictimezone *self)
+{
+    int32_t count;
+    STATUS_CALL(count = self->object->countTransitionRules(status));
+
+    return PyInt_FromLong(count);
+}
+
 static PyObject *t_basictimezone_getTimeZoneRules(t_basictimezone *self)
 {
     int32_t count = 0;
@@ -1149,7 +1423,6 @@ static PyObject *t_basictimezone_getTimeZoneRules(t_basictimezone *self)
       PyTuple_SET_ITEM(result, i + 1, wrap_TimeZoneRule(*rules[i]));
 
     free(rules);
-
     return result;
 }
 
@@ -1463,9 +1736,8 @@ static PyObject *t_simpletimezone_setDSTSavings(t_simpletimezone *self,
 static PyObject *t_vtimezone_getTZURL(t_vtimezone *self)
 {
     UnicodeString url;
-    UBool result = self->object->getTZURL(url);
 
-    if (result)
+    if (self->object->getTZURL(url))
         return PyUnicode_FromUnicodeString(&url);
 
     Py_RETURN_NONE;
@@ -1474,9 +1746,8 @@ static PyObject *t_vtimezone_getTZURL(t_vtimezone *self)
 static PyObject *t_vtimezone_getLastModified(t_vtimezone *self)
 {
     UDate date;
-    UBool result = self->object->getLastModified(date);
 
-    if (result)
+    if (self->object->getLastModified(date))
         return PyFloat_FromDouble(date / 1000.0);
 
     Py_RETURN_NONE;
