@@ -531,7 +531,7 @@ static PyObject *t_timezonerule_getFirstStart(t_timezonerule *self,
         if (result)
             return PyFloat_FromDouble(date / 1000.0);
 
-        Py_RETURN_FALSE;
+        Py_RETURN_NONE;
         break;
 
       case 2:
@@ -543,7 +543,7 @@ static PyObject *t_timezonerule_getFirstStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
     }
@@ -565,7 +565,7 @@ static PyObject *t_timezonerule_getFinalStart(t_timezonerule *self,
         if (result)
             return PyFloat_FromDouble(date / 1000.0);
 
-        Py_RETURN_FALSE;
+        Py_RETURN_NONE;
         break;
 
       case 2:
@@ -577,7 +577,7 @@ static PyObject *t_timezonerule_getFinalStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
     }
@@ -602,7 +602,7 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
 
@@ -615,7 +615,7 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
 
@@ -628,7 +628,7 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
 
@@ -642,7 +642,7 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
     }
@@ -667,7 +667,7 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
 
@@ -680,7 +680,7 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
 
@@ -693,7 +693,7 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
 
@@ -707,7 +707,7 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
           if (result)
               return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_FALSE;
+          Py_RETURN_NONE;
         }
         break;
     }
@@ -751,7 +751,7 @@ static PyObject *t_annualtimezonerule_getStartInYear(t_annualtimezonerule *self,
             if (self->object->getStartInYear(year, 0, 0, date))
                 return PyFloat_FromDouble(date / 1000.0);
 
-            Py_RETURN_FALSE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -762,7 +762,7 @@ static PyObject *t_annualtimezonerule_getStartInYear(t_annualtimezonerule *self,
                     year, prevRawOffset, prevDSTSavings, date))
                 return PyFloat_FromDouble(date / 1000.0);
 
-            Py_RETURN_FALSE;
+            Py_RETURN_NONE;
         }
         break;
     }
@@ -805,7 +805,7 @@ static PyObject *t_timearraytimezonerule_getStartTimeAt(
         if (self->object->getStartTimeAt(index, date))
             return PyFloat_FromDouble(date / 1000.0);
 
-        Py_RETURN_FALSE;
+        Py_RETURN_NONE;
     }
 
     return PyErr_SetArgsError((PyObject *) self, "getStartTimeAt", arg);
@@ -1285,7 +1285,7 @@ static PyObject *t_basictimezone_getNextTransition(t_basictimezone *self,
               return wrap_TimeZoneTransition(
                   (TimeZoneTransition *) (tzt.clone()), T_OWNED);
 
-            Py_RETURN_FALSE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -1299,7 +1299,7 @@ static PyObject *t_basictimezone_getNextTransition(t_basictimezone *self,
               return wrap_TimeZoneTransition(
                   (TimeZoneTransition *) (tzt.clone()), T_OWNED);
 
-            Py_RETURN_FALSE;
+            Py_RETURN_NONE;
         }
         break;
     }
@@ -1324,7 +1324,7 @@ static PyObject *t_basictimezone_getPreviousTransition(t_basictimezone *self,
               return wrap_TimeZoneTransition(
                   (TimeZoneTransition *) (tzt.clone()), T_OWNED);
 
-            Py_RETURN_FALSE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -1339,7 +1339,7 @@ static PyObject *t_basictimezone_getPreviousTransition(t_basictimezone *self,
               return wrap_TimeZoneTransition(
                   (TimeZoneTransition *) (tzt.clone()), T_OWNED);
 
-            Py_RETURN_FALSE;
+            Py_RETURN_NONE;
         }
         break;
     }
