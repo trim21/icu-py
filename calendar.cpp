@@ -537,13 +537,13 @@ static PyObject *t_timezonerule_getFirstStart(t_timezonerule *self,
       case 2:
         if (!parseArgs(args, "ii", &prevRawOffset, &prevDSTSavings))
         {
-          STATUS_CALL(result = self->object->getFirstStart(
-              prevRawOffset, prevDSTSavings, date));
+            STATUS_CALL(result = self->object->getFirstStart(
+                prevRawOffset, prevDSTSavings, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
     }
@@ -571,13 +571,13 @@ static PyObject *t_timezonerule_getFinalStart(t_timezonerule *self,
       case 2:
         if (!parseArgs(args, "ii", &prevRawOffset, &prevDSTSavings))
         {
-          STATUS_CALL(result = self->object->getFinalStart(
-              prevRawOffset, prevDSTSavings, date));
+            STATUS_CALL(result = self->object->getFinalStart(
+                prevRawOffset, prevDSTSavings, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
     }
@@ -599,10 +599,10 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getNextStart(
                 base, 0, 0, false, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -612,10 +612,10 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getNextStart(
                 base, 0, 0, inclusive, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -625,10 +625,10 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getNextStart(
                 base, prevRawOffset, prevDSTSavings, false, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -639,10 +639,10 @@ static PyObject *t_timezonerule_getNextStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getNextStart(
                 base, prevRawOffset, prevDSTSavings, inclusive, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
     }
@@ -664,10 +664,10 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getPreviousStart(
                 base, 0, 0, false, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -677,10 +677,10 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getPreviousStart(
                 base, 0, 0, inclusive, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -690,10 +690,10 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getPreviousStart(
                 base, prevRawOffset, prevDSTSavings, false, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
 
@@ -704,10 +704,10 @@ static PyObject *t_timezonerule_getPreviousStart(t_timezonerule *self,
             STATUS_CALL(result = self->object->getPreviousStart(
                 base, prevRawOffset, prevDSTSavings, inclusive, date));
 
-          if (result)
-              return PyFloat_FromDouble(date / 1000.0);
+            if (result)
+                return PyFloat_FromDouble(date / 1000.0);
 
-          Py_RETURN_NONE;
+            Py_RETURN_NONE;
         }
         break;
     }
@@ -1655,7 +1655,8 @@ static PyObject *t_simpletimezone_setEndRule(t_simpletimezone *self,
       case 3:
         if (!parseArgs(args, "iii", &month, &dayOfMonth, &time))
         {
-            STATUS_CALL(self->object->setEndRule(month, dayOfMonth, time, status));
+            STATUS_CALL(self->object->setEndRule(month, dayOfMonth,
+                                                 time, status));
             Py_RETURN_NONE;
         }
         break;
