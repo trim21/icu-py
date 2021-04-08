@@ -1,4 +1,4 @@
-Version 2.6 ->
+Version 2.6 -> 2.7
 ------------------
   - added wrapper for Locale.canonicalize()
   - added wrappers for MeasureUnit.product(), reciprocal(), getDimensionality()
@@ -7,7 +7,7 @@ Version 2.6 ->
   - added wrappers for BasicTimeZone, RuleBasedTimeZone, VTimeZone
   - added wrappers for TimeZoneTransition, TimeZoneRule and its subclasses
   - added wrappers for DateTimeRule, DateRuleType, TimeRuleType
-  - 
+  - added support for ICU 69.1
 
 Version 2.5 -> 2.6
 ------------------
