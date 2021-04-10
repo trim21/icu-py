@@ -1,15 +1,15 @@
 /* ====================================================================
- * Copyright (c) 2004-2019 Open Source Applications Foundation.
+ * Copyright (c) 2004-2021 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions: 
+ * Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software. 
+ * in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,6 +33,7 @@
 #include "format.h"
 #include "dateformat.h"
 #include "numberformat.h"
+#include "timezone.h"
 #include "calendar.h"
 #include "collator.h"
 #include "charset.h"
@@ -249,6 +250,7 @@ static PyObject *PyInit_icu(PyObject *m)
     _init_format(m);
     _init_dateformat(m);
     _init_numberformat(m);
+    _init_timezone(m);
     _init_calendar(m);
     _init_collator(m);
     _init_charset(m);

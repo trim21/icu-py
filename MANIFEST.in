@@ -24,6 +24,7 @@ include script.h
 include search.h
 include shape.h
 include spoof.h
+include timezone.h
 include transliterator.h
 include tries.h
 include tzinfo.h

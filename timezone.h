@@ -21,12 +21,21 @@
  * ====================================================================
  */
 
-#ifndef _calendar_h
-#define _calendar_h
+#ifndef _timezone_h
+#define _timezone_h
 
-extern PyTypeObject CalendarType_;
+class t_timezone : public _wrapper {
+public:
+    TimeZone *object;
+};
 
-PyObject *wrap_Calendar(Calendar *, int);
-void _init_calendar(PyObject *m);
+extern PyTypeObject TimeZoneType_;
 
-#endif /* _calendar_h */
+PyObject *wrap_TimeZone(TimeZone *, int);
+PyObject *wrap_TimeZone(TimeZone *);
+PyObject *wrap_TimeZone(const TimeZone &);
+PyObject *t_timezone_createTimeZone(PyTypeObject *type, PyObject *arg);
+
+void _init_timezone(PyObject *m);
+
+#endif /* _timezone_h */

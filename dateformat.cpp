@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2004-2015 Open Source Applications Foundation.
+ * Copyright (c) 2004-2021 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,6 +27,7 @@
 #include "bases.h"
 #include "locale.h"
 #include "format.h"
+#include "timezone.h"
 #include "calendar.h"
 #include "numberformat.h"
 #include "dateformat.h"
