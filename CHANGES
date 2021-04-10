@@ -1,3 +1,9 @@
+Version 2.7 -> 2.7.1
+--------------------
+  - added some tests for TimeZone classes
+  - fixed bug w/FormattedNumberRange.getFirst|SecondDecimal() gone w/ ICU 68.1+
+  - fixed bug with VTimeZone.write() wrapper invoking VTimeZone.writeSimple()
+
 Version 2.6 -> 2.7
 ------------------
   - added wrapper for Locale.canonicalize()
