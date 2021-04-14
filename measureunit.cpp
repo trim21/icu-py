@@ -1404,11 +1404,10 @@ void _init_measureunit(PyObject *m)
     MeasureUnitType_.tp_str = (reprfunc) t_measureunit_str;
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0) && PY_VERSION_HEX >= 0x03000000
-    static PyNumberMethods t_measureunit_as_number {
-      .nb_multiply = (binaryfunc) t_measureunit___mul__,
-      .nb_power = (ternaryfunc) t_measureunit___pow__,
-      .nb_true_divide = (binaryfunc) t_measureunit___truediv__,
-    };
+    static PyNumberMethods t_measureunit_as_number {};
+    t_measureunit_as_number.nb_multiply = (binaryfunc) t_measureunit___mul__;
+    t_measureunit_as_number.nb_power = (ternaryfunc) t_measureunit___pow__;
+    t_measureunit_as_number.nb_true_divide = (binaryfunc) t_measureunit___truediv__;
     MeasureUnitType_.tp_as_number = &t_measureunit_as_number;
 #endif
     MeasureUnitType_.tp_richcompare = (richcmpfunc) t_measureunit_richcmp;
