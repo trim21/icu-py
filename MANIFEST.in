@@ -29,3 +29,9 @@ include transliterator.h
 include tries.h
 include tzinfo.h
 include unicodeset.h
+include test/__init__.py
+include test/collation-rules.txt
+include test/lohit_hi.ttf
+include test/noms.txt
+include samples/break.py
+include samples/strsrch.py

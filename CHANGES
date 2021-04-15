@@ -1,3 +1,8 @@
+Version 2.7.1 -> 2.7.2
+----------------------
+  - worked around limitation of Visual Studio 2017 (cgohlke)
+  - added missing test and samples files to distribution (foutrelis)
+
 Version 2.7 -> 2.7.1
 --------------------
   - added some tests for TimeZone classes
