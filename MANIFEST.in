@@ -1,5 +1,6 @@
 include README.md
 include CHANGES
+include CREDITS
 include LICENSE
 include bases.h
 include bidi.h
