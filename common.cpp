@@ -712,6 +712,9 @@ Formattable *toFormattableArray(PyObject *arg, int *len,
         *len = (int) PySequence_Size(arg);
         Formattable *array = new Formattable[*len + 1];
 
+        if (!array)
+          return (Formattable *) PyErr_NoMemory();
+
         for (int i = 0; i < *len; i++) {
             PyObject *obj = PySequence_GetItem(arg, i);
 
@@ -752,6 +755,9 @@ static UnicodeString *toUnicodeStringArray(PyObject *arg, int *len)
         *len = (int) PySequence_Size(arg);
         UnicodeString *array = new UnicodeString[*len + 1];
 
+        if (!array)
+          return (UnicodeString *) PyErr_NoMemory();
+
         for (int i = 0; i < *len; i++) {
             PyObject *obj = PySequence_GetItem(arg, i);
 
@@ -786,6 +792,9 @@ static int *toIntArray(PyObject *arg, int *len)
     {
         *len = (int) PySequence_Size(arg);
         int *array = new int[*len + 1];
+
+        if (!array)
+          return (int *) PyErr_NoMemory();
 
         for (int i = 0; i < *len; i++) {
             PyObject *obj = PySequence_GetItem(arg, i);
@@ -837,6 +846,9 @@ static double *toDoubleArray(PyObject *arg, int *len)
         *len = (int) PySequence_Size(arg);
         double *array = new double[*len + 1];
 
+        if (!array)
+          return (double *) PyErr_NoMemory();
+
         for (int i = 0; i < *len; i++) {
             PyObject *obj = PySequence_GetItem(arg, i);
 
@@ -877,6 +889,9 @@ static UBool *toUBoolArray(PyObject *arg, int *len)
     {
         *len = (int) PySequence_Size(arg);
         UBool *array = new UBool[*len + 1];
+
+        if (!array)
+          return (UBool *) PyErr_NoMemory();
 
         for (int i = 0; i < *len; i++) {
             PyObject *obj = PySequence_GetItem(arg, i);

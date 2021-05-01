@@ -45,6 +45,7 @@ DECLARE_CONSTANTS_TYPE(UResType)
 DECLARE_CONSTANTS_TYPE(ULocaleDataDelimiterType)
 DECLARE_CONSTANTS_TYPE(ULocaleDataExemplarSetType)
 DECLARE_CONSTANTS_TYPE(UMeasurementSystem)
+DECLARE_CONSTANTS_TYPE(UAcceptResult)
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
 DECLARE_CONSTANTS_TYPE(URegionType)
@@ -513,6 +514,8 @@ static PyObject *t_localematcher_getBestMatchResult(t_localematcher *self, PyObj
 static PyObject *t_localematcher_isMatch(t_localematcher *self, PyObject *args);
 #endif
 
+static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type, PyObject *args);
+
 static PyMethodDef t_localematcher_methods[] = {
     DECLARE_METHOD(t_localematcher, getBestMatch, METH_O),
     DECLARE_METHOD(t_localematcher, getBestMatchForListString, METH_O),
@@ -520,6 +523,7 @@ static PyMethodDef t_localematcher_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
     DECLARE_METHOD(t_localematcher, isMatch, METH_VARARGS),
 #endif
+    DECLARE_METHOD(t_localematcher, acceptLanguageFromHTTP, METH_CLASS| METH_VARARGS),
     { NULL, NULL, 0, NULL }
 };
 
@@ -2378,7 +2382,8 @@ static PyObject *t_localematcherresult_makeResolvedLocale(
 /* LocaleMatcher */
 
 static PyObject *t_localematcher_getBestMatch(t_localematcher *self,
-                                              PyObject *arg) {
+                                              PyObject *arg)
+{
     const Locale *locale;
     Locale **locales;
     int len;
@@ -2480,6 +2485,71 @@ static PyObject *t_localematcher_isMatch(t_localematcher *self, PyObject *args)
 
 #endif  // ICU >= 65
 
+static PyObject *t_localematcher_acceptLanguageFromHTTP(
+    PyTypeObject *type, PyObject *args)
+{
+    charsArg header_value;
+    UnicodeString *locales = NULL;
+    int num_locales = 0;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "nT", &header_value, &locales, &num_locales))
+        {
+            const UChar **buffers =
+                (const UChar **) calloc(num_locales, sizeof(UChar *));
+
+            if (!buffers)
+            {
+                delete[] locales;
+                return PyErr_NoMemory();
+            }
+
+            for (int i = 0; i < num_locales; ++i)
+                buffers[i] = locales[i].getTerminatedBuffer();
+
+            UErrorCode status = U_ZERO_ERROR;
+            UEnumeration *uenum = uenum_openUCharStringsEnumeration(
+                buffers, num_locales, &status);
+
+            if (U_FAILURE(status))
+            {
+                free(buffers);
+                delete[] locales;
+
+                return ICUException(status).reportError();
+            }
+            else
+                status = U_ZERO_ERROR;
+
+            UAcceptResult result;
+            char buffer[128];
+            size_t size = uloc_acceptLanguageFromHTTP(
+                buffer, sizeof(buffer), &result, header_value.c_str(), uenum,
+                &status);
+
+            uenum_close(uenum);
+            free(buffers);
+            delete[] locales;
+
+            if (size >= sizeof(buffer) || U_FAILURE(status))
+            {
+                if (U_FAILURE(status))
+                    return ICUException(status).reportError();
+
+                PyErr_SetString(
+                    PyExc_ValueError, "resulting locale id length > 128");
+                return NULL;
+            }
+
+            return Py_BuildValue("(s#i)", buffer, (int) size, (int) result);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError(type, "acceptLanguageFromHTTP", args);
+}
+
 
 void _init_locale(PyObject *m)
 {
@@ -2498,6 +2568,7 @@ void _init_locale(PyObject *m)
     INSTALL_CONSTANTS_TYPE(ULocaleDataDelimiterType, m);
     INSTALL_CONSTANTS_TYPE(ULocaleDataExemplarSetType, m);
     INSTALL_CONSTANTS_TYPE(UMeasurementSystem, m);
+    INSTALL_CONSTANTS_TYPE(UAcceptResult, m);
     REGISTER_TYPE(Locale, m);
     REGISTER_TYPE(ResourceBundle, m);
     INSTALL_STRUCT(LocaleData, m);
@@ -2558,6 +2629,10 @@ void _init_locale(PyObject *m)
 
     INSTALL_ENUM(UMeasurementSystem, "SI", UMS_SI);
     INSTALL_ENUM(UMeasurementSystem, "US", UMS_US);
+
+    INSTALL_ENUM(UAcceptResult, "FAILED", ULOC_ACCEPT_FAILED);
+    INSTALL_ENUM(UAcceptResult, "VALID", ULOC_ACCEPT_VALID);
+    INSTALL_ENUM(UAcceptResult, "FALLBACK", ULOC_ACCEPT_FALLBACK);
 
     // options for LocaleData.getExemplarSet()
     INSTALL_MODULE_INT(m, USET_IGNORE_SPACE);

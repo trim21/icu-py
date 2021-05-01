@@ -59,6 +59,22 @@ class TestLocaleMatcher(TestCase):
         self.assertEqual(Locale('de-AT'), result.getDesiredLocale())
         self.assertEqual(Locale.getGermany(), result.getSupportedLocale())
 
+    def testAcceptLanguageFromHTTP(self):
+
+        locale, status = LocaleMatcher.acceptLanguageFromHTTP(
+            "fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5",
+            ("de-AT", "fr-CA"))
+
+        self.assertEqual("fr_CA", locale)
+        self.assertEqual(UAcceptResult.FALLBACK, status)
+
+        locale, status = LocaleMatcher.acceptLanguageFromHTTP(
+            "fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5",
+            list(Locale.getAvailableLocales().keys()))
+
+        self.assertEqual("fr_CH", locale)
+        self.assertEqual(UAcceptResult.VALID, status)
+
 
 if __name__ == "__main__":
     if ICU_VERSION >= '65.0':
