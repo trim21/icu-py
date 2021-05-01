@@ -786,6 +786,46 @@ static UnicodeString *toUnicodeStringArray(PyObject *arg, int *len)
     return NULL;
 }
 
+static charsArg *toCharsArgArray(PyObject *arg, int *len)
+{
+    if (PySequence_Check(arg))
+    {
+        *len = (int) PySequence_Size(arg);
+        charsArg *array = new charsArg[*len + 1];
+
+        if (!array)
+          return (charsArg *) PyErr_NoMemory();
+
+        for (int i = 0; i < *len; i++) {
+            PyObject *obj = PySequence_GetItem(arg, i);
+
+            if (PyUnicode_Check(obj))
+            {
+                PyObject *bytes = PyUnicode_AsUTF8String(obj);
+
+                if (bytes == NULL)
+                {
+                    Py_DECREF(obj);
+                    delete[] array;
+                    return NULL;
+                }
+
+                array[i].own(bytes);
+            }
+            else
+            {
+                array[i].borrow(obj);
+            }
+
+            Py_DECREF(obj);
+        }
+
+        return array;
+    }
+
+    return NULL;
+}
+
 static int *toIntArray(PyObject *arg, int *len)
 {
     if (PySequence_Check(arg))
@@ -999,6 +1039,22 @@ int _parseArgs(PyObject **args, int count, const char *types, ...)
             if (PyBytes_Check(arg) || PyUnicode_Check(arg) ||
                 isUnicodeString(arg))
                 break;
+            return -1;
+
+          case 'm':           /* array of string or unicode, to utf8 charsArg */
+            if (PySequence_Check(arg))
+            {
+                if (PySequence_Length(arg) > 0)
+                {
+                    PyObject *obj = PySequence_GetItem(arg, 0);
+                    int ok = PyBytes_Check(obj) || PyUnicode_Check(obj);
+                    Py_DECREF(obj);
+                    if (ok)
+                        break;
+                }
+                else
+                    break;
+            }
             return -1;
 
           case 'T':           /* array of string, unicode or UnicodeString */
@@ -1315,6 +1371,16 @@ int _parseArgs(PyObject **args, int count, const char *types, ...)
                       return -1;
                   }
               }
+              break;
+          }
+
+          case 'm':           /* array of string or unicode, to utf8 charsArg */
+          {
+              charsArg **array = va_arg(list, charsArg **);
+              int *len = va_arg(list, int *);
+              *array = toCharsArgArray(arg, len);
+              if (!*array)
+                  return -1;
               break;
           }
 

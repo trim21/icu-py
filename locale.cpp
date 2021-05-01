@@ -514,6 +514,7 @@ static PyObject *t_localematcher_getBestMatchResult(t_localematcher *self, PyObj
 static PyObject *t_localematcher_isMatch(t_localematcher *self, PyObject *args);
 #endif
 
+static PyObject *t_localematcher_acceptLanguage(PyTypeObject *type, PyObject *args);
 static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type, PyObject *args);
 
 static PyMethodDef t_localematcher_methods[] = {
@@ -523,6 +524,7 @@ static PyMethodDef t_localematcher_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
     DECLARE_METHOD(t_localematcher, isMatch, METH_VARARGS),
 #endif
+    DECLARE_METHOD(t_localematcher, acceptLanguage, METH_CLASS| METH_VARARGS),
     DECLARE_METHOD(t_localematcher, acceptLanguageFromHTTP, METH_CLASS| METH_VARARGS),
     { NULL, NULL, 0, NULL }
 };
@@ -2485,38 +2487,113 @@ static PyObject *t_localematcher_isMatch(t_localematcher *self, PyObject *args)
 
 #endif  // ICU >= 65
 
-static PyObject *t_localematcher_acceptLanguageFromHTTP(
-    PyTypeObject *type, PyObject *args)
+static PyObject *t_localematcher_acceptLanguage(PyTypeObject *type,
+                                                PyObject *args)
+{
+    charsArg *accepts = NULL, *locales = NULL;
+    int num_locales = 0, num_accepts = 0;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "mm",
+                       &accepts, &num_accepts, &locales, &num_locales))
+        {
+            const char **accept_buffers =
+                (const char **) calloc(num_accepts, sizeof(char *));
+            const char **locale_buffers =
+                (const char **) calloc(num_locales, sizeof(char *));
+
+            if (!accept_buffers || !locale_buffers)
+            {
+                free(locale_buffers);
+                free(accept_buffers);
+                delete[] locales;
+                delete[] accepts;
+                return PyErr_NoMemory();
+            }
+
+            for (int i = 0; i < num_accepts; ++i)
+                accept_buffers[i] = accepts[i].c_str();
+
+            for (int i = 0; i < num_locales; ++i)
+                locale_buffers[i] = locales[i].c_str();
+
+            UErrorCode status = U_ZERO_ERROR;
+            UEnumeration *uenum = uenum_openCharStringsEnumeration(
+                locale_buffers, num_locales, &status);
+
+            if (U_FAILURE(status))
+            {
+                free(locale_buffers);
+                free(accept_buffers);
+                delete[] locales;
+                delete[] accepts;
+                return ICUException(status).reportError();
+            }
+            else
+                status = U_ZERO_ERROR;
+
+            UAcceptResult result;
+            char buffer[128];
+            size_t size = uloc_acceptLanguage(
+                buffer, sizeof(buffer), &result,
+                accept_buffers, num_accepts, uenum, &status);
+
+            uenum_close(uenum);
+            free(locale_buffers);
+            free(accept_buffers);
+            delete[] locales;
+            delete[] accepts;
+
+            if (U_FAILURE(status))
+                return ICUException(status).reportError();
+
+            if (size >= sizeof(buffer))
+            {
+                PyErr_SetString(PyExc_ValueError,
+                                "resulting locale id length > 128");
+                return NULL;
+            }
+
+            return Py_BuildValue("(s#i)", buffer, (int) size, (int) result);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError(type, "acceptLanguageFromHTTP", args);
+}
+
+static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type,
+                                                        PyObject *args)
 {
     charsArg header_value;
-    UnicodeString *locales = NULL;
+    charsArg *locales = NULL;
     int num_locales = 0;
 
     switch (PyTuple_Size(args)) {
       case 2:
-        if (!parseArgs(args, "nT", &header_value, &locales, &num_locales))
+        if (!parseArgs(args, "nm", &header_value, &locales, &num_locales))
         {
-            const UChar **buffers =
-                (const UChar **) calloc(num_locales, sizeof(UChar *));
+            const char **locale_buffers =
+                (const char **) calloc(num_locales, sizeof(char *));
 
-            if (!buffers)
+            if (!locale_buffers)
             {
                 delete[] locales;
                 return PyErr_NoMemory();
             }
 
             for (int i = 0; i < num_locales; ++i)
-                buffers[i] = locales[i].getTerminatedBuffer();
+                locale_buffers[i] = locales[i].c_str();
 
             UErrorCode status = U_ZERO_ERROR;
-            UEnumeration *uenum = uenum_openUCharStringsEnumeration(
-                buffers, num_locales, &status);
+            UEnumeration *uenum = uenum_openCharStringsEnumeration(
+                locale_buffers, num_locales, &status);
 
             if (U_FAILURE(status))
             {
-                free(buffers);
+                free(locale_buffers);
                 delete[] locales;
-
                 return ICUException(status).reportError();
             }
             else
@@ -2529,16 +2606,16 @@ static PyObject *t_localematcher_acceptLanguageFromHTTP(
                 &status);
 
             uenum_close(uenum);
-            free(buffers);
+            free(locale_buffers);
             delete[] locales;
 
-            if (size >= sizeof(buffer) || U_FAILURE(status))
-            {
-                if (U_FAILURE(status))
-                    return ICUException(status).reportError();
+            if (U_FAILURE(status))
+                return ICUException(status).reportError();
 
-                PyErr_SetString(
-                    PyExc_ValueError, "resulting locale id length > 128");
+            if (size >= sizeof(buffer))
+            {
+                PyErr_SetString(PyExc_ValueError,
+                                "resulting locale id length > 128");
                 return NULL;
             }
 
