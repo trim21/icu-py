@@ -2519,7 +2519,7 @@ static PyObject *t_localematcher_acceptLanguage(PyTypeObject *type,
                 locale_buffers[i] = locales[i].c_str();
 
             UErrorCode status = U_ZERO_ERROR;
-            UEnumeration *uenum = uenum_openCharStringsEnumeration(
+            UEnumeration *locale_enum = uenum_openCharStringsEnumeration(
                 locale_buffers, num_locales, &status);
 
             if (U_FAILURE(status))
@@ -2537,9 +2537,9 @@ static PyObject *t_localematcher_acceptLanguage(PyTypeObject *type,
             char buffer[128];
             size_t size = uloc_acceptLanguage(
                 buffer, sizeof(buffer), &result,
-                accept_buffers, num_accepts, uenum, &status);
+                accept_buffers, num_accepts, locale_enum, &status);
 
-            uenum_close(uenum);
+            uenum_close(locale_enum);
             free(locale_buffers);
             free(accept_buffers);
             delete[] locales;
@@ -2560,7 +2560,7 @@ static PyObject *t_localematcher_acceptLanguage(PyTypeObject *type,
         break;
     }
 
-    return PyErr_SetArgsError(type, "acceptLanguageFromHTTP", args);
+    return PyErr_SetArgsError(type, "acceptLanguage", args);
 }
 
 static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type,
@@ -2587,7 +2587,7 @@ static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type,
                 locale_buffers[i] = locales[i].c_str();
 
             UErrorCode status = U_ZERO_ERROR;
-            UEnumeration *uenum = uenum_openCharStringsEnumeration(
+            UEnumeration *locale_enum = uenum_openCharStringsEnumeration(
                 locale_buffers, num_locales, &status);
 
             if (U_FAILURE(status))
@@ -2602,10 +2602,10 @@ static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type,
             UAcceptResult result;
             char buffer[128];
             size_t size = uloc_acceptLanguageFromHTTP(
-                buffer, sizeof(buffer), &result, header_value.c_str(), uenum,
-                &status);
+                buffer, sizeof(buffer), &result,
+                header_value.c_str(), locale_enum, &status);
 
-            uenum_close(uenum);
+            uenum_close(locale_enum);
             free(locale_buffers);
             delete[] locales;
 

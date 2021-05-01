@@ -794,7 +794,7 @@ static charsArg *toCharsArgArray(PyObject *arg, int *len)
         charsArg *array = new charsArg[*len + 1];
 
         if (!array)
-          return (charsArg *) PyErr_NoMemory();
+            return (charsArg *) PyErr_NoMemory();
 
         for (int i = 0; i < *len; i++) {
             PyObject *obj = PySequence_GetItem(arg, i);
