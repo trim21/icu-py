@@ -2005,7 +2005,7 @@ static PyObject *t_region_getPreferredValues(t_region *self)
     return wrap_StringEnumeration(se, T_OWNED);
 }
 
-#endif
+#endif  // ICU >= 55
 
 static PyObject *t_region_contains(t_region *self, PyObject *arg)
 {
@@ -2022,7 +2022,7 @@ static PyObject *t_region_str(t_region *self)
     return PyString_FromString(self->object->getRegionCode());
 }
 
-#endif
+#endif  // ICU >= 51
 
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(64, 0, 0)
@@ -2138,7 +2138,7 @@ static PyObject *t_localebuilder_build(t_localebuilder *self)
     return wrap_Locale(locale);
 }
 
-#endif
+#endif  // ICU >= 64
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(65, 0, 0)
 
@@ -2170,6 +2170,7 @@ class LocaleIterator : public Locale::Iterator {
     int len_;
     int current_;
 };
+
 
 /* LocaleMatcherBuilder */
 
@@ -2328,7 +2329,7 @@ static PyObject *t_localematcherbuilder_setNoDefaultLocale(
     Py_RETURN_SELF();
 }
 
-#endif
+#endif  // ICU >= 68
 
 static PyObject *t_localematcherbuilder_build(t_localematcherbuilder *self)
 {
@@ -2485,8 +2486,6 @@ static PyObject *t_localematcher_isMatch(t_localematcher *self, PyObject *args)
 
 #endif  // ICU >= 68
 
-#endif  // ICU >= 65
-
 static PyObject *t_localematcher_acceptLanguage(PyTypeObject *type,
                                                 PyObject *args)
 {
@@ -2626,6 +2625,8 @@ static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type,
 
     return PyErr_SetArgsError(type, "acceptLanguageFromHTTP", args);
 }
+
+#endif  // ICU >= 65
 
 
 void _init_locale(PyObject *m)
