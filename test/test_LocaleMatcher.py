@@ -62,8 +62,7 @@ class TestLocaleMatcher(TestCase):
     def testAcceptLanguage(self):
 
         locale, status = LocaleMatcher.acceptLanguage(
-            ('fr-CH', 'fr', 'en', 'de', '*'),
-            ('de-AT', 'fr-CA'))
+            ('fr-CH', 'fr', 'en', 'de', '*'), ('de-AT', 'fr-CA'))
 
         self.assertEqual('fr_CA', locale)
         self.assertEqual(UAcceptResult.FALLBACK, status)
@@ -75,11 +74,15 @@ class TestLocaleMatcher(TestCase):
         self.assertEqual('fr_CH', locale)
         self.assertEqual(UAcceptResult.VALID, status)
 
+        locale, status = LocaleMatcher.acceptLanguage(
+            ('fr-CH', 'fr', 'de'), ('en-CA',))
+        self.assertEqual(None, locale)
+        self.assertEqual(UAcceptResult.FAILED, status)
+
     def testAcceptLanguageFromHTTP(self):
 
         locale, status = LocaleMatcher.acceptLanguageFromHTTP(
-            'fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5',
-            ('de-AT', 'fr-CA'))
+            'fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5', ('de-AT', 'fr-CA'))
 
         self.assertEqual('fr_CA', locale)
         self.assertEqual(UAcceptResult.FALLBACK, status)
@@ -90,6 +93,11 @@ class TestLocaleMatcher(TestCase):
 
         self.assertEqual('fr_CH', locale)
         self.assertEqual(UAcceptResult.VALID, status)
+
+        locale, status = LocaleMatcher.acceptLanguageFromHTTP(
+            'fr-CH, fr;q=0.9, de;q=0.7', ('en-CA',))
+        self.assertEqual(None, locale)
+        self.assertEqual(UAcceptResult.FAILED, status)
 
 
 if __name__ == "__main__":

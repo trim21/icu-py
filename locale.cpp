@@ -2554,7 +2554,9 @@ static PyObject *t_localematcher_acceptLanguage(PyTypeObject *type,
                 return NULL;
             }
 
-            return Py_BuildValue("(s#i)", buffer, (int) size, (int) result);
+            return Py_BuildValue(
+                "(s#i)", (result == ULOC_ACCEPT_FAILED ? NULL : buffer),
+                size, (int) result);
         }
         break;
     }
@@ -2618,7 +2620,9 @@ static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type,
                 return NULL;
             }
 
-            return Py_BuildValue("(s#i)", buffer, (int) size, (int) result);
+            return Py_BuildValue(
+                "(s#i)", (result == ULOC_ACCEPT_FAILED ? NULL : buffer),
+                size, (int) result);
         }
         break;
     }

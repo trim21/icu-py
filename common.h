@@ -40,6 +40,7 @@ namespace std {
 #endif
 #endif
 
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #if !defined(PYPY_VERSION) && defined(PYPY_VERSION_NUM)
