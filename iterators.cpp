@@ -29,6 +29,7 @@
 #include "iterators.h"
 #include "macros.h"
 
+DECLARE_CONSTANTS_TYPE(UWordBreak)
 
 /* ForwardCharacterIterator */
 
@@ -217,6 +218,7 @@ static PyObject *t_breakiterator_getDisplayName(PyTypeObject *type,
                                                 PyObject *args);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(52, 0, 0)
 static PyObject *t_breakiterator_getRuleStatus(t_breakiterator *self);
+static PyObject *t_breakiterator_getRuleStatusVec(t_breakiterator *self);
 #endif
 
 static PyMethodDef t_breakiterator_methods[] = {
@@ -241,6 +243,7 @@ static PyMethodDef t_breakiterator_methods[] = {
     DECLARE_METHOD(t_breakiterator, getDisplayName, METH_VARARGS | METH_CLASS),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(52, 0, 0)
     DECLARE_METHOD(t_breakiterator, getRuleStatus, METH_NOARGS),
+    DECLARE_METHOD(t_breakiterator, getRuleStatusVec, METH_NOARGS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -271,14 +274,18 @@ public:
 static int t_rulebasedbreakiterator_init(t_rulebasedbreakiterator *self,
                                          PyObject *args, PyObject *kwds);
 static PyObject *t_rulebasedbreakiterator_getRules(t_rulebasedbreakiterator *self, PyObject *args);
+#if U_ICU_VERSION_HEX < VERSION_HEX(52, 0, 0)
 static PyObject *t_rulebasedbreakiterator_getRuleStatus(t_rulebasedbreakiterator *self);
+#endif
 #if U_ICU_VERSION_HEX >= 0x04080000
 static PyObject *t_rulebasedbreakiterator_getBinaryRules(t_rulebasedbreakiterator *self);
 #endif
 
 static PyMethodDef t_rulebasedbreakiterator_methods[] = {
     DECLARE_METHOD(t_rulebasedbreakiterator, getRules, METH_VARARGS),
+#if U_ICU_VERSION_HEX < VERSION_HEX(52, 0, 0)
     DECLARE_METHOD(t_rulebasedbreakiterator, getRuleStatus, METH_NOARGS),
+#endif
 #if U_ICU_VERSION_HEX >= 0x04080000
     DECLARE_METHOD(t_rulebasedbreakiterator, getBinaryRules, METH_NOARGS),
 #endif
@@ -1106,11 +1113,66 @@ static int t_rulebasedbreakiterator_init(t_rulebasedbreakiterator *self,
 }
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(52, 0, 0)
+
 static PyObject *t_breakiterator_getRuleStatus(t_breakiterator *self)
 {
     return PyInt_FromLong(self->object->getRuleStatus());
 }
-#endif
+
+static PyObject *t_breakiterator_getRuleStatusVec(t_breakiterator *self)
+{
+    int32_t buffer[128];
+    UErrorCode status = U_ZERO_ERROR;
+    int count = self->object->getRuleStatusVec(
+        buffer, sizeof(buffer), status);
+
+    if (status == U_BUFFER_OVERFLOW_ERROR)
+    {
+        int32_t *buffer = (int32_t *) calloc(count, sizeof(int32_t));
+
+        if (buffer == NULL)
+            return PyErr_NoMemory();
+
+        status = U_ZERO_ERROR;
+        count = self->object->getRuleStatusVec(buffer, count, status);
+
+        if (U_FAILURE(status))
+        {
+            free(buffer);
+            return ICUException(status).reportError();
+        }
+
+        PyObject *tuple = PyTuple_New(count);
+
+        if (!tuple)
+        {
+            free(buffer);
+            return NULL;
+        }
+
+        for (int i = 0; i < count; ++i)
+            PyTuple_SET_ITEM(tuple, i, PyInt_FromLong(buffer[i]));
+
+        free(buffer);
+
+        return tuple;
+    }
+
+    if (U_FAILURE(status))
+        return ICUException(status).reportError();
+
+    PyObject *tuple = PyTuple_New(count);
+
+    if (!tuple)
+        return NULL;
+
+    for (int i = 0; i < count; ++i)
+        PyTuple_SET_ITEM(tuple, i, PyInt_FromLong(buffer[i]));
+
+    return tuple;
+}
+
+#endif  // ICU >= 52
 
 static PyObject *t_rulebasedbreakiterator_getRules(t_rulebasedbreakiterator *self, PyObject *args)
 {
@@ -1135,10 +1197,12 @@ static PyObject *t_rulebasedbreakiterator_getRules(t_rulebasedbreakiterator *sel
     return PyErr_SetArgsError((PyObject *) self, "getRules", args);
 }
 
+#if U_ICU_VERSION_HEX < VERSION_HEX(52, 0, 0)
 static PyObject *t_rulebasedbreakiterator_getRuleStatus(t_rulebasedbreakiterator *self)
 {
     return PyInt_FromLong(self->object->getRuleStatus());
 }
+#endif
 
 #if U_ICU_VERSION_HEX >= 0x04080000
 static PyObject *t_rulebasedbreakiterator_getBinaryRules(t_rulebasedbreakiterator *self)
@@ -1441,6 +1505,8 @@ void _init_iterators(PyObject *m)
     CollationElementIteratorType_.tp_richcompare =
         (richcmpfunc) t_collationelementiterator_richcmp;
 
+    INSTALL_CONSTANTS_TYPE(UWordBreak, m);
+
     INSTALL_TYPE(ForwardCharacterIterator, m);
     INSTALL_TYPE(CharacterIterator, m);
     REGISTER_TYPE(UCharCharacterIterator, m);
@@ -1450,6 +1516,12 @@ void _init_iterators(PyObject *m)
     REGISTER_TYPE(DictionaryBasedBreakIterator, m);
     REGISTER_TYPE(CanonicalIterator, m);
     REGISTER_TYPE(CollationElementIterator, m);
+
+    INSTALL_ENUM(UWordBreak, "CHARACTER", UBRK_CHARACTER);
+    INSTALL_ENUM(UWordBreak, "WORD", UBRK_WORD);
+    INSTALL_ENUM(UWordBreak, "LINE", UBRK_LINE);
+    INSTALL_ENUM(UWordBreak, "SENTENCE", UBRK_SENTENCE);
+    INSTALL_ENUM(UWordBreak, "TITLE", UBRK_TITLE);
 
     INSTALL_STATIC_INT(ForwardCharacterIterator, DONE);
     INSTALL_STATIC_INT(BreakIterator, DONE);
