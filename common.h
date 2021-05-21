@@ -40,7 +40,6 @@ namespace std {
 #endif
 #endif
 
-#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #if !defined(PYPY_VERSION) && defined(PYPY_VERSION_NUM)
@@ -211,6 +210,7 @@ typedef intintobjargproc ssizessizeobjargproc;
 #include <unicode/ucharstriebuilder.h>
 #include <unicode/ucharstrie.h>
 #include <unicode/appendable.h>
+#include <unicode/messagepattern.h>
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)

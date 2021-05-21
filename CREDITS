@@ -1,13 +1,12 @@
 
-PyICU is a Python extension wrapping IBM's ICU library and wouldn't be
-possible without the tireless efforts of the people and open source projects
-below.
+PyICU is a Python extension wrapping Unicode Consortium's ICU library and
+wouldn't be possible without the tireless efforts of the people and open source
+projects below.
 
-  - the ICU developers,
-    http://icu-project.org
+  - the ICU developers: http://icu-project.org
 
-  - the Open Source Applications Foundation, for hosting the project
-    http://www.osafoundation.org
+  - the Open Source Applications Foundation, for hosting the project at its
+    inception, in 2004: http://www.osafoundation.org
 
   - Andi Vajda, PyICU project founder and maintainer
   - Christoph Burgmer for the Transliterator Python subclass
@@ -19,6 +18,7 @@ below.
   - Fredrik Roubert for various bug fixes (see CHANGES)
   - Markus Scherer for various bug fixes (see CHANGES)
   - Martin Hosken for bug fixes (see CHANGES)
+  - Roman Kalukiewicz for MessagePattern
   - 
 
 Thank you all !

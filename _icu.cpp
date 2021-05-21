@@ -32,6 +32,7 @@
 #include "iterators.h"
 #include "format.h"
 #include "dateformat.h"
+#include "messagepattern.h"
 #include "numberformat.h"
 #include "timezone.h"
 #include "calendar.h"
@@ -249,6 +250,7 @@ static PyObject *PyInit_icu(PyObject *m)
     _init_iterators(m);
     _init_format(m);
     _init_dateformat(m);
+    _init_messagepattern(m);
     _init_numberformat(m);
     _init_timezone(m);
     _init_calendar(m);

@@ -1,6 +1,7 @@
 Version 2.7.3 ->
 ----------------------
   - added wrappers for UWordBreak and BreakIterator.getRuleStatusVec()
+  - added wrappers for MessagePattern (Roman Kalukiewicz)
   - 
 
 Version 2.7.2 -> 2.7.3
