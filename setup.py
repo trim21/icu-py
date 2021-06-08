@@ -114,6 +114,7 @@ else:
 VER_FLAGS = [ver_flag %('PYICU_VER', VERSION),
              ver_flag %('PYICU_ICU_MAX_VER', ICU_MAX_MAJOR_VERSION)]
 
+# added to CFLAGS when setup is invoked with --pedantic
 PEDANTIC_FLAGS = {
     'darwin': ['-pedantic'],
     'linux': ['-pedantic', '-Wno-variadic-macros'],
@@ -202,7 +203,11 @@ if '--debug' in sys.argv:
     else:
         _cflags += DEBUG_CFLAGS[platform]
 
-_cflags += VER_FLAGS # + PEDANTIC_FLAGS[platform]
+if '--pedantic' in sys.argv:
+    sys.argv.remove('--pedantic')
+    _cflags += PEDANTIC_FLAGS[platform]
+
+_cflags += VER_FLAGS
 
 if 'PYICU_LFLAGS' in os.environ:
     _lflags = os.environ['PYICU_LFLAGS'].split(os.pathsep)
