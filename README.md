@@ -47,6 +47,13 @@ pre-built binary packages of ICU and PyICU, see below.
       pip install --no-binary=:pyicu: pyicu
       ```
 
+    - ICU and PyICU binaries are both available via [Macports](https://www.macports.org/) as well. The same limitations about mixing binaries may apply.
+      ```sh
+      # see versions available
+      /opt/local/bin/port search pyicu
+      sudo /opt/local/bin/port install ...
+      ```
+
   - Debian
     ```sh
     apt-get update
