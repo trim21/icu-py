@@ -196,6 +196,7 @@ for ICU, and possibly -std=c++11 if using ICU version >= 60
             ''')
 
 if '--debug' in sys.argv:
+    sys.argv.remove('--debug')
     if 'PYICU_DEBUG_CFLAGS' in os.environ:
         _cflags += os.environ['PYICU_DEBUG_CFLAGS'].split(os.pathsep)
     else:
