@@ -98,10 +98,10 @@ static PyObject *t_messagepattern_part_getArgType(t_messagepattern_part *self)
 static PyObject *t_messagepattern_part_str(t_messagepattern_part *self)
 {
     return PyString_FromFormat(
-     "([%d:%d] type=%d, arg=%d, val=%d)",
-     (int) self->object->getIndex(), (int) self->object->getLimit(),
-     (int) self->object->getType(), (int) self->object->getArgType(),
-     (int) self->object->getValue());
+        "([%d:%d] type=%d, arg=%d, val=%d)",
+        (int) self->object->getIndex(), (int) self->object->getLimit(),
+        (int) self->object->getType(), (int) self->object->getArgType(),
+        (int) self->object->getValue());
 }
 
 /* MessagePattern */
