@@ -307,3 +307,10 @@ zone to a string:
 ICUtzinfo.getInstance('Pacific/Fiji').tzid -> 'Pacific/Fiji'
 str(ICUtzinfo.getInstance('Pacific/Fiji')) -> 'Pacific/Fiji'
 ```
+
+## Further Reading
+
+The [unit tests](https://gitlab.pyicu.org/main/pyicu/-/tree/main/test) have
+more examples of actual PyICU usage. There are also somewhat outdated
+[samples](https://gitlab.pyicu.org/main/pyicu/-/tree/main/samples) that were
+ported from ICU C/C++ samples.
