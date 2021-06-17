@@ -1,8 +1,8 @@
-Version 2.7.3 ->
+Version 2.7.3 -> 2.7.4
 ----------------------
   - added wrappers for UWordBreak and BreakIterator.getRuleStatusVec()
   - added wrappers for MessagePattern (Roman Kalukiewicz)
-  - 
+  - added wrapper for Collator::getKeywordValuesForLocale
 
 Version 2.7.2 -> 2.7.3
 ----------------------

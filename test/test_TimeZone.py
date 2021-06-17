@@ -33,7 +33,7 @@ class TestTimeZone(TestCase):
 
         tz = TimeZone.createTimeZone("America/Los_Angeles")
         self.assertTrue(isinstance(tz, BasicTimeZone))
-        self.assertEquals(str(tz), "America/Los_Angeles")
+        self.assertEqual(str(tz), "America/Los_Angeles")
 
     def testGetRules(self):
 
@@ -51,7 +51,7 @@ class TestTimeZone(TestCase):
         data = vtz.write()
 
         vtz.createVTimeZone(data)
-        self.assertEquals(vtz.write(), data)
+        self.assertEqual(vtz.write(), data)
 
         data = vtz.writeSimple(
             datetime.datetime(2021, 4, 10, 12, 43, 33, 411400))
@@ -63,7 +63,7 @@ class TestTimeZone(TestCase):
             vtz = VTimeZone.createVTimeZoneFromBasicTimeZone(tz)
             data = vtz.write()
             vtz.createVTimeZone(data)
-            self.assertEquals(vtz.write(), data)
+            self.assertEqual(vtz.write(), data)
 
     def testTransition(self):
 
@@ -74,12 +74,12 @@ class TestTimeZone(TestCase):
             datetime.datetime(2021, 4, 10, 12, 43, 33, tzinfo=pytz))
 
         tzr_time = tzr.getTime()
-        self.assertEquals(datetime.datetime.fromtimestamp(tzr_time, pytz),
-                          datetime.datetime(2021, 11, 14, 2, 0, tzinfo=pytz))
+        self.assertEqual(datetime.datetime.fromtimestamp(tzr_time, pytz),
+                         datetime.datetime(2021, 11, 14, 2, 0, tzinfo=pytz))
 
         pytz = ICUtzinfo.getInstance("America/Los_Angeles")
-        self.assertEquals(datetime.datetime.fromtimestamp(tzr_time, pytz),
-                          datetime.datetime(2021, 11, 13, 6, 0, tzinfo=pytz))
+        self.assertEqual(datetime.datetime.fromtimestamp(tzr_time, pytz),
+                         datetime.datetime(2021, 11, 13, 6, 0, tzinfo=pytz))
 
 
 if __name__ == "__main__":
