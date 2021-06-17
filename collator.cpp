@@ -86,6 +86,10 @@ static PyObject *t_collator_createInstance(PyTypeObject *type, PyObject *args);
 static PyObject *t_collator_getAvailableLocales(PyTypeObject *type);
 static PyObject *t_collator_getKeywords(PyTypeObject *type);
 static PyObject *t_collator_getKeywordValues(PyTypeObject *type, PyObject *arg);
+#if U_ICU_VERSION_HEX >= 0x04020000
+static PyObject *t_collator_getKeywordValuesForLocale(PyTypeObject *type,
+                                                      PyObject *args);
+#endif
 static PyObject *t_collator_getFunctionalEquivalent(PyTypeObject *type,
                                                     PyObject *args);
 
@@ -108,6 +112,9 @@ static PyMethodDef t_collator_methods[] = {
     DECLARE_METHOD(t_collator, getAvailableLocales, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_collator, getKeywords, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_collator, getKeywordValues, METH_O | METH_CLASS),
+#if U_ICU_VERSION_HEX >= 0x04020000
+    DECLARE_METHOD(t_collator, getKeywordValuesForLocale, METH_VARARGS | METH_CLASS),
+#endif
     DECLARE_METHOD(t_collator, getFunctionalEquivalent, METH_VARARGS | METH_CLASS),
     { NULL, NULL, 0, NULL }
 };
@@ -662,6 +669,40 @@ static PyObject *t_collator_getKeywordValues(PyTypeObject *type, PyObject *arg)
 
     return PyErr_SetArgsError(type, "getKeywordValues", arg);
 }
+
+#if U_ICU_VERSION_HEX >= 0x04020000
+static PyObject *t_collator_getKeywordValuesForLocale(PyTypeObject *type,
+                                                      PyObject *args)
+{
+    StringEnumeration *e;
+    Locale *locale;
+    charsArg keyword;
+    UBool commonlyUsed;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "nP", TYPE_CLASSID(Locale),
+                       &keyword, &locale))
+        {
+            STATUS_CALL(e = Collator::getKeywordValuesForLocale(
+                keyword, *locale, false, status));
+            return wrap_StringEnumeration(e, T_OWNED);
+        }
+        break;
+      case 3:
+        if (!parseArgs(args, "nPb", TYPE_CLASSID(Locale),
+                       &keyword, &locale, &commonlyUsed))
+        {
+            STATUS_CALL(e = Collator::getKeywordValuesForLocale(
+                keyword, *locale, commonlyUsed, status));
+            return wrap_StringEnumeration(e, T_OWNED);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError(type, "getKeywordValuesForLocale", args);
+}
+#endif
 
 static PyObject *t_collator_getAvailableLocales(PyTypeObject *type)
 {
