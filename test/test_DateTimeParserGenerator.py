@@ -71,18 +71,24 @@ class TestDateTimePatternGenerator(TestCase):
                      'MMMMd',  # full name of month + day of the month, i.e., October 25
                      'hhmm',   # 12-hour-cycle format, i.e., 1:32 PM
                      'jjmm')   # preferred hour format for the given locale, i.e., 24-hour-cycle format for fr_FR
-        locales = ((Locale('en_US'), (u'2nd quarter 2016', u'May 2016', u'May 9',
-                                      u'5:30 PM', u'5:30 PM')),
-                   (Locale('fr_FR'), (u'2e trimestre 2016', u'mai 2016', u'9 mai',
-                                      u'5:30 PM', u'17:30')),
-                   (Locale('zh_CN'), (u'2016年第2季度', u'2016年5月', u'5月9日',
-                                      u'下午5:30', u'下午5:30')),)
+        locales = (
+            (Locale('en_US'),
+             (u'2nd quarter 2016', u'May 2016', u'May 9', u'5:30 PM',
+              u'5:30 PM')),
+            (Locale('fr_FR'),
+             (u'2e trimestre 2016', u'mai 2016', u'9 mai', u'5:30 PM',
+              u'17:30')),
+            (Locale('zh_CN'),
+             (u'2016年第2季度', u'2016年5月', u'5月9日', u'下午5:30',
+              u'17:30' if ICU_VERSION >= '70.1' else u'下午5:30')),
+        )
         for locale, locale_data in locales:
             dtpg = DateTimePatternGenerator.createInstance(locale)
             for index, skeleton in enumerate(skeletons):
                 pattern = dtpg.getBestPattern(skeleton)
                 sdf = SimpleDateFormat(pattern, locale)
                 sdf.setTimeZone(self.tz)
+                print(locale, index, skeleton, locale_data[index])
                 self.assertEqual(sdf.format(self.date), locale_data[index])
 
     def testReplaceFieldType(self):
