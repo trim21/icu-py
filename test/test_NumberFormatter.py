@@ -177,7 +177,26 @@ class TestNumberRangeFormatter(TestCase):
                 self.assertEqual(value.getDecimalNumbers(), (b'0.333', b'0.25'))
 
 
+class TestCurrencyUnit(TestCase):
+
+    def testGetName(self):
+
+        cu = CurrencyUnit("USD")
+        self.assertEqual(cu.getName(Locale.getUS()), u'$')
+        self.assertEqual(
+            cu.getName(Locale.getUS(), UCurrNameStyle.LONG_NAME),
+            u'US Dollar')
+        self.assertEqual(
+            cu.getName(Locale.getItaly(), UCurrNameStyle.LONG_NAME),
+            u'dollaro statunitense')
+        if ICU_VERSION >= '70.0':
+            self.assertEqual(cu.getName(Locale.getItaly(),
+                                        UCurrNameStyle.FORMAL_SYMBOL_NAME),
+                             u'USD')
+            self.assertEqual(cu.getName(Locale.getFrance(),
+                                        UCurrNameStyle.FORMAL_SYMBOL_NAME),
+                             u'$US')
+                
 
 if __name__ == "__main__":
-    if ICU_VERSION >= '60.0':
-        main()
+    main()

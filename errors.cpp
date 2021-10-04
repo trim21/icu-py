@@ -169,6 +169,9 @@ static void registerErrors(PyObject *messages)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(62, 0, 0)
     _setMsg(messages, U_NUMBER_SKELETON_SYNTAX_ERROR, "The number skeleton passed to C++ NumberFormatter or C UNumberFormatter was invalid or contained a syntax error");
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
+    _setMsg(messages, U_INPUT_TOO_LONG_ERROR, "The input is impractically long for an operation. It is rejected because it may lead to problems such as excessive processing time, stack depth, or heap memory requirements.");
+#endif
 }
 
 void _init_errors(PyObject *m)

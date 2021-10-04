@@ -125,6 +125,7 @@ typedef intintobjargproc ssizessizeobjargproc;
 #include <unicode/rbnf.h>
 #include <unicode/measure.h>
 #include <unicode/measunit.h>
+#include <unicode/ucurr.h>
 #include <unicode/currunit.h>
 #include <unicode/curramt.h>
 #include <unicode/timezone.h>

@@ -1023,6 +1023,38 @@ PyObject *t_timezone_createTimeZone(PyTypeObject *type, PyObject *arg)
     return PyErr_SetArgsError(type, "createTimeZone", arg);
 }
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
+static PyObject *t_timezone_createEnumeration(PyTypeObject *type,
+                                              PyObject *args)
+{
+    int offset;
+    charsArg region;
+    StringEnumeration *tze;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        STATUS_CALL(tze = TimeZone::createEnumeration(status));
+        return wrap_StringEnumeration(tze, T_OWNED);
+
+      case 1:
+        if (!parseArgs(args, "i", &offset))
+        {
+            STATUS_CALL(tze = TimeZone::createEnumerationForRawOffset(
+                offset, status));
+            return wrap_StringEnumeration(tze, T_OWNED);
+        }
+        if (!parseArgs(args, "n", &region))
+        {
+            STATUS_CALL(tze = TimeZone::createEnumerationForRegion(
+                region, status));
+            return wrap_StringEnumeration(tze, T_OWNED);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError(type, "createEnumeration", args);
+}
+#else
 static PyObject *t_timezone_createEnumeration(PyTypeObject *type,
                                               PyObject *args)
 {
@@ -1042,6 +1074,7 @@ static PyObject *t_timezone_createEnumeration(PyTypeObject *type,
 
     return PyErr_SetArgsError(type, "createEnumeration", args);
 }
+#endif
 
 static PyObject *t_timezone_countEquivalentIDs(PyTypeObject *type,
                                                PyObject *arg)

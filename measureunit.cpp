@@ -25,6 +25,7 @@
 #include "structmember.h"
 
 #include "bases.h"
+#include "locale.h"
 #include "measureunit.h"
 #include "macros.h"
 
@@ -35,6 +36,8 @@ DECLARE_CONSTANTS_TYPE(UTimeUnitFields)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0)
 DECLARE_CONSTANTS_TYPE(UMeasureUnitComplexity)
 #endif
+
+DECLARE_CONSTANTS_TYPE(UCurrNameStyle)
 
 /* MeasureUnit */
 
@@ -265,6 +268,10 @@ static PyObject *t_measureunit_createQuartImperial(PyTypeObject *type);
 static PyObject *t_measureunit_createMilligramOfglucosePerDeciliter(PyTypeObject *type);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
+static PyObject *t_measureunit_createKilowattHourPer100Kilometer(PyTypeObject *type);
+#endif
+
 static PyMethodDef t_measureunit_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
     DECLARE_METHOD(t_measureunit, getType, METH_NOARGS),
@@ -486,6 +493,9 @@ static PyMethodDef t_measureunit_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
     DECLARE_METHOD(t_measureunit, createMilligramOfglucosePerDeciliter, METH_NOARGS | METH_CLASS),
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
+    DECLARE_METHOD(t_measureunit, createKilowattHourPer100Kilometer, METH_NOARGS | METH_CLASS),
+#endif
     { NULL, NULL, 0, NULL }
 };
 
@@ -560,9 +570,11 @@ public:
 static int t_currencyunit_init(t_currencyunit *self,
                                PyObject *args, PyObject *kwds);
 static PyObject *t_currencyunit_getISOCurrency(t_currencyunit *self);
+static PyObject *t_currencyunit_getName(t_currencyunit *self, PyObject *args);
 
 static PyMethodDef t_currencyunit_methods[] = {
     DECLARE_METHOD(t_currencyunit, getISOCurrency, METH_NOARGS),
+    DECLARE_METHOD(t_currencyunit, getName, METH_VARARGS),
     { NULL, NULL, 0, NULL }
 };
 
@@ -1070,6 +1082,10 @@ createMU(QuartImperial)
 createMU(MilligramOfglucosePerDeciliter)
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
+createMU(KilowattHourPer100Kilometer)
+#endif
+
 /* Measure */
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 1, 0)
@@ -1228,6 +1244,45 @@ static PyObject *t_currencyunit_getISOCurrency(t_currencyunit *self)
 {
     UnicodeString u(self->object->getISOCurrency());
     return PyUnicode_FromUnicodeString(&u);
+}
+
+static PyObject *t_currencyunit_getName(t_currencyunit *self, PyObject *args)
+{
+    const UChar *isoCode = self->object->getISOCurrency();
+    UCurrNameStyle style = UCURR_SYMBOL_NAME;
+    Locale *locale;
+    const UChar *name;
+    int32_t len;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        STATUS_CALL(name = ucurr_getName(
+            isoCode, Locale::getDefault().getName(), style,
+            NULL, &len, &status));
+        return PyUnicode_FromUnicodeString(name, len);
+        
+      case 1:
+        if (!parseArgs(args, "P", TYPE_CLASSID(Locale), &locale))
+        {
+            STATUS_CALL(name = ucurr_getName(
+                isoCode, locale->getName(), style,
+                NULL, &len, &status));
+            return PyUnicode_FromUnicodeString(name, len);
+        }
+        break;
+
+      case 2:
+        if (!parseArgs(args, "Pi", TYPE_CLASSID(Locale), &locale, &style))
+        {
+            STATUS_CALL(name = ucurr_getName(
+                isoCode, locale->getName(), style,
+                NULL, &len, &status));
+            return PyUnicode_FromUnicodeString(name, len);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getName", args);
 }
 
 static PyObject *t_currencyunit_str(t_currencyunit *self)
@@ -1422,6 +1477,7 @@ void _init_measureunit(PyObject *m)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0)
     INSTALL_CONSTANTS_TYPE(UMeasureUnitComplexity, m);
 #endif
+    INSTALL_CONSTANTS_TYPE(UCurrNameStyle, m);
 
     INSTALL_TYPE(MeasureUnit, m);
     INSTALL_TYPE(Measure, m);
@@ -1454,4 +1510,14 @@ void _init_measureunit(PyObject *m)
     INSTALL_ENUM(UMeasureUnitComplexity, "COMPOUND", UMEASURE_UNIT_COMPOUND);
     INSTALL_ENUM(UMeasureUnitComplexity, "MIXED", UMEASURE_UNIT_MIXED);
 #endif
+
+    INSTALL_ENUM(UCurrNameStyle, "SYMBOL_NAME", UCURR_SYMBOL_NAME);
+    INSTALL_ENUM(UCurrNameStyle, "LONG_NAME", UCURR_LONG_NAME);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(61, 0, 0)
+    INSTALL_ENUM(UCurrNameStyle, "NARROW_SYMBOL_NAME", UCURR_NARROW_SYMBOL_NAME);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
+    INSTALL_ENUM(UCurrNameStyle, "FORMAL_SYMBOL_NAME", UCURR_FORMAL_SYMBOL_NAME);
+    INSTALL_ENUM(UCurrNameStyle, "VARIANT_SYMBOL_NAME", UCURR_VARIANT_SYMBOL_NAME);
+#endif    
 }
