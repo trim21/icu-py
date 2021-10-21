@@ -4,6 +4,7 @@ Version 2.7.4 ->
   - added wrappers for UCurrNameStyle and for ucurr_getName() onto CurrencyUnit
   - added support for ICU 70.1
   - added FieldPosition-less overloads to RuleBasedNumberFormat.format()
+  - added pyproject.toml file to (also) build via python -m build
   - 
 
 Version 2.7.3 -> 2.7.4

@@ -86,7 +86,7 @@ pre-built binary packages of ICU and PyICU, see below.
 Before building PyICU the ICU libraries must be built and installed. Refer
 to each system's [instructions](https://unicode-org.github.io/icu/userguide/icu4c/build.html) for more information.
 
-PyICU is built with setuptools:
+PyICU is built from sources with ``setuptools`` or with ``build`` and ``pip``:
 
    - verify that ``pkg-config`` is available (the ``icu-config`` program is
      [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles)
@@ -100,10 +100,16 @@ PyICU is built with setuptools:
      Starting with ICU 60, ``-std=c++11`` must appear in your CFLAGS or be the
      default for your C++ compiler.
 
-   - build and install pyicu
+   - **either** build and install PyICU with ``setuptools``
      ```sh
      python setup.py build
      sudo python setup.py install
+     ```
+
+   - **or** build PyICU with ``build`` and install it with ``pip``
+     ```sh
+     python -m build
+     sudo pip install dist/PyICU-<version>-<platform>.whl
      ```
 
 ## Running PyICU
