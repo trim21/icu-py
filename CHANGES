@@ -3,6 +3,7 @@ Version 2.7.4 ->
   - fixed test failure in test_DateTimeParserGenerator.py with version 70.1rc
   - added wrappers for UCurrNameStyle and for ucurr_getName() onto CurrencyUnit
   - added support for ICU 70.1
+  - added FieldPosition-less overloads to RuleBasedNumberFormat.format()
   - 
 
 Version 2.7.3 -> 2.7.4

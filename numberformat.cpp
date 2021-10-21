@@ -3099,9 +3099,27 @@ static PyObject *t_rulebasednumberformat_format(t_rulebasednumberformat *self,
     double d;
     int i;
     PY_LONG_LONG l;
-    FieldPosition *fp;
+    FieldPosition _fp, *fp;
 
     switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "dS", &d, &u, &_u))
+        {
+            STATUS_CALL(self->object->format(d, *u, _v, _fp, status));
+            return PyUnicode_FromUnicodeString(&_v);
+        }
+        if (!parseArgs(args, "iS", &i, &u, &_u))
+        {
+            STATUS_CALL(self->object->format(i, *u, _v, _fp, status));
+            return PyUnicode_FromUnicodeString(&_v);
+        }
+        if (!parseArgs(args, "LS", &l, &u, &_u))
+        {
+            STATUS_CALL(self->object->format((int64_t) l, *u, _v, _fp, status));
+            return PyUnicode_FromUnicodeString(&_v);
+        }
+        break;
+
       case 3:
         if (!parseArgs(args, "dSP", TYPE_CLASSID(FieldPosition),
                        &d, &u, &_u, &fp))
@@ -3118,9 +3136,11 @@ static PyObject *t_rulebasednumberformat_format(t_rulebasednumberformat *self,
         if (!parseArgs(args, "LSP", TYPE_CLASSID(FieldPosition),
                        &l, &u, &_u, &fp))
         {
-          STATUS_CALL(self->object->format((int64_t) l, *u, _v, *fp, status));
+            STATUS_CALL(self->object->format((int64_t) l, *u, _v, *fp, status));
             return PyUnicode_FromUnicodeString(&_v);
         }
+        break;
+
       case 4:
         if (!parseArgs(args, "dSUP", TYPE_CLASSID(FieldPosition),
                        &d, &u, &_u, &v, &fp))
@@ -3137,7 +3157,7 @@ static PyObject *t_rulebasednumberformat_format(t_rulebasednumberformat *self,
         if (!parseArgs(args, "LSUP", TYPE_CLASSID(FieldPosition),
                        &l, &u, &_u, &v, &fp))
         {
-          STATUS_CALL(self->object->format((int64_t) l, *u, *v, *fp, status));
+            STATUS_CALL(self->object->format((int64_t) l, *u, *v, *fp, status));
             Py_RETURN_ARG(args, 2);
         }
         break;
