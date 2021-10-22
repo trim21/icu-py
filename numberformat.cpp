@@ -1475,10 +1475,11 @@ static PyObject *t_numberformat_format(t_numberformat *self, PyObject *args)
         }
         if (!parseArgs(args, "L", &l))
         {
-          self->object->format((int64_t) l, _u);
+            self->object->format((int64_t) l, _u);
             return PyUnicode_FromUnicodeString(&_u);
         }
         break;
+
       case 2:
         if (!parseArgs(args, "dP", TYPE_CLASSID(FieldPosition),
                        &d, &fp))
@@ -1495,10 +1496,11 @@ static PyObject *t_numberformat_format(t_numberformat *self, PyObject *args)
         if (!parseArgs(args, "LP", TYPE_CLASSID(FieldPosition),
                        &l, &fp))
         {
-          self->object->format((int64_t) l, _u, *fp);
+            self->object->format((int64_t) l, _u, *fp);
             return PyUnicode_FromUnicodeString(&_u);
         }
         break;
+
       case 3:
         if (!parseArgs(args, "dUP", TYPE_CLASSID(FieldPosition),
                        &d, &u, &fp))
@@ -1515,7 +1517,7 @@ static PyObject *t_numberformat_format(t_numberformat *self, PyObject *args)
         if (!parseArgs(args, "LUP", TYPE_CLASSID(FieldPosition),
                        &l, &u, &fp))
         {
-          self->object->format((int64_t) l, *u, *fp);
+            self->object->format((int64_t) l, *u, *fp);
             Py_RETURN_ARG(args, 1);
         }
         break;

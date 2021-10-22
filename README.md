@@ -109,7 +109,7 @@ PyICU is built from sources with ``setuptools`` or with ``build`` and ``pip``:
    - **or** build PyICU with ``build`` and install it with ``pip``
      ```sh
      python -m build
-     sudo pip install dist/PyICU-<version>-<platform>.whl
+     sudo python -m pip install dist/PyICU-<version>-<platform>.whl
      ```
 
 ## Running PyICU
