@@ -112,6 +112,17 @@ PyICU is built from sources with ``setuptools`` or with ``build`` and ``pip``:
      sudo python -m pip install dist/PyICU-<version>-<platform>.whl
      ```
 
+   - **either** test PyICU with ``setuptools``
+     ```sh
+     python setup.py test
+     ```
+
+   - **or** test PyICU with ``pytest``
+     ```sh
+     python -m pytest
+     ```
+
+
 ## Running PyICU
 
   - Mac OS X
