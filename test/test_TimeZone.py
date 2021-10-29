@@ -71,15 +71,15 @@ class TestTimeZone(TestCase):
         pytz = ICUtzinfo.getInstance("Pacific/Fiji")
 
         tzr = tz.getNextTransition(
-            datetime.datetime(2021, 4, 10, 12, 43, 33, tzinfo=pytz))
+            datetime.datetime(2020, 4, 10, 12, 43, 33, tzinfo=pytz))
 
         tzr_time = tzr.getTime()
         self.assertEqual(datetime.datetime.fromtimestamp(tzr_time, pytz),
-                         datetime.datetime(2021, 11, 14, 2, 0, tzinfo=pytz))
+                         datetime.datetime(2020, 12, 20, 2, 0, tzinfo=pytz))
 
         pytz = ICUtzinfo.getInstance("America/Los_Angeles")
         self.assertEqual(datetime.datetime.fromtimestamp(tzr_time, pytz),
-                         datetime.datetime(2021, 11, 13, 6, 0, tzinfo=pytz))
+                         datetime.datetime(2020, 12, 19, 6, 0, tzinfo=pytz))
 
 
 if __name__ == "__main__":
