@@ -34,4 +34,4 @@ class InvalidArgsError(Exception):
     pass
 
 
-from icu._icu_ import *
+from ._icu_ import *
