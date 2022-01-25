@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2004-2021 Open Source Applications Foundation.
+ * Copyright (c) 2004-2022 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -202,7 +202,7 @@ static PyMethodDef _icu_funcs[] = {
     { NULL, NULL, 0, NULL }
 };
 
-static PyObject *PyInit_icu(PyObject *m)
+static PyObject *PyInit_icu_(PyObject *m)
 {
     PyObject *ver;
 
@@ -283,7 +283,7 @@ static PyObject *PyInit_icu(PyObject *m)
 /* TODO: Properly implement http://www.python.org/dev/peps/pep-3121/ */
 static struct PyModuleDef moduledef = {
     PyModuleDef_HEAD_INIT,
-    /* m_name    */ "_icu",
+    /* m_name    */ "icu._icu_",
     /* m_doc     */ "PyICU extension module",
     /* m_size    */ -1,
     /* m_methods */ _icu_funcs,
@@ -292,18 +292,19 @@ static struct PyModuleDef moduledef = {
     /* m_free    */ NULL,
 };
 extern "C" {
-    PyMODINIT_FUNC PyInit__icu(void)
+    PyMODINIT_FUNC PyInit__icu_(void)
     {
         PyObject *m = PyModule_Create(&moduledef);
-        return PyInit_icu(m);
+        return PyInit_icu_(m);
     }
 }
 #else
 extern "C" {
-    void init_icu(void)
+    void init_icu_(void)
     {
-        PyObject *m = Py_InitModule3("_icu", _icu_funcs, "_icu");
-        PyInit_icu(m);
+        PyObject *m = Py_InitModule3(
+            "icu._icu_", _icu_funcs, "PyICU extension module");
+        PyInit_icu_(m);
     }
 }
 #endif

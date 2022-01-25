@@ -1,5 +1,5 @@
  # ====================================================================
- # Copyright (c) 2004-2010 Open Source Applications Foundation.
+ # Copyright (c) 2004-2022 Open Source Applications Foundation.
  #
  # Permission is hereby granted, free of charge, to any person obtaining a
  # copy of this software and associated documentation files (the "Software"),
@@ -20,10 +20,18 @@
  # DEALINGS IN THE SOFTWARE.
  # ====================================================================
 
+class ICUError(Exception):
+    messages = {}
 
-import warnings as _warnings
+    def __str__(self):
+        return "%s, error code: %d" %(self.args[1], self.args[0])
 
-_warnings.warn("Module 'PyICU' is deprecated, import 'icu' instead",
-               category=DeprecationWarning, stacklevel=2)
+    def getErrorCode(self):
+        return self.args[0]
 
-from icu import *
+
+class InvalidArgsError(Exception):
+    pass
+
+
+from icu._icu_ import *
