@@ -1,9 +1,8 @@
-Version 2.8 ->
+Version 2.8 -> 2.8.1
 --------------------
   - renamed _icu extension module to _icu_ and moved it into icu module
   - moved icu python module sources into py directory
   - deleted long deprecated PyICU.py file
-  - 
 
 Version 2.7.4 -> 2.8
 --------------------
