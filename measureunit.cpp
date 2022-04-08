@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2004-2019 Open Source Applications Foundation.
+ * Copyright (c) 2004-2022 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -37,6 +37,10 @@ DECLARE_CONSTANTS_TYPE(UTimeUnitFields)
 DECLARE_CONSTANTS_TYPE(UMeasureUnitComplexity)
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+DECLARE_CONSTANTS_TYPE(UMeasurePrefix)
+#endif
+
 DECLARE_CONSTANTS_TYPE(UCurrNameStyle)
 
 /* MeasureUnit */
@@ -59,6 +63,11 @@ static PyObject *t_measureunit_getDimensionality(t_measureunit *self);
 static PyObject *t_measureunit_product(t_measureunit *self, PyObject *arg);
 static PyObject *t_measureunit_reciprocal(t_measureunit *self);
 static PyObject *t_measureunit_forIdentifier(PyTypeObject *type, PyObject *arg);
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+static PyObject *t_measureunit_withPrefix(t_measureunit *self, PyObject *arg);
+static PyObject *t_measureunit_getPrefix(t_measureunit *self);
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
@@ -286,6 +295,11 @@ static PyMethodDef t_measureunit_methods[] = {
     DECLARE_METHOD(t_measureunit, product, METH_O),
     DECLARE_METHOD(t_measureunit, reciprocal, METH_NOARGS),
     DECLARE_METHOD(t_measureunit, forIdentifier, METH_CLASS | METH_O),
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    DECLARE_METHOD(t_measureunit, withPrefix, METH_O),
+    DECLARE_METHOD(t_measureunit, getPrefix, METH_NOARGS),
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
@@ -853,6 +867,33 @@ static PyObject *t_measureunit_forIdentifier(PyTypeObject *type, PyObject *arg)
     }
 
     return PyErr_SetArgsError(type, "forIdentifier", arg);
+}
+
+#endif  // ICU >= 67
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+
+static PyObject *t_measureunit_withPrefix(t_measureunit *self, PyObject *arg)
+{
+    UMeasurePrefix prefix;
+
+    if (!parseArg(arg, "i", &prefix))
+    {
+        MeasureUnit mu;
+        STATUS_CALL(mu = self->object->withPrefix(prefix, status));
+
+        return wrap_MeasureUnit((MeasureUnit *) mu.clone(), T_OWNED);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "withPrefix", arg);
+}
+
+static PyObject *t_measureunit_getPrefix(t_measureunit *self)
+{
+    UMeasurePrefix prefix;
+    STATUS_CALL(prefix = self->object->getPrefix(status));
+
+    return PyInt_FromLong(prefix);
 }
 
 #endif
@@ -1477,6 +1518,9 @@ void _init_measureunit(PyObject *m)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0)
     INSTALL_CONSTANTS_TYPE(UMeasureUnitComplexity, m);
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UMeasurePrefix, m);
+#endif
     INSTALL_CONSTANTS_TYPE(UCurrNameStyle, m);
 
     INSTALL_TYPE(MeasureUnit, m);
@@ -1520,4 +1564,36 @@ void _init_measureunit(PyObject *m)
     INSTALL_ENUM(UCurrNameStyle, "FORMAL_SYMBOL_NAME", UCURR_FORMAL_SYMBOL_NAME);
     INSTALL_ENUM(UCurrNameStyle, "VARIANT_SYMBOL_NAME", UCURR_VARIANT_SYMBOL_NAME);
 #endif    
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    INSTALL_ENUM(UMeasurePrefix, "ONE", UMEASURE_PREFIX_ONE);
+    INSTALL_ENUM(UMeasurePrefix, "YOTTA", UMEASURE_PREFIX_YOTTA);
+    INSTALL_ENUM(UMeasurePrefix, "ZETTA", UMEASURE_PREFIX_ZETTA);
+    INSTALL_ENUM(UMeasurePrefix, "EXA", UMEASURE_PREFIX_EXA);
+    INSTALL_ENUM(UMeasurePrefix, "PETA", UMEASURE_PREFIX_PETA);
+    INSTALL_ENUM(UMeasurePrefix, "TERA", UMEASURE_PREFIX_TERA);
+    INSTALL_ENUM(UMeasurePrefix, "GIGA", UMEASURE_PREFIX_GIGA);
+    INSTALL_ENUM(UMeasurePrefix, "MEGA", UMEASURE_PREFIX_MEGA);
+    INSTALL_ENUM(UMeasurePrefix, "KILO", UMEASURE_PREFIX_KILO);
+    INSTALL_ENUM(UMeasurePrefix, "HECTO", UMEASURE_PREFIX_HECTO);
+    INSTALL_ENUM(UMeasurePrefix, "DEKA", UMEASURE_PREFIX_DEKA);
+    INSTALL_ENUM(UMeasurePrefix, "DECI", UMEASURE_PREFIX_DECI);
+    INSTALL_ENUM(UMeasurePrefix, "CENTI", UMEASURE_PREFIX_CENTI);
+    INSTALL_ENUM(UMeasurePrefix, "MILLI", UMEASURE_PREFIX_MILLI);
+    INSTALL_ENUM(UMeasurePrefix, "MICRO", UMEASURE_PREFIX_MICRO);
+    INSTALL_ENUM(UMeasurePrefix, "NANO", UMEASURE_PREFIX_NANO);
+    INSTALL_ENUM(UMeasurePrefix, "PICO", UMEASURE_PREFIX_PICO);
+    INSTALL_ENUM(UMeasurePrefix, "FEMTO", UMEASURE_PREFIX_FEMTO);
+    INSTALL_ENUM(UMeasurePrefix, "ATTO", UMEASURE_PREFIX_ATTO);
+    INSTALL_ENUM(UMeasurePrefix, "ZEPTO", UMEASURE_PREFIX_ZEPTO);
+    INSTALL_ENUM(UMeasurePrefix, "YOCTO", UMEASURE_PREFIX_YOCTO);
+    INSTALL_ENUM(UMeasurePrefix, "KIBI", UMEASURE_PREFIX_KIBI);
+    INSTALL_ENUM(UMeasurePrefix, "MEBI", UMEASURE_PREFIX_MEBI);
+    INSTALL_ENUM(UMeasurePrefix, "GIBI", UMEASURE_PREFIX_GIBI);
+    INSTALL_ENUM(UMeasurePrefix, "TEBI", UMEASURE_PREFIX_TEBI);
+    INSTALL_ENUM(UMeasurePrefix, "PEBI", UMEASURE_PREFIX_PEBI);
+    INSTALL_ENUM(UMeasurePrefix, "EXBI", UMEASURE_PREFIX_EXBI);
+    INSTALL_ENUM(UMeasurePrefix, "ZEBI", UMEASURE_PREFIX_ZEBI);
+    INSTALL_ENUM(UMeasurePrefix, "YOBI", UMEASURE_PREFIX_YOBI);
+#endif
 }

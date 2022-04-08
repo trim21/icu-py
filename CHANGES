@@ -1,3 +1,11 @@
+Version 2.8.1 -> 
+--------------------
+  - added support for ICU 71.1rc
+  - added wrappers for UMeasurePrefix, MeasureUnit.withPrefix()|getPrefix()
+  - added UNumberRoundingPriority, FractionPrecision.withSignificantDigits()
+  - added UNumberTrailingZeroDisplay, Precision.trailingZeroDisplay()
+  - 
+
 Version 2.8 -> 2.8.1
 --------------------
   - renamed _icu extension module to _icu_ and moved it into icu module

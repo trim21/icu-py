@@ -68,6 +68,11 @@ DECLARE_CONSTANTS_TYPE(UNumberFormatStyle)
     DECLARE_CONSTANTS_TYPE(UNumberRangeCollapse)
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    DECLARE_CONSTANTS_TYPE(UNumberRoundingPriority)
+    DECLARE_CONSTANTS_TYPE(UNumberTrailingZeroDisplay)
+#endif
+
 /* DecimalFormatSymbols */
 
 class t_decimalformatsymbols : public _wrapper {
@@ -1045,6 +1050,10 @@ static PyObject *t_precision_minMaxSignificantDigits(PyTypeObject *type, PyObjec
 static PyObject *t_precision_increment(PyTypeObject *type, PyObject *arg);
 static PyObject *t_precision_currency(PyTypeObject *type, PyObject *arg);
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+static PyObject *t_precision_trailingZeroDisplay(t_precision *self, PyObject *arg);
+#endif
+
 static PyMethodDef t_precision_methods[] = {
     DECLARE_METHOD(t_precision, unlimited, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_precision, integer, METH_NOARGS | METH_CLASS),
@@ -1058,6 +1067,9 @@ static PyMethodDef t_precision_methods[] = {
     DECLARE_METHOD(t_precision, minMaxSignificantDigits, METH_VARARGS | METH_CLASS),
     DECLARE_METHOD(t_precision, increment, METH_O | METH_CLASS),
     DECLARE_METHOD(t_precision, currency, METH_O | METH_CLASS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    DECLARE_METHOD(t_precision, trailingZeroDisplay, METH_O),
+#endif
     { NULL, NULL, 0, NULL }
 };
 
@@ -1075,9 +1087,17 @@ static PyObject *t_fractionprecision_minSignificantDigits(
 static PyObject *t_fractionprecision_maxSignificantDigits(
     t_fractionprecision *self, PyObject *arg);
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+static PyObject *t_fractionprecision_withSignificantDigits(
+    t_fractionprecision *self, PyObject *args);
+#endif
+
 static PyMethodDef t_fractionprecision_methods[] = {
     DECLARE_METHOD(t_fractionprecision, minSignificantDigits, METH_O),
     DECLARE_METHOD(t_fractionprecision, maxSignificantDigits, METH_O),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    DECLARE_METHOD(t_fractionprecision, withSignificantDigits, METH_VARARGS),
+#endif
     { NULL, NULL, 0, NULL }
 };
 
@@ -4644,6 +4664,23 @@ static PyObject *t_precision_currency(PyTypeObject *type, PyObject *arg)
     return PyErr_SetArgsError(type, "currency", arg);
 }
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+
+static PyObject *t_precision_trailingZeroDisplay(t_precision *self, PyObject *arg)
+{
+    UNumberTrailingZeroDisplay tzd;
+
+    if (!parseArg(arg, "i", &tzd))
+    {
+        return wrap_Precision(self->object->trailingZeroDisplay(tzd));
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "trailingZeroDisplay", arg);
+}
+
+#endif
+
+
 /* FractionPrecision */
 
 static PyObject *t_fractionprecision_minSignificantDigits(
@@ -4671,6 +4708,38 @@ static PyObject *t_fractionprecision_maxSignificantDigits(
 
     return PyErr_SetArgsError((PyObject *) self, "maxSignificantDigits", arg);
 }
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+
+static PyObject *t_fractionprecision_withSignificantDigits(
+    t_fractionprecision *self, PyObject *args)
+{
+    int minDigits, maxDigits;
+    UNumberRoundingPriority priority = UNUM_ROUNDING_PRIORITY_RELAXED;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "ii", &minDigits, &maxDigits))
+        {
+            return wrap_Precision(
+                self->object->withSignificantDigits(
+                    minDigits, maxDigits, priority));
+        }
+        break;
+      case 3:
+        if (!parseArgs(args, "iii", &minDigits, &maxDigits, &priority))
+        {
+            return wrap_Precision(
+                self->object->withSignificantDigits(
+                    minDigits, maxDigits, priority));
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "withSignificantDigits", args);
+}
+
+#endif
 
 
 /* IncrementPrecision */
@@ -5440,6 +5509,16 @@ void _init_numberformat(PyObject *m)
     INSTALL_ENUM(UNumberFormatRoundingMode, "HALF_CEILING", UNUM_ROUND_HALF_CEILING);
     INSTALL_ENUM(UNumberFormatRoundingMode, "HALF_FLOOR", UNUM_ROUND_HALF_FLOOR);
     INSTALL_ENUM(UNumberFormatRoundingMode, "HALF_ODD", UNUM_ROUND_HALF_ODD);
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UNumberRoundingPriority, m);
+    INSTALL_ENUM(UNumberRoundingPriority, "RELAXED", UNUM_ROUNDING_PRIORITY_RELAXED);
+    INSTALL_ENUM(UNumberRoundingPriority, "STRICT", UNUM_ROUNDING_PRIORITY_STRICT);
+
+    INSTALL_CONSTANTS_TYPE(UNumberTrailingZeroDisplay, m);
+    INSTALL_ENUM(UNumberRoundingPriority, "AUTO", UNUM_TRAILING_ZERO_AUTO);
+    INSTALL_ENUM(UNumberRoundingPriority, "HIDE_IF_WHOLE", UNUM_TRAILING_ZERO_HIDE_IF_WHOLE);
 #endif
 
     INSTALL_CONSTANTS_TYPE(UNumberFormatStyle, m);

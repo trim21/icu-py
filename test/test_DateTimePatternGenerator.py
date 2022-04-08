@@ -47,7 +47,7 @@ class TestDateTimePatternGenerator(TestCase):
 
         sdf = SimpleDateFormat(dtpg.getBestPattern('MMMMddHmm'), locale)
         sdf.setTimeZone(self.tz)
-        if ICU_VERSION < '68.0':
+        if ICU_VERSION < '68.0' or ICU_VERSION > '71.0':
             self.assertEqual(sdf.format(self.date), u'09 mai à 17:30')
             self.assertEqual(sdf.toPattern(), u"dd MMMM 'à' HH:mm")
         else:
@@ -57,7 +57,7 @@ class TestDateTimePatternGenerator(TestCase):
         dtpg.addPattern("dd'. von' MMMM", True)
         sdf.applyPattern(dtpg.getBestPattern('MMMMddHmm'))
         sdf.setTimeZone(self.tz)
-        if ICU_VERSION < '68.0':
+        if ICU_VERSION < '68.0' or ICU_VERSION > '71.0':
             self.assertEqual(sdf.format(self.date), u'09. von mai à 17:30')
             self.assertEqual(sdf.toPattern(), u"dd'. von' MMMM 'à' HH:mm")
         else:
