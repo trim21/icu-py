@@ -1,10 +1,9 @@
-Version 2.8.1 -> 
+Version 2.8.1 -> 2.9
 --------------------
-  - added support for ICU 71.1rc
+  - added support for ICU 71.1
   - added wrappers for UMeasurePrefix, MeasureUnit.withPrefix()|getPrefix()
   - added UNumberRoundingPriority, FractionPrecision.withSignificantDigits()
   - added UNumberTrailingZeroDisplay, Precision.trailingZeroDisplay()
-  - 
 
 Version 2.8 -> 2.8.1
 --------------------
