@@ -26,9 +26,9 @@
 
 PyObject *wrap_SimpleDateFormat(SimpleDateFormat *, int);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(64, 0, 0)
-PyObject *wrap_FormattedDateInterval(FormattedDateInterval *value, int flag);
+PyObject *wrap_FormattedDateInterval(FormattedDateInterval *object, int flag);
 PyObject *wrap_FormattedRelativeDateTime(
-    FormattedRelativeDateTime *value, int flag);
+    FormattedRelativeDateTime *object, int flag);
 #endif
 
 void _init_dateformat(PyObject *m);

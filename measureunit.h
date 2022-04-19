@@ -28,7 +28,7 @@ extern PyTypeObject MeasureUnitType_;
 extern PyTypeObject CurrencyUnitType_;
 extern PyTypeObject MeasureType_;
 
-PyObject *wrap_MeasureUnit(MeasureUnit *mu, int flags);
+PyObject *wrap_MeasureUnit(MeasureUnit *object, int flags);
 void _init_measureunit(PyObject *m);
 
 #endif /* _measureunit_h */

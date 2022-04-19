@@ -97,7 +97,7 @@ PyTypeObject UMemoryType_ = {
 
 /* UObject */
 
-static PyObject *t_uobject_richcmp(t_uobject *, PyObject *o2, int op);
+static PyObject *t_uobject_richcmp(t_uobject *, PyObject *arg, int op);
 static PyObject *t_uobject_str(t_uobject *self);
 static PyObject *t_uobject_getDynamicClassID(t_uobject *self);
 

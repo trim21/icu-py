@@ -50,12 +50,13 @@ extern PyTypeObject FormattedValueType_;
 PyObject *t_format_format(t_format *self, PyObject *args);
 PyObject *wrap_Format(Format *format);
 #if U_ICU_VERSION_HEX >= 0x04000000
-PyObject *wrap_PluralRules(PluralRules *rules, int flag);
+PyObject *wrap_PluralRules(PluralRules *object, int flag);
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(64, 0, 0)
-PyObject *wrap_FormattedValue(FormattedValue *formatted_value, int flag);
-PyObject *wrap_FormattedList(FormattedList *formatted_list, int flag);
-PyObject *wrap_ConstrainedFieldPosition(ConstrainedFieldPosition *fp, int flag);
+PyObject *wrap_FormattedValue(FormattedValue *object, int flag);
+PyObject *wrap_FormattedList(FormattedList *object, int flag);
+PyObject *wrap_ConstrainedFieldPosition(
+    ConstrainedFieldPosition *object, int flag);
 #endif
 
 void _init_format(PyObject *m);

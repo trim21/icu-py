@@ -345,7 +345,7 @@ public:
 };
 
 EXPORT PyObject *PyUnicode_FromUnicodeString(const UnicodeString *string);
-EXPORT PyObject *PyUnicode_FromUnicodeString(const UChar *chars, int size);
+EXPORT PyObject *PyUnicode_FromUnicodeString(const UChar *utf16, int len16);
 
 EXPORT UnicodeString &PyBytes_AsUnicodeString(PyObject *object,
                                               const char *encoding,
