@@ -66,10 +66,10 @@ static PyObject *t_tzinfo_richcmp(t_tzinfo *self, PyObject *other, int op);
 
 static PyObject *t_tzinfo__resetDefault(PyTypeObject *cls);
 static PyObject *t_tzinfo_getDefault(PyTypeObject *cls);
-static PyObject *t_tzinfo_setDefault(PyTypeObject *cls, PyObject *tz);
+static PyObject *t_tzinfo_setDefault(PyTypeObject *cls, PyObject *arg);
 static PyObject *t_tzinfo_getFloating(PyTypeObject *cls);
 static PyObject *t_tzinfo_getInstances(PyTypeObject *cls);
-static PyObject *t_tzinfo_getInstance(PyTypeObject *cls, PyObject *arg);
+static PyObject *t_tzinfo_getInstance(PyTypeObject *cls, PyObject *id);
 
 static PyObject *t_tzinfo_utcoffset(t_tzinfo *self, PyObject *dt);
 static PyObject *t_tzinfo_dst(t_tzinfo *self, PyObject *dt);

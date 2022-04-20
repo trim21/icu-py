@@ -48,9 +48,9 @@ public:
 extern PyTypeObject FormattedNumberType_;
 extern PyTypeObject FormattedNumberRangeType_;
 
-PyObject *wrap_FormattedNumber(icu::number::FormattedNumber *value, int flag);
+PyObject *wrap_FormattedNumber(icu::number::FormattedNumber *object, int flag);
 PyObject *wrap_FormattedNumberRange(
-    icu::number::FormattedNumberRange *value, int flag);
+    icu::number::FormattedNumberRange *object, int flag);
 
 #endif
 

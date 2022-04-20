@@ -26,7 +26,7 @@
 
 extern PyTypeObject RuleBasedCollatorType_;
 
-PyObject *wrap_RuleBasedCollator(RuleBasedCollator *collator, int flag);
+PyObject *wrap_RuleBasedCollator(RuleBasedCollator *object, int flag);
 
 void _init_collator(PyObject *m);
 
