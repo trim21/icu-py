@@ -127,9 +127,9 @@ PyICU is built from sources with ``setuptools`` or with ``build`` and ``pip``:
      ```
 
 
-## Building OpenSSL, Python 3, ICU and PyICU from sources
+## Building PyICU as well as OpenSSL, Python 3 and ICU from sources
 
-The instructions at [note_853](https://gitlab.pyicu.org/main/pyicu/-/issues/153#note_853) contain the complete steps for building everything from sources into
+The instructions at [note_855](https://gitlab.pyicu.org/main/pyicu/-/issues/153#note_855) contain the complete steps for building everything from sources into
 a self-contained directory, without modifying any system directories. They were
 made and tested on an M1 Mac but they can be modified and reused for any unix
 environment. In particular, they outline how to build PyICU from sources
