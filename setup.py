@@ -59,28 +59,15 @@ def configure_with_pkg_config(flags, config_args, label):
         raise
 
 
-try:
-    ICU_VERSION = os.environ['ICU_VERSION']
-except:
-    try:
-        ICU_VERSION = check_output(('icu-config', '--version')).strip()
-    except:
-        try:
-            ICU_VERSION = check_output(('pkg-config', '--modversion', 'icu-i18n')).strip()
-        except:
-            raise RuntimeError('''
-Please install pkg-config on your system or set the ICU_VERSION environment
-variable to the version of ICU you have installed.
-        ''')
-    if sys.version_info >= (3,):
-        ICU_VERSION = str(ICU_VERSION, 'ascii')
+platform = sys.platform
+if platform.startswith(('linux', 'gnu')):
+    platform = 'linux'
+elif platform.startswith('freebsd'):
+    platform = 'freebsd'
 
-print('''
-Building PyICU %s for ICU %s (max ICU major version supported: %s)
-''' %(VERSION, ICU_VERSION, ICU_MAX_MAJOR_VERSION))
 
 CONFIGURE_WITH_ICU_CONFIG = {
-    'darwin': True,
+    'darwin': False,
     'linux': True,
     'freebsd': False, # not tested
     'win32': False,   # no icu-config
@@ -96,6 +83,29 @@ CONFIGURE_WITH_PKG_CONFIG = {
     'sunos5': False,  # not tested
     'cygwin': False,  # not tested
 }
+
+
+try:
+    ICU_VERSION = os.environ['ICU_VERSION']
+except:
+    try:
+        ICU_VERSION = check_output(('icu-config', '--version')).strip()
+        CONFIGURE_WITH_ICU_CONFIG[platform] = True
+    except:
+        try:
+            ICU_VERSION = check_output(('pkg-config', '--modversion', 'icu-i18n')).strip()
+            CONFIGURE_WITH_PKG_CONFIG[platform] = True
+        except:
+            raise RuntimeError('''
+Please install pkg-config on your system or set the ICU_VERSION environment
+variable to the version of ICU you have installed.
+        ''')
+    if sys.version_info >= (3,):
+        ICU_VERSION = str(ICU_VERSION, 'ascii')
+
+print('''
+Building PyICU %s for ICU %s (max ICU major version supported: %s)
+''' %(VERSION, ICU_VERSION, ICU_MAX_MAJOR_VERSION))
 
 INCLUDES = {
     'darwin': [],
@@ -125,8 +135,8 @@ PEDANTIC_FLAGS = {
 }
 
 CFLAGS = {
-    'darwin': [],
-    'linux': [],
+    'darwin': ['-std=c++11'],
+    'linux': ['-std=c++11'],
     'freebsd': ['-std=c++11'],
     'win32': ['/Zc:wchar_t', '/EHsc'],
     'sunos5': ['-std=c++11'],
@@ -160,12 +170,6 @@ LIBRARIES = {
     'sunos5': ['icui18n', 'icuuc', 'icudata'],
     'cygwin': ['icui18n', 'icuuc', 'icudata'],
 }
-
-platform = sys.platform
-if platform.startswith(('linux', 'gnu')):
-    platform = 'linux'
-elif platform.startswith('freebsd'):
-    platform = 'freebsd'
 
 if 'PYICU_INCLUDES' in os.environ:
     _includes = os.environ['PYICU_INCLUDES'].split(os.pathsep)
