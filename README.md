@@ -83,7 +83,7 @@ pre-built binary packages of ICU and PyICU, see below.
 
 ## Building PyICU
 
-*Please, refer to [next section](## Building PyICU, Python 3 and ICU from sources) for building Python, ICU and PyICU from sources.
+*Please, refer to [next section](#Building PyICU, Python 3 and ICU from sources) for building Python, ICU and PyICU from sources.
 This section assumes all dependencies such as Python and ICU are present.*
 
 Before building PyICU the ICU libraries must be built and installed. Refer
