@@ -248,6 +248,7 @@ static PyObject *t_resourcebundle_getIntVector(t_resourcebundle *self);
 static PyObject *t_resourcebundle_getLocale(t_resourcebundle *self,
                                             PyObject *args);
 
+static PyObject *t_resourcebundle_resetICU(PyTypeObject *type);
 #ifndef PYPY_VERSION
 static PyObject *t_resourcebundle_setAppData(PyTypeObject *type,
                                              PyObject *args);
@@ -272,6 +273,7 @@ static PyMethodDef t_resourcebundle_methods[] = {
     DECLARE_METHOD(t_resourcebundle, getBinary, METH_NOARGS),
     DECLARE_METHOD(t_resourcebundle, getIntVector, METH_NOARGS),
     DECLARE_METHOD(t_resourcebundle, getLocale, METH_VARARGS),
+    DECLARE_METHOD(t_resourcebundle, resetICU, METH_CLASS | METH_NOARGS),
 #ifndef PYPY_VERSION
     DECLARE_METHOD(t_resourcebundle, setAppData, METH_CLASS | METH_VARARGS),
 #endif
@@ -1571,6 +1573,17 @@ static PyObject *t_resourcebundle_getLocale(t_resourcebundle *self,
 
     return PyErr_SetArgsError((PyObject *) self, "getLocale", args);
 }
+
+// Use this with care, see docs for u_cleanup() and u_init() in uclean.h or at
+// https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/uclean_8h.html
+static PyObject *t_resourcebundle_resetICU(PyTypeObject *type)
+{
+    u_cleanup();
+    STATUS_CALL(u_init(&status));
+
+    Py_RETURN_NONE;
+}
+
 
 #ifndef PYPY_VERSION
 #if defined(_MSC_VER) || defined(__WIN32)

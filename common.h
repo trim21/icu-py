@@ -169,6 +169,7 @@ typedef intintobjargproc ssizessizeobjargproc;
 #include <unicode/ucasemap.h>
 #include <unicode/udata.h>
 #include <unicode/ubidi.h>
+#include <unicode/uclean.h>
 
 #define VERSION_HEX(major, minor, patch) \
   (((major) << 24) | ((minor) << 16) | ((patch) << 8))
