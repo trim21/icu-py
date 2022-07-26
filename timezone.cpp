@@ -206,6 +206,9 @@ static PyObject *t_timezone_createEnumeration(PyTypeObject *type,
 static PyObject *t_timezone_countEquivalentIDs(PyTypeObject *type,
                                                PyObject *arg);
 static PyObject *t_timezone_getEquivalentID(PyTypeObject *type, PyObject *args);
+#if U_ICU_VERSION_HEX >= 0x04080000
+static PyObject *t_timezone_getRegion(PyTypeObject *type, PyObject *arg);
+#endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(52, 0, 0)
 static PyObject *t_timezone_getIDForWindowsID(PyTypeObject *type,
                                               PyObject *args);
@@ -230,6 +233,9 @@ static PyMethodDef t_timezone_methods[] = {
     DECLARE_METHOD(t_timezone, createEnumeration, METH_VARARGS | METH_CLASS),
     DECLARE_METHOD(t_timezone, countEquivalentIDs, METH_O | METH_CLASS),
     DECLARE_METHOD(t_timezone, getEquivalentID, METH_VARARGS | METH_CLASS),
+#if U_ICU_VERSION_HEX >= 0x04080000
+    DECLARE_METHOD(t_timezone, getRegion, METH_O | METH_CLASS),
+#endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(52, 0, 0)
     DECLARE_METHOD(t_timezone, getIDForWindowsID, METH_VARARGS | METH_CLASS),
     DECLARE_METHOD(t_timezone, getWindowsID, METH_O | METH_CLASS),
@@ -1102,6 +1108,26 @@ static PyObject *t_timezone_getEquivalentID(PyTypeObject *type, PyObject *args)
 
     return PyErr_SetArgsError(type, "getEquivalentID", args);
 }
+
+#if U_ICU_VERSION_HEX >= 0x04080000
+
+static PyObject *t_timezone_getRegion(PyTypeObject *type, PyObject *arg)
+{
+    UnicodeString *u;
+    UnicodeString _u;
+
+    if (!parseArg(arg, "S", &u, &_u))
+    {
+        char region[16];
+        int size;
+        STATUS_CALL(size = TimeZone::getRegion(*u, region, sizeof(region), status));
+        return PyString_FromStringAndSize(region, size);
+    }
+    
+    return PyErr_SetArgsError(type, "getRegion", arg);
+}
+
+#endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(52, 0, 0)
 static PyObject *t_timezone_getIDForWindowsID(PyTypeObject *type,
