@@ -12,7 +12,7 @@ and much of Unicode CLDR.
 
 The PyICU source code is hosted at https://gitlab.pyicu.org/main/pyicu.
 
-The ICU homepage is http://site.icu-project.org/
+The ICU homepage is https://icu.unicode.org/
 
 See also the CLDR homepage at http://cldr.unicode.org/
 
@@ -26,7 +26,7 @@ involves more than just a ``pip`` call. Many operating systems distribute
 pre-built binary packages of ICU and PyICU, see below.
 
   - Mac OS X
-    - Ensure ICU is installed and can be found by `pkg-config` (as `icu-config` was [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles) as of ICU 63.1), either by following [ICU build instructions](https://unicode-org.github.io/icu/userguide/icu4c/build.html), or by using Homebrew:
+    - Ensure ICU is installed and can be found by `pkg-config` (as `icu-config` was [deprecated](https://unicode-org.github.io/icu/userguide/icu/howtouseicu.html#c-makefiles) as of ICU 63.1), either by following [ICU build instructions](https://unicode-org.github.io/icu/userguide/icu4c/build.html), or by using Homebrew:
       ```sh
       # install libicu (keg-only)
       brew install pkg-config icu4c
@@ -92,7 +92,7 @@ to each system's [instructions](https://unicode-org.github.io/icu/userguide/icu4
 PyICU is built from sources with ``setuptools`` or with ``build`` and ``pip``:
 
    - verify that ``pkg-config`` is available (the ``icu-config`` program is
-     [deprecated](http://userguide.icu-project.org/howtouseicu#TOC-C-Makefiles)
+     [deprecated](https://unicode-org.github.io/icu/userguide/icu/howtouseicu.html#c-makefiles)
      as of ICU 63.1)
      ```sh
      pkg-config --cflags --libs icu-i18n
