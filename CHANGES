@@ -3,6 +3,7 @@ Version 2.9 ->
   - added link to note about building everything from sources
   - added wrapper for u_cleanup/u_init sequence as ResourceBundle.resetICU()
   - added wrapper for TimeZone.getRegion()
+  - added support for ICU 72rc
   - 
 
 Version 2.8.1 -> 2.9
