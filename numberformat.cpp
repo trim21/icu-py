@@ -25,6 +25,7 @@
 #include "structmember.h"
 
 #include "bases.h"
+#include "displayoptions.h"
 #include "locale.h"
 #include "format.h"
 #include "numberformat.h"
@@ -588,10 +589,16 @@ DECLARE_CONSTANTS_TYPE(UNumberUnitWidth)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
 static PyObject *t_formattednumber_getOutputUnit(t_formattednumber *self);
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+static PyObject *t_formattednumber_getNounClass(t_formattednumber *self);
+#endif
 
 static PyMethodDef t_formattednumber_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
     DECLARE_METHOD(t_formattednumber, getOutputUnit, METH_NOARGS),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+    DECLARE_METHOD(t_formattednumber, getNounClass, METH_NOARGS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -712,6 +719,11 @@ static PyObject *t_unlocalizednumberformatter_locale(
 static PyObject *t_unlocalizednumberformatter_usage(
     t_unlocalizednumberformatter *self, PyObject *arg);
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+static PyObject *t_unlocalizednumberformatter_displayOptions(
+    t_unlocalizednumberformatter *self, PyObject *arg);
+#endif
+
 
 static PyMethodDef t_unlocalizednumberformatter_methods[] = {
     DECLARE_METHOD(t_unlocalizednumberformatter, unit, METH_O),
@@ -739,6 +751,9 @@ static PyMethodDef t_unlocalizednumberformatter_methods[] = {
     DECLARE_METHOD(t_unlocalizednumberformatter, locale, METH_O),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
     DECLARE_METHOD(t_unlocalizednumberformatter, usage, METH_O),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+    DECLARE_METHOD(t_unlocalizednumberformatter, displayOptions, METH_O),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -815,6 +830,10 @@ static PyObject *t_localizednumberformatter_formatDecimalToValue(
 static PyObject *t_localizednumberformatter_usage(
     t_localizednumberformatter *self, PyObject *arg);
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+static PyObject *t_localizednumberformatter_displayOptions(
+    t_localizednumberformatter *self, PyObject *arg);
+#endif
 
 static PyMethodDef t_localizednumberformatter_methods[] = {
     DECLARE_METHOD(t_localizednumberformatter, unit, METH_O),
@@ -849,6 +868,9 @@ static PyMethodDef t_localizednumberformatter_methods[] = {
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
     DECLARE_METHOD(t_localizednumberformatter, usage, METH_O),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+    DECLARE_METHOD(t_localizednumberformatter, displayOptions, METH_O),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -3806,6 +3828,24 @@ static PyObject *t_unlocalizednumberformatter_usage(
 
 #endif  // ICU >= 68
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+
+static PyObject *t_unlocalizednumberformatter_displayOptions(
+    t_unlocalizednumberformatter *self, PyObject *arg)
+{
+    PyObject *displayOptions;
+
+    if (!parseArg(arg, "O", &DisplayOptionsType_, &displayOptions))
+    {
+        return wrap_UnlocalizedNumberFormatter(
+            self->object->displayOptions(*((t_displayoptions *) displayOptions)->object));
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "displayOptions", arg);
+}
+
+#endif  // ICU >= 72
+
 
 /* LocalizedNumberFormatter */
 
@@ -4230,6 +4270,24 @@ static PyObject *t_localizednumberformatter_usage(
 }
 
 #endif  // ICU >= 68
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+
+static PyObject *t_localizednumberformatter_displayOptions(
+    t_localizednumberformatter *self, PyObject *arg)
+{
+    PyObject *displayOptions;
+
+    if (!parseArg(arg, "O", &DisplayOptionsType_, &displayOptions))
+    {
+        return wrap_LocalizedNumberFormatter(
+            self->object->displayOptions(*((t_displayoptions *) displayOptions)->object));
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "displayOptions", arg);
+}
+
+#endif  // ICU >= 72
 
 /* Notation */
 
@@ -5283,9 +5341,9 @@ static PyObject *t_localizednumberrangeformatter_formatFormattableRangeToValue(
 #endif  // ICU >= 63
 
 
-#if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
-
 /* FormattedNumber */
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(68, 0, 0)
 
 static PyObject *t_formattednumber_getOutputUnit(t_formattednumber *self)
 {
@@ -5294,6 +5352,19 @@ static PyObject *t_formattednumber_getOutputUnit(t_formattednumber *self)
     STATUS_CALL(mu = self->object->getOutputUnit(status));
 
     return wrap_MeasureUnit((MeasureUnit *) mu.clone(), T_OWNED);
+}
+
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
+
+static PyObject *t_formattednumber_getNounClass(t_formattednumber *self)
+{
+    UDisplayOptionsNounClass nc;
+
+    STATUS_CALL(nc = self->object->getNounClass(status));
+
+    return PyInt_FromLong(nc);
 }
 
 #endif
@@ -5517,8 +5588,8 @@ void _init_numberformat(PyObject *m)
     INSTALL_ENUM(UNumberRoundingPriority, "STRICT", UNUM_ROUNDING_PRIORITY_STRICT);
 
     INSTALL_CONSTANTS_TYPE(UNumberTrailingZeroDisplay, m);
-    INSTALL_ENUM(UNumberRoundingPriority, "AUTO", UNUM_TRAILING_ZERO_AUTO);
-    INSTALL_ENUM(UNumberRoundingPriority, "HIDE_IF_WHOLE", UNUM_TRAILING_ZERO_HIDE_IF_WHOLE);
+    INSTALL_ENUM(UNumberTrailingZeroDisplay, "AUTO", UNUM_TRAILING_ZERO_AUTO);
+    INSTALL_ENUM(UNumberTrailingZeroDisplay, "HIDE_IF_WHOLE", UNUM_TRAILING_ZERO_HIDE_IF_WHOLE);
 #endif
 
     INSTALL_CONSTANTS_TYPE(UNumberFormatStyle, m);

@@ -436,7 +436,7 @@ using LocaleMatcherResult = LocaleMatcher::Result;
 
 class t_localematcherbuilder : public _wrapper {
 public:
-  LocaleMatcherBuilder *object;
+    LocaleMatcherBuilder *object;
 };
 
 static int t_localematcherbuilder_init(t_localematcherbuilder *self, PyObject *args, PyObject *kwds);

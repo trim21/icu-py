@@ -223,6 +223,9 @@ static PyObject *t_unicodesetiterator_next(t_unicodesetiterator *self);
 static PyObject *t_unicodesetiterator_nextRange(t_unicodesetiterator *self);
 static PyObject *t_unicodesetiterator_reset(t_unicodesetiterator *self,
                                             PyObject *args);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
+static PyObject *t_unicodesetiterator_skipToStrings(t_unicodesetiterator *self);
+#endif
 
 static PyMethodDef t_unicodesetiterator_methods[] = {
     DECLARE_METHOD(t_unicodesetiterator, isString, METH_NOARGS),
@@ -232,6 +235,9 @@ static PyMethodDef t_unicodesetiterator_methods[] = {
     DECLARE_METHOD(t_unicodesetiterator, next, METH_NOARGS),
     DECLARE_METHOD(t_unicodesetiterator, nextRange, METH_NOARGS),
     DECLARE_METHOD(t_unicodesetiterator, reset, METH_VARARGS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
+    DECLARE_METHOD(t_unicodesetiterator, skipToStrings, METH_NOARGS),
+#endif
     { NULL, NULL, 0, NULL }
 };
 
@@ -1326,6 +1332,14 @@ static PyObject *t_unicodesetiterator_reset(t_unicodesetiterator *self,
 
     return PyErr_SetArgsError((PyObject *) self, "reset", args);
 }
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
+static PyObject *t_unicodesetiterator_skipToStrings(t_unicodesetiterator *self)
+{
+    self->object->skipToStrings();
+    Py_RETURN_SELF();
+}
+#endif
 
 static PyObject *t_unicodesetiterator_iter(t_unicodesetiterator *self)
 {

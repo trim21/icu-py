@@ -4,6 +4,10 @@ Version 2.9 ->
   - added wrapper for u_cleanup/u_init sequence as ResourceBundle.resetICU()
   - added wrapper for TimeZone.getRegion()
   - added support for ICU 72rc
+  - added wrapper for UnicodeSetIterator::skipToStrings()
+  - added wrapper for DisplayOptions, DisplayOptions::Builder and related enums
+  - added wrapper for FormattedNumber::getNounClass()
+  - added wrapper for NumberFormatter.displayOptions()
   - 
 
 Version 2.8.1 -> 2.9
