@@ -33,8 +33,8 @@ public:
     DisplayOptions *object;
 };
 
-void _init_displayoptions(PyObject *m);
-
 #endif  // ICU >= 72
+
+void _init_displayoptions(PyObject *m);
 
 #endif /* _displayoptions_h */

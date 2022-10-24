@@ -1,3 +1,7 @@
+Version 2.10 -> 2.10.1
+----------------------
+  - fixed build issues with ICU < 72
+
 Version 2.9 -> 2.10
 -------------------
   - fixed bug with building on MacOS when pkg-config is present
