@@ -206,7 +206,8 @@ EXPORT PyObject *PyUnicode_FromUnicodeString(const UChar *utf16, int len16)
             UChar32 cp;
 
             U16_NEXT(utf16, i, len16, cp);
-            max_char |= cp;  // we only care about the leftmost bit
+            if (cp > max_char)
+                max_char = cp;
             len32 += 1;
         }
 
