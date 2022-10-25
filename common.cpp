@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2005-2019 Open Source Applications Foundation.
+ * Copyright (c) 2005-2022 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -32,6 +32,10 @@
 
 #include "bases.h"
 #include "macros.h"
+
+// From Python's Object/unicodeobject.c
+// Maximum code point of Unicode 6.0: 0x10ffff (1,114,111).
+#define MAX_UNICODE 0x10ffff
 
 static PyObject *utcoffset_NAME;
 static PyObject *toordinal_NAME;
@@ -206,10 +210,11 @@ EXPORT PyObject *PyUnicode_FromUnicodeString(const UChar *utf16, int len16)
             UChar32 cp;
 
             U16_NEXT(utf16, i, len16, cp);
-            if (cp > max_char)
-                max_char = cp;
+            max_char |= cp;  // we only care about the leftmost bit
             len32 += 1;
         }
+        if (max_char > MAX_UNICODE)
+            max_char = MAX_UNICODE;
 
         PyObject *result = PyUnicode_New(len32, max_char);
 
