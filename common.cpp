@@ -33,7 +33,7 @@
 #include "bases.h"
 #include "macros.h"
 
-// From Python's Object/unicodeobject.c
+// From Python's Objects/unicodeobject.c
 // Maximum code point of Unicode 6.0: 0x10ffff (1,114,111).
 #define MAX_UNICODE 0x10ffff
 

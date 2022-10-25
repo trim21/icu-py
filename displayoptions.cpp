@@ -160,7 +160,7 @@ DEFINE_DISPLAY_OPTIONS_GETTER(NameStyle)
 DEFINE_DISPLAY_OPTIONS_GETTER(DisplayLength)
 DEFINE_DISPLAY_OPTIONS_GETTER(SubstituteHandling)
 
-#endif
+#endif  // ICU >= 72
 
 void _init_displayoptions(PyObject *m)
 {
@@ -230,5 +230,5 @@ void _init_displayoptions(PyObject *m)
     INSTALL_ENUM(UDisplayOptionsSubstituteHandling, "SUBSTITUTE", UDISPOPT_SUBSTITUTE_HANDLING_SUBSTITUTE);
     INSTALL_ENUM(UDisplayOptionsSubstituteHandling, "NO_SUBSTITUTE", UDISPOPT_SUBSTITUTE_HANDLING_NO_SUBSTITUTE);
     
-#endif
+#endif  // ICU >= 72
 }

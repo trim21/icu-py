@@ -1,3 +1,7 @@
+Version 2.10.1 -> 2.10.2
+------------------------
+  - fixed bug in logic computing max_char for PyUnicode_New()
+
 Version 2.10 -> 2.10.1
 ----------------------
   - fixed build issues with ICU < 72
