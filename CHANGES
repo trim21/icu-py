@@ -1,3 +1,8 @@
+Version 2.10.2 ->
+------------------------
+  - fixed bug PluralFormat.format accepting python strings, which are immutable
+  - 
+
 Version 2.10.1 -> 2.10.2
 ------------------------
   - fixed bug in logic computing max_char for PyUnicode_New()
