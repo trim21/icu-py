@@ -1745,25 +1745,25 @@ static PyObject *t_pluralformat_format(t_pluralformat *self, PyObject *args)
         }
         break;
       case 2:
-        if (!parseArgs(args, "iS", &n, &u, &_u))
+        if (!parseArgs(args, "iU", &n, &u, &_u))
         {
             STATUS_CALL(self->object->format(n, *u, _fp, status));
             Py_RETURN_ARG(args, 1);
         }
-        if (!parseArgs(args, "dS", &d, &u, &_u))
+        if (!parseArgs(args, "dU", &d, &u, &_u))
         {
             STATUS_CALL(self->object->format(d, *u, _fp, status));
             Py_RETURN_ARG(args, 1);
         }
         break;
       case 3:
-        if (!parseArgs(args, "iSP", TYPE_CLASSID(FieldPosition),
+        if (!parseArgs(args, "iUP", TYPE_CLASSID(FieldPosition),
                        &n, &u, &_u, &fp))
         {
             STATUS_CALL(self->object->format(n, *u, *fp, status));
             Py_RETURN_ARG(args, 1);
         }
-        if (!parseArgs(args, "dSP", TYPE_CLASSID(FieldPosition),
+        if (!parseArgs(args, "dUP", TYPE_CLASSID(FieldPosition),
                        &d, &u, &_u, &fp))
         {
             STATUS_CALL(self->object->format(d, *u, *fp, status));
