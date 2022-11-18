@@ -5290,7 +5290,6 @@ static PyObject *t_localizednumberrangeformatter_formatDoubleRangeToValue(
 static PyObject *t_localizednumberrangeformatter_formatDecimalRangeToValue(
     t_localizednumberrangeformatter *self, PyObject *args)
 {
-    UnicodeString u;
     char *sFirst, *sSecond;
 
     switch (PyTuple_Size(args)) {
@@ -5302,8 +5301,6 @@ static PyObject *t_localizednumberrangeformatter_formatDecimalRangeToValue(
                     Formattable(sFirst), Formattable(sSecond),
                     status)),
                 return wrap_FormattedNumberRange(value));
-
-            return PyUnicode_FromUnicodeString(&u);
         }
         break;
     }
