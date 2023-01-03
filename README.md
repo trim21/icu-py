@@ -345,3 +345,5 @@ more examples of actual PyICU usage.
 There are also a few
 [samples](https://gitlab.pyicu.org/main/pyicu/-/tree/main/samples) ported from
 ICU C/C++.
+
+Last but not least, this [cheat sheet](https://gist.github.com/dpk/8325992) has useful examples.
