@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2004-2019 Open Source Applications Foundation.
+ * Copyright (c) 2004-2023 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,6 +29,7 @@
 #include "iterators.h"
 #include "macros.h"
 
+DECLARE_CONSTANTS_TYPE(UBreakIteratorType)
 DECLARE_CONSTANTS_TYPE(UWordBreak)
 
 /* ForwardCharacterIterator */
@@ -1505,6 +1506,7 @@ void _init_iterators(PyObject *m)
     CollationElementIteratorType_.tp_richcompare =
         (richcmpfunc) t_collationelementiterator_richcmp;
 
+    INSTALL_CONSTANTS_TYPE(UBreakIteratorType, m);
     INSTALL_CONSTANTS_TYPE(UWordBreak, m);
 
     INSTALL_TYPE(ForwardCharacterIterator, m);
@@ -1517,11 +1519,22 @@ void _init_iterators(PyObject *m)
     REGISTER_TYPE(CanonicalIterator, m);
     REGISTER_TYPE(CollationElementIterator, m);
 
-    INSTALL_ENUM(UWordBreak, "CHARACTER", UBRK_CHARACTER);
-    INSTALL_ENUM(UWordBreak, "WORD", UBRK_WORD);
-    INSTALL_ENUM(UWordBreak, "LINE", UBRK_LINE);
-    INSTALL_ENUM(UWordBreak, "SENTENCE", UBRK_SENTENCE);
-    INSTALL_ENUM(UWordBreak, "TITLE", UBRK_TITLE);
+    INSTALL_ENUM(UBreakIteratorType, "CHARACTER", UBRK_CHARACTER);
+    INSTALL_ENUM(UBreakIteratorType, "WORD", UBRK_WORD);
+    INSTALL_ENUM(UBreakIteratorType, "LINE", UBRK_LINE);
+    INSTALL_ENUM(UBreakIteratorType, "SENTENCE", UBRK_SENTENCE);
+    INSTALL_ENUM(UBreakIteratorType, "TITLE", UBRK_TITLE);
+
+    INSTALL_ENUM(UWordBreak, "NONE", UBRK_WORD_NONE);
+    INSTALL_ENUM(UWordBreak, "NONE_LIMIT", UBRK_WORD_NONE_LIMIT);
+    INSTALL_ENUM(UWordBreak, "NUMBER", UBRK_WORD_NUMBER);
+    INSTALL_ENUM(UWordBreak, "NUMBER_LIMIT", UBRK_WORD_NUMBER_LIMIT);
+    INSTALL_ENUM(UWordBreak, "LETTER", UBRK_WORD_LETTER);
+    INSTALL_ENUM(UWordBreak, "LETTER_LIMIT", UBRK_WORD_LETTER_LIMIT);
+    INSTALL_ENUM(UWordBreak, "KANA", UBRK_WORD_KANA);
+    INSTALL_ENUM(UWordBreak, "KANA_LIMIT", UBRK_WORD_KANA_LIMIT);
+    INSTALL_ENUM(UWordBreak, "IDEO", UBRK_WORD_IDEO);
+    INSTALL_ENUM(UWordBreak, "IDEO_LIMIT", UBRK_WORD_IDEO_LIMIT);
 
     INSTALL_STATIC_INT(ForwardCharacterIterator, DONE);
     INSTALL_STATIC_INT(BreakIterator, DONE);

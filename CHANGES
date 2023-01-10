@@ -1,6 +1,8 @@
 Version 2.10.2 ->
 ------------------------
   - fixed bug PluralFormat.format accepting python strings, which are immutable
+  - fixed bug with UWordBreak wrapping wrong enum (UBreakIteratorType)
+  - added wrapper for UBreakIteratorType
   - 
 
 Version 2.10.1 -> 2.10.2
