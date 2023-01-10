@@ -31,6 +31,8 @@
 
 DECLARE_CONSTANTS_TYPE(UBreakIteratorType)
 DECLARE_CONSTANTS_TYPE(UWordBreak)
+DECLARE_CONSTANTS_TYPE(ULineBreakTag)
+DECLARE_CONSTANTS_TYPE(USentenceBreakTag)
 
 /* ForwardCharacterIterator */
 
@@ -1508,6 +1510,8 @@ void _init_iterators(PyObject *m)
 
     INSTALL_CONSTANTS_TYPE(UBreakIteratorType, m);
     INSTALL_CONSTANTS_TYPE(UWordBreak, m);
+    INSTALL_CONSTANTS_TYPE(ULineBreakTag, m);
+    INSTALL_CONSTANTS_TYPE(USentenceBreakTag, m);
 
     INSTALL_TYPE(ForwardCharacterIterator, m);
     INSTALL_TYPE(CharacterIterator, m);
@@ -1535,6 +1539,16 @@ void _init_iterators(PyObject *m)
     INSTALL_ENUM(UWordBreak, "KANA_LIMIT", UBRK_WORD_KANA_LIMIT);
     INSTALL_ENUM(UWordBreak, "IDEO", UBRK_WORD_IDEO);
     INSTALL_ENUM(UWordBreak, "IDEO_LIMIT", UBRK_WORD_IDEO_LIMIT);
+
+    INSTALL_ENUM(ULineBreakTag, "SOFT", UBRK_LINE_SOFT);
+    INSTALL_ENUM(ULineBreakTag, "SOFT_LIMIT", UBRK_LINE_SOFT_LIMIT);
+    INSTALL_ENUM(ULineBreakTag, "HARD", UBRK_LINE_HARD);
+    INSTALL_ENUM(ULineBreakTag, "HARD_LIMIT", UBRK_LINE_HARD_LIMIT);
+
+    INSTALL_ENUM(USentenceBreakTag, "TERM", UBRK_SENTENCE_TERM);
+    INSTALL_ENUM(USentenceBreakTag, "TERM_LIMIT", UBRK_SENTENCE_TERM_LIMIT);
+    INSTALL_ENUM(USentenceBreakTag, "SEP", UBRK_SENTENCE_SEP);
+    INSTALL_ENUM(USentenceBreakTag, "SEP_LIMIT", UBRK_SENTENCE_SEP_LIMIT);
 
     INSTALL_STATIC_INT(ForwardCharacterIterator, DONE);
     INSTALL_STATIC_INT(BreakIterator, DONE);
