@@ -361,6 +361,7 @@ EXPORT UnicodeString &PyObject_AsUnicodeString(PyObject *object,
         PyUnicode_READY(object);
 
         switch (PyUnicode_KIND(object)) {
+#if PY_VERSION_HEX < 0x030a0000
           case PyUnicode_WCHAR_KIND: {  // this code path should be deprecated
               if (SIZEOF_WCHAR_T == sizeof(UChar))
               {
@@ -387,7 +388,7 @@ EXPORT UnicodeString &PyObject_AsUnicodeString(PyObject *object,
               }
               break;
           }
-
+#endif
           case PyUnicode_1BYTE_KIND: {
               Py_ssize_t len = PyUnicode_GET_LENGTH(object);
               Py_UCS1 *pchars = PyUnicode_1BYTE_DATA(object);
