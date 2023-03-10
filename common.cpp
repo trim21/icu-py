@@ -361,7 +361,7 @@ EXPORT UnicodeString &PyObject_AsUnicodeString(PyObject *object,
         PyUnicode_READY(object);
 
         switch (PyUnicode_KIND(object)) {
-#if PY_VERSION_HEX < 0x030a0000
+#if PY_VERSION_HEX < 0x030c0000
           case PyUnicode_WCHAR_KIND: {  // this code path should be deprecated
               if (SIZEOF_WCHAR_T == sizeof(UChar))
               {
