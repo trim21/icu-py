@@ -1070,6 +1070,9 @@ static PyObject *t_precision_minSignificantDigits(PyTypeObject *type, PyObject *
 static PyObject *t_precision_maxSignificantDigits(PyTypeObject *type, PyObject *arg);
 static PyObject *t_precision_minMaxSignificantDigits(PyTypeObject *type, PyObject *args);
 static PyObject *t_precision_increment(PyTypeObject *type, PyObject *arg);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(71, 0, 0)
+static PyObject *t_precision_incrementExact(PyTypeObject *type, PyObject *args);
+#endif
 static PyObject *t_precision_currency(PyTypeObject *type, PyObject *arg);
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
@@ -1088,6 +1091,9 @@ static PyMethodDef t_precision_methods[] = {
     DECLARE_METHOD(t_precision, maxSignificantDigits, METH_O | METH_CLASS),
     DECLARE_METHOD(t_precision, minMaxSignificantDigits, METH_VARARGS | METH_CLASS),
     DECLARE_METHOD(t_precision, increment, METH_O | METH_CLASS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(71, 0, 0)
+    DECLARE_METHOD(t_precision, incrementExact, METH_VARARGS | METH_CLASS),
+#endif
     DECLARE_METHOD(t_precision, currency, METH_O | METH_CLASS),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
     DECLARE_METHOD(t_precision, trailingZeroDisplay, METH_O),
@@ -4710,6 +4716,21 @@ static PyObject *t_precision_increment(PyTypeObject *type, PyObject *arg)
     return PyErr_SetArgsError(type, "increment", arg);
 }
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(71, 0, 0)
+static PyObject *t_precision_incrementExact(PyTypeObject *type, PyObject *args)
+{
+    PY_LONG_LONG man;
+    int mag;
+
+    if (!parseArgs(args, "Li", &man, &mag))
+    {
+        return wrap_IncrementPrecision(Precision::incrementExact(man, mag));
+    }
+
+    return PyErr_SetArgsError(type, "incrementExact", args);
+}
+#endif
+
 static PyObject *t_precision_currency(PyTypeObject *type, PyObject *arg)
 {
     int n;
@@ -5634,6 +5655,26 @@ void _init_numberformat(PyObject *m)
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(49, 0, 0)
     INSTALL_CONSTANTS_TYPE(UNumberFormatFields, m);
+    INSTALL_ENUM(UNumberFormatFields, "INTEGER", UNUM_INTEGER_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "FRACTION", UNUM_FRACTION_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "DECIMAL_SEPARATOR", UNUM_DECIMAL_SEPARATOR_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "EXPONENT_SYMBOL", UNUM_EXPONENT_SYMBOL_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "EXPONENT_SIGN", UNUM_EXPONENT_SIGN_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "EXPONENT", UNUM_EXPONENT_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "GROUPING_SEPARATOR", UNUM_GROUPING_SEPARATOR_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "CURRENCY", UNUM_CURRENCY_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "PERCENT", UNUM_PERCENT_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "PERMILL", UNUM_PERMILL_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "SIGN", UNUM_SIGN_FIELD);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(64, 0, 0)
+    INSTALL_ENUM(UNumberFormatFields, "MEASURE_UNIT", UNUM_MEASURE_UNIT_FIELD);
+    INSTALL_ENUM(UNumberFormatFields, "COMPACT", UNUM_COMPACT_FIELD);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(71, 0, 0)
+    INSTALL_ENUM(UNumberFormatFields, "APPROXIMATELY_SIGN", UNUM_APPROXIMATELY_SIGN_FIELD);
+#endif
+
+    // oops, we're stuck with the extra suffix for these
     INSTALL_ENUM(UNumberFormatFields, "INTEGER_FIELD", UNUM_INTEGER_FIELD);
     INSTALL_ENUM(UNumberFormatFields, "FRACTION_FIELD", UNUM_FRACTION_FIELD);
     INSTALL_ENUM(UNumberFormatFields, "DECIMAL_SEPARATOR_FIELD", UNUM_DECIMAL_SEPARATOR_FIELD);
@@ -5645,11 +5686,11 @@ void _init_numberformat(PyObject *m)
     INSTALL_ENUM(UNumberFormatFields, "PERCENT_FIELD", UNUM_PERCENT_FIELD);
     INSTALL_ENUM(UNumberFormatFields, "PERMILL_FIELD", UNUM_PERMILL_FIELD);
     INSTALL_ENUM(UNumberFormatFields, "SIGN_FIELD", UNUM_SIGN_FIELD);
-#endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(64, 0, 0)
     INSTALL_ENUM(UNumberFormatFields, "MEASURE_UNIT_FIELD", UNUM_MEASURE_UNIT_FIELD);
     INSTALL_ENUM(UNumberFormatFields, "COMPACT_FIELD", UNUM_COMPACT_FIELD);
 #endif
+#endif  // ICU >= 49
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
     INSTALL_CONSTANTS_TYPE(UNumberCompactStyle, m);

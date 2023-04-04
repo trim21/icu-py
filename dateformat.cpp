@@ -40,8 +40,8 @@ DECLARE_CONSTANTS_TYPE(UDateTimePatternField)
 DECLARE_CONSTANTS_TYPE(UDateTimePatternMatchOptions)
 #endif
 
-#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
-DECLARE_CONSTANTS_TYPE(UDateRelativeDateTimeFormatterStyle)
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+DECLARE_CONSTANTS_TYPE(UDateFormatStyle)
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
@@ -54,6 +54,10 @@ DECLARE_CONSTANTS_TYPE(UDateDirection)
 DECLARE_CONSTANTS_TYPE(UDateAbsoluteUnit)
 DECLARE_CONSTANTS_TYPE(UDateRelativeUnit)
 DECLARE_CONSTANTS_TYPE(UDateFormatBooleanAttribute)
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
+DECLARE_CONSTANTS_TYPE(UDateRelativeDateTimeFormatterStyle)
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(57, 0, 0)
@@ -271,6 +275,10 @@ static PyObject *t_datetimepatterngenerator_staticGetSkeleton(
 static PyObject *t_datetimepatterngenerator_staticGetBaseSkeleton(
     PyTypeObject *type, PyObject *arg);
 #endif
+static PyObject *t_datetimepatterngenerator_getDateTimeFormat(
+    t_datetimepatterngenerator *self, PyObject *args);
+static PyObject *t_datetimepatterngenerator_setDateTimeFormat(
+    t_datetimepatterngenerator *self, PyObject *arg);
 
 static PyMethodDef t_datetimepatterngenerator_methods[] = {
     DECLARE_METHOD(t_datetimepatterngenerator, createEmptyInstance,
@@ -298,6 +306,8 @@ static PyMethodDef t_datetimepatterngenerator_methods[] = {
     DECLARE_METHOD(t_datetimepatterngenerator, staticGetBaseSkeleton,
                    METH_O | METH_CLASS),
 #endif
+    DECLARE_METHOD(t_datetimepatterngenerator, getDateTimeFormat, METH_VARARGS),
+    DECLARE_METHOD(t_datetimepatterngenerator, setDateTimeFormat, METH_O),
     { NULL, NULL, 0, NULL }
 };
 
@@ -1634,7 +1644,7 @@ static PyObject *t_datetimepatterngenerator_getPatternForSkeleton(
 static PyObject *t_datetimepatterngenerator_setDecimal(
     t_datetimepatterngenerator *self, PyObject *arg)
 {
-    UnicodeString *u, _u;;
+    UnicodeString *u, _u;
 
     if (!parseArg(arg, "S", &u, &_u))
     {
@@ -1650,6 +1660,44 @@ static PyObject *t_datetimepatterngenerator_getDecimal(
 {
     const UnicodeString &result = self->object->getDecimal();
     return PyUnicode_FromUnicodeString(&result);
+}
+
+static PyObject *t_datetimepatterngenerator_getDateTimeFormat(
+    t_datetimepatterngenerator *self, PyObject *args)
+{
+    switch (PyTuple_Size(args)) {
+      case 0:
+        return PyUnicode_FromUnicodeString(self->object->getDateTimeFormat());
+#if U_ICU_VERSION_HEX >= VERSION_HEX(71, 0, 0)
+      case 1: {
+        UDateFormatStyle dfs;
+
+        if (!parseArgs(args, "i", &dfs))
+        {
+            STATUS_RESULT_CALL(
+                const UnicodeString &u = self->object->getDateTimeFormat(dfs, status),
+                return PyUnicode_FromUnicodeString(u))
+        }
+        break;
+      }
+#endif
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getDateTimeFormat", args);
+}
+
+static PyObject *t_datetimepatterngenerator_setDateTimeFormat(
+    t_datetimepatterngenerator *self, PyObject *arg)
+{
+    UnicodeString *u, _u;
+
+    if (!parseArg(arg, "S", &u, &_u))
+    {
+        self->object->setDateTimeFormat(*u);
+        Py_RETURN_NONE;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "setDateTimeFormat", arg);
 }
 
 
@@ -2354,6 +2402,10 @@ void _init_dateformat(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UDateRelativeDateTimeFormatterStyle, m);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UDateFormatStyle, m);
+#endif
+
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
     INSTALL_CONSTANTS_TYPE(UDisplayContext, m);
     INSTALL_CONSTANTS_TYPE(UDisplayContextType, m);
@@ -2502,6 +2554,17 @@ void _init_dateformat(PyObject *m)
     INSTALL_ENUM(UDateRelativeDateTimeFormatterStyle, "SHORT", UDAT_STYLE_SHORT);
     INSTALL_ENUM(UDateRelativeDateTimeFormatterStyle, "NARROW", UDAT_STYLE_NARROW);
     INSTALL_ENUM(UDateRelativeDateTimeFormatterStyle, "COUNT", UDAT_STYLE_COUNT);
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+    INSTALL_ENUM(UDateFormatStyle, "FULL", UDAT_FULL);
+    INSTALL_ENUM(UDateFormatStyle, "LONG", UDAT_LONG);
+    INSTALL_ENUM(UDateFormatStyle, "MEDIUM", UDAT_MEDIUM);
+    INSTALL_ENUM(UDateFormatStyle, "SHORT", UDAT_SHORT);
+    INSTALL_ENUM(UDateFormatStyle, "DEFAULT", UDAT_DEFAULT);
+    INSTALL_ENUM(UDateFormatStyle, "RELATIVE", UDAT_RELATIVE);
+    INSTALL_ENUM(UDateFormatStyle, "NONE", UDAT_NONE);
+    INSTALL_ENUM(UDateFormatStyle, "PATTERN", UDAT_PATTERN);
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)

@@ -2,7 +2,9 @@ Version 2.10.2 ->
 ------------------------
   - fixed bug PluralFormat.format accepting python strings, which are immutable
   - fixed bug with UWordBreak wrapping wrong enum (UBreakIteratorType)
-  - added wrapper for UBreakIteratorType, ULine|SentenceBreakTag
+  - added wrappers for UBreakIteratorType, ULine|SentenceBreakTag
+  - added wrappers for DateTimePatternGenerator::set|getDateTimeFormat()
+  - added wrappers for Precision::incrementExact()
   - 
 
 Version 2.10.1 -> 2.10.2

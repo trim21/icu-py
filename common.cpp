@@ -170,6 +170,11 @@ EXPORT PyObject *PyUnicode_FromUnicodeString(const UnicodeString *string)
     return PyUnicode_FromUnicodeString(string->getBuffer(), string->length());
 }
 
+EXPORT PyObject *PyUnicode_FromUnicodeString(const UnicodeString &string)
+{
+    return PyUnicode_FromUnicodeString(string.getBuffer(), string.length());
+}
+
 EXPORT PyObject *PyUnicode_FromUnicodeString(const UChar *utf16, int len16)
 {
     if (!utf16)
