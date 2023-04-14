@@ -37,6 +37,34 @@ class TestLocale(TestCase):
         self.assertEqual('fr_BE@collation=phonebook;currency=euro', str(l1))
         self.assertEqual(l0, l1)
 
+    def testCompare(self):
+
+        af = Locale('af')
+        mt = Locale('mt')
+        zu = Locale('zu')
+
+        self.assertLess(af, zu)
+        self.assertFalse(mt < mt)
+        self.assertFalse(zu < af)
+
+        self.assertLessEqual(af, zu)
+        self.assertLessEqual(mt, mt)
+        self.assertFalse(zu <= af)
+
+        self.assertEqual(mt, mt)
+        self.assertFalse(af == zu)
+
+        self.assertNotEqual(af, zu)
+        self.assertFalse(mt != mt)
+
+        self.assertGreater(zu, af)
+        self.assertFalse(mt > mt)
+        self.assertFalse(af > zu)
+
+        self.assertGreaterEqual(zu, af)
+        self.assertGreaterEqual(mt, mt)
+        self.assertFalse(af >= zu)
+
 
 if __name__ == "__main__":
     main()

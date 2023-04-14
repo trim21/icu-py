@@ -1290,8 +1290,33 @@ static long t_locale_hash(t_locale *self)
     return (long) self->object->hashCode();
 }
 
-DEFINE_RICHCMP(Locale, t_locale)
-
+static PyObject *t_locale_richcmp(t_locale *self, PyObject *arg, int op)
+{
+    Locale *object;
+    if (!parseArg(arg, "P", TYPE_CLASSID(Locale), &object))
+    {
+        switch (op) {
+          case Py_EQ: Py_RETURN_BOOL(*self->object == *object);
+          case Py_NE: Py_RETURN_BOOL(*self->object != *object);
+          case Py_LT: Py_RETURN_BOOL(strcmp(self->object->getName(), object->getName()) < 0);
+          case Py_LE: Py_RETURN_BOOL(strcmp(self->object->getName(), object->getName()) <= 0);
+          case Py_GT: Py_RETURN_BOOL(strcmp(self->object->getName(), object->getName()) > 0);
+          case Py_GE: Py_RETURN_BOOL(strcmp(self->object->getName(), object->getName()) >= 0);
+          default:
+            PyErr_SetNone(PyExc_NotImplementedError);
+            return NULL;
+        }
+    }
+    switch (op) {
+      case Py_EQ:
+        Py_RETURN_FALSE;
+      case Py_NE:
+        Py_RETURN_TRUE;
+      default:
+        PyErr_SetNone(PyExc_NotImplementedError);
+        return NULL;
+    }
+}
 
 /* ResourceBundle */
 
