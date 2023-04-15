@@ -5,6 +5,10 @@ Version 2.10.2 ->
   - added wrappers for UBreakIteratorType, ULine|SentenceBreakTag
   - added wrappers for DateTimePatternGenerator::set|getDateTimeFormat()
   - added wrappers for Precision::incrementExact()
+  - Locale objects can now be sorted (Fredrik Roubert)
+  - added wrapper for Calendar::inTemporalLeapYear()
+  - added wrappers for Calendar::get|getTemporalMonthCode()
+  - changed all Calendar setters to return self instead of None, setter chaining
   - 
 
 Version 2.10.1 -> 2.10.2

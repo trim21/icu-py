@@ -77,6 +77,11 @@ static PyObject *t_calendar_defaultCenturyStart(t_calendar *self);
 static PyObject *t_calendar_defaultCenturyStartYear(t_calendar *self);
 static PyObject *t_calendar_getLocale(t_calendar *self, PyObject *args);
 static PyObject *t_calendar_getLocaleID(t_calendar *self, PyObject *args);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
+static PyObject *t_calendar_inTemporalLeapYear(t_calendar *self);
+static PyObject *t_calendar_getTemporalMonthCode(t_calendar *self);
+static PyObject *t_calendar_setTemporalMonthCode(t_calendar *self, PyObject *arg);
+#endif
 static PyObject *t_calendar_createInstance(PyTypeObject *type, PyObject *args);
 static PyObject *t_calendar_getAvailableLocales(PyTypeObject *type);
 static PyObject *t_calendar_getNow(PyTypeObject *type);
@@ -116,6 +121,11 @@ static PyMethodDef t_calendar_methods[] = {
     DECLARE_METHOD(t_calendar, defaultCenturyStartYear, METH_NOARGS),
     DECLARE_METHOD(t_calendar, getLocale, METH_VARARGS),
     DECLARE_METHOD(t_calendar, getLocaleID, METH_VARARGS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
+    DECLARE_METHOD(t_calendar, inTemporalLeapYear, METH_NOARGS),
+    DECLARE_METHOD(t_calendar, getTemporalMonthCode, METH_NOARGS),
+    DECLARE_METHOD(t_calendar, setTemporalMonthCode, METH_O),
+#endif
     DECLARE_METHOD(t_calendar, createInstance, METH_VARARGS | METH_CLASS),
     DECLARE_METHOD(t_calendar, getAvailableLocales, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_calendar, getNow, METH_NOARGS | METH_CLASS),
@@ -170,7 +180,7 @@ static PyObject *t_calendar_setTime(t_calendar *self, PyObject *arg)
     if (!parseArg(arg, "D", &date))
     {
         STATUS_CALL(self->object->setTime(date, status));
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "setTime", arg);
@@ -240,7 +250,7 @@ static PyObject *t_calendar_add(t_calendar *self, PyObject *args)
     if (!parseArgs(args, "ii", &field, &amount))
     {
         STATUS_CALL(self->object->add(field, amount, status));
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "add", args);
@@ -254,12 +264,12 @@ static PyObject *t_calendar_roll(t_calendar *self, PyObject *args)
     if (!parseArgs(args, "iB", &field, &up))
     {
         STATUS_CALL(self->object->roll(field, (UBool) up, status));
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
     if (!parseArgs(args, "ii", &field, &amount))
     {
         STATUS_CALL(self->object->roll(field, amount, status));
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "roll", args);
@@ -293,7 +303,7 @@ static PyObject *t_calendar_setTimeZone(t_calendar *self, PyObject *arg)
     if (!parseArg(arg, "P", TYPE_CLASSID(TimeZone), &tz))
     {
         self->object->setTimeZone(*tz); /* copied */
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "setTimeZone", arg);
@@ -320,7 +330,7 @@ static PyObject *t_calendar_setLenient(t_calendar *self, PyObject *arg)
     if (!parseArg(arg, "b", &b))
     {
         self->object->setLenient(b);
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "setLenient", arg);
@@ -343,7 +353,7 @@ static PyObject *t_calendar_setFirstDayOfWeek(t_calendar *self, PyObject *arg)
     if (!parseArg(arg, "i", &day))
     {
         self->object->setFirstDayOfWeek(day);
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "setFirstDayOfWeek", arg);
@@ -362,7 +372,7 @@ static PyObject *t_calendar_setMinimalDaysInFirstWeek(t_calendar *self,
     if (!parseArg(arg, "i", &days))
     {
         self->object->setMinimalDaysInFirstWeek(days);
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "setMinimalDaysInFirstWeek", arg);
@@ -473,21 +483,21 @@ static PyObject *t_calendar_set(t_calendar *self, PyObject *args)
         if (!parseArgs(args, "ii", &field, &value))
         {
             self->object->set((UCalendarDateFields) field, value);
-            Py_RETURN_NONE;
+            Py_RETURN_SELF();
         }
         break;
       case 3:
         if (!parseArgs(args, "iii", &year, &month, &date))
         {
             self->object->set(year, month, date);
-            Py_RETURN_NONE;
+            Py_RETURN_SELF();
         }
         break;
       case 5:
         if (!parseArgs(args, "iiiii", &year, &month, &date, &hour, &minute))
         {
             self->object->set(year, month, date, hour, minute);
-            Py_RETURN_NONE;
+            Py_RETURN_SELF();
         }
         break;
       case 6:
@@ -495,7 +505,7 @@ static PyObject *t_calendar_set(t_calendar *self, PyObject *args)
                        &second))
         {
             self->object->set(year, month, date, hour, minute, second);
-            Py_RETURN_NONE;
+            Py_RETURN_SELF();
         }
         break;
     }
@@ -510,12 +520,12 @@ static PyObject *t_calendar_clear(t_calendar *self, PyObject *args)
     switch (PyTuple_Size(args)) {
       case 0:
         self->object->clear();
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
       case 1:
         if (!parseArgs(args, "i", &field))
         {
             self->object->clear(field);
-            Py_RETURN_NONE;
+            Py_RETURN_SELF();
         }
         break;
     }
@@ -583,6 +593,38 @@ static PyObject *t_calendar_getLocaleID(t_calendar *self, PyObject *args)
 
     return PyErr_SetArgsError((PyObject *) self, "getLocaleID", args);
 }
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
+
+static PyObject *t_calendar_inTemporalLeapYear(t_calendar *self) {
+    UBool result;
+    STATUS_CALL(result = self->object->inTemporalLeapYear(status));
+    Py_RETURN_BOOL(result);
+}
+
+static PyObject *t_calendar_getTemporalMonthCode(t_calendar *self)
+{
+    const char *code;
+    STATUS_CALL(code = self->object->getTemporalMonthCode(status));
+
+    return PyString_FromString(code);
+}
+
+static PyObject *t_calendar_setTemporalMonthCode(t_calendar *self, PyObject *arg)
+{
+    charsArg code;
+
+    if (!parseArg(arg, "n", &code))
+    {
+        STATUS_CALL(self->object->setTemporalMonthCode(code, status));
+        Py_RETURN_SELF();
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "setTemporalMonthCode", arg);
+}
+
+#endif  // ICU >= 73
+
 
 static PyObject *t_calendar_createInstance(PyTypeObject *type, PyObject *args)
 {
@@ -767,7 +809,7 @@ static PyObject *t_gregoriancalendar_setGregorianChange(t_gregoriancalendar *sel
     if (!parseArg(arg, "D", &date))
     {
         STATUS_CALL(self->object->setGregorianChange(date, status));
-        Py_RETURN_NONE;
+        Py_RETURN_SELF();
     }
 
     return PyErr_SetArgsError((PyObject *) self, "setGregorianChange", arg);
