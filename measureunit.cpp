@@ -287,6 +287,10 @@ static PyObject *t_measureunit_createQuarter(PyTypeObject *type);
 static PyObject *t_measureunit_createTonne(PyTypeObject *type);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
+static PyObject *t_measureunit_createBeaufort(PyTypeObject *type);
+#endif
+
 static PyMethodDef t_measureunit_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
     DECLARE_METHOD(t_measureunit, getType, METH_NOARGS),
@@ -520,6 +524,9 @@ static PyMethodDef t_measureunit_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
     DECLARE_METHOD(t_measureunit, createQuarter, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_measureunit, createTonne, METH_NOARGS | METH_CLASS),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
+    DECLARE_METHOD(t_measureunit, createBeaufort, METH_NOARGS | METH_CLASS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -1142,6 +1149,10 @@ createMU(Item)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
 createMU(Quarter)
 createMU(Tonne)
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
+createMU(Beaufort)
 #endif
 
 /* Measure */

@@ -865,6 +865,9 @@ void _init_calendar(PyObject *m)
     INSTALL_ENUM(UCalendarDateFields, "JULIAN_DAY", UCAL_JULIAN_DAY);
     INSTALL_ENUM(UCalendarDateFields, "MILLISECONDS_IN_DAY", UCAL_MILLISECONDS_IN_DAY);
     INSTALL_ENUM(UCalendarDateFields, "DAY_OF_MONTH", UCAL_DAY_OF_MONTH);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
+    INSTALL_ENUM(UCalendarDateFields, "ORDINAL_MONTH", UCAL_ORDINAL_MONTH);
+#endif
 
     INSTALL_ENUM(UCalendarDaysOfWeek, "SUNDAY", UCAL_SUNDAY);
     INSTALL_ENUM(UCalendarDaysOfWeek, "MONDAY", UCAL_MONDAY);

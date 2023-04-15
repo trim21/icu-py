@@ -1,5 +1,5 @@
-Version 2.10.2 ->
-------------------------
+Version 2.10.2 -> 2.11
+----------------------
   - fixed bug PluralFormat.format accepting python strings, which are immutable
   - fixed bug with UWordBreak wrapping wrong enum (UBreakIteratorType)
   - added wrappers for UBreakIteratorType, ULine|SentenceBreakTag
@@ -9,7 +9,6 @@ Version 2.10.2 ->
   - added wrapper for Calendar::inTemporalLeapYear()
   - added wrappers for Calendar::get|getTemporalMonthCode()
   - changed all Calendar setters to return self instead of None, setter chaining
-  - 
 
 Version 2.10.1 -> 2.10.2
 ------------------------
