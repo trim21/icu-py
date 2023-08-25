@@ -39,6 +39,22 @@ class TestRegexMatcher(TestCase):
         matcher.reset(s)
         self.assertTrue(matcher.matches())
 
+
+        s = "དཔལ་དགོན་ཀླུ་གྲུབ།"
+        us = UnicodeString(s)
+        matcher = RegexMatcher('\\X', 0)
+        matcher.reset(us)
+        results = []
+        while matcher.find():
+            results.append(matcher.group())
+        self.assertEqual(['ད', 'པ', 'ལ', '་', 'ད', 'གོ', 'ན', '་', 'ཀླུ', '་', 'གྲུ', 'བ', '།'], results)
+
+        matcher.reset(s)
+        results = []
+        while matcher.find():
+            results.append(matcher.group())
+        self.assertEqual(['ད', 'པ', 'ལ', '་', 'ད', 'གོ', 'ན', '་', 'ཀླུ', '་', 'གྲུ', 'བ', '།'], results)
+
         
 if __name__ == "__main__":
     main()
