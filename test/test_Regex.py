@@ -39,10 +39,9 @@ class TestRegexMatcher(TestCase):
         matcher.reset(s)
         self.assertTrue(matcher.matches())
 
-
         s = "དཔལ་དགོན་ཀླུ་གྲུབ།"
         us = UnicodeString(s)
-        matcher = RegexMatcher('\\X', 0)
+        matcher = RegexMatcher('\\X')
         matcher.reset(us)
         results = []
         while matcher.find():
