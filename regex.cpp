@@ -406,6 +406,18 @@ static int t_regexmatcher_init(t_regexmatcher *self,
     uint32_t flags;
 
     switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "W", &u0, &self->re))
+        {
+            INT_STATUS_CALL(matcher = new RegexMatcher(*u0, 0, status));
+            self->object = matcher;
+            self->pattern = NULL;
+            self->input = NULL;
+            self->flags = T_OWNED;
+            break;
+        }
+        PyErr_SetArgsError((PyObject *) self, "__init__", args);
+        return -1;
       case 2:
         if (!parseArgs(args, "Wi", &u0, &self->re, &flags))
         {
@@ -592,7 +604,7 @@ static PyObject *t_regexmatcher_end(t_regexmatcher *self, PyObject *args)
 static PyObject *t_regexmatcher_reset(t_regexmatcher *self, PyObject *args)
 {
     int32_t index;
-    UnicodeString *u, _u;
+    UnicodeString *u;
 
     switch (PyTuple_Size(args)) {
       case 0:
@@ -604,7 +616,7 @@ static PyObject *t_regexmatcher_reset(t_regexmatcher *self, PyObject *args)
             STATUS_CALL(self->object->reset(index, status));
             Py_RETURN_SELF();
         }
-        if (!parseArgs(args, "S", &u, &_u))
+        if (!parseArgs(args, "W", &u, &self->input))
         {
             self->object->reset(*u);
             Py_RETURN_SELF();
