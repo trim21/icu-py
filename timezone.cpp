@@ -37,6 +37,9 @@
 DECLARE_CONSTANTS_TYPE(DateRuleType)
 DECLARE_CONSTANTS_TYPE(TimeRuleType)
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+DECLARE_CONSTANTS_TYPE(UTimeZoneNameType)
+#endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
 DECLARE_CONSTANTS_TYPE(UTimeZoneLocalOption)
 #endif
@@ -351,20 +354,63 @@ static PyObject *t_vtimezone_createVTimeZoneFromBasicTimeZone(PyTypeObject *type
 #endif
 
 static PyMethodDef t_vtimezone_methods[] = {
-  DECLARE_METHOD(t_vtimezone, getTZURL, METH_NOARGS),
-  DECLARE_METHOD(t_vtimezone, getLastModified, METH_NOARGS),
-  DECLARE_METHOD(t_vtimezone, write, METH_VARARGS),
-  DECLARE_METHOD(t_vtimezone, writeSimple, METH_O),
-  DECLARE_METHOD(t_vtimezone, createVTimeZone, METH_O | METH_CLASS),
-  DECLARE_METHOD(t_vtimezone, createVTimeZoneByID, METH_O | METH_CLASS),
+    DECLARE_METHOD(t_vtimezone, getTZURL, METH_NOARGS),
+    DECLARE_METHOD(t_vtimezone, getLastModified, METH_NOARGS),
+    DECLARE_METHOD(t_vtimezone, write, METH_VARARGS),
+    DECLARE_METHOD(t_vtimezone, writeSimple, METH_O),
+    DECLARE_METHOD(t_vtimezone, createVTimeZone, METH_O | METH_CLASS),
+    DECLARE_METHOD(t_vtimezone, createVTimeZoneByID, METH_O | METH_CLASS),
 #if U_ICU_VERSION_HEX >= 0x04060000
-  DECLARE_METHOD(t_vtimezone, createVTimeZoneFromBasicTimeZone, METH_O | METH_CLASS),
+    DECLARE_METHOD(t_vtimezone, createVTimeZoneFromBasicTimeZone, METH_O | METH_CLASS),
 #endif
     { NULL, NULL, 0, NULL }
 };
 
 DECLARE_TYPE(VTimeZone, t_vtimezone, BasicTimeZone, VTimeZone,
              abstract_init, NULL)
+
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+
+/* TimeZoneNames */
+
+class t_timezonenames : public _wrapper {
+public:
+    TimeZoneNames *object;
+};
+
+static PyObject *t_timezonenames_getAvailableMetaZoneIDs(t_timezonenames *self, PyObject *args);
+static PyObject *t_timezonenames_getMetaZoneID(t_timezonenames *self, PyObject *args);
+static PyObject *t_timezonenames_getReferenceZoneID(t_timezonenames *self, PyObject *args);
+static PyObject *t_timezonenames_getMetaZoneDisplayName(t_timezonenames *self, PyObject *args);
+static PyObject *t_timezonenames_getTimeZoneDisplayName(t_timezonenames *self, PyObject *args);
+static PyObject *t_timezonenames_getExemplarLocationName(t_timezonenames *self, PyObject *arg);
+static PyObject *t_timezonenames_getDisplayName(t_timezonenames *self, PyObject *args);
+
+static PyObject *t_timezonenames_createInstance(PyTypeObject *type, PyObject *arg);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
+static PyObject *t_timezonenames_createTZDBInstance(PyTypeObject *type, PyObject *arg);
+#endif
+
+static PyMethodDef t_timezonenames_methods[] = {
+    DECLARE_METHOD(t_timezonenames, getAvailableMetaZoneIDs, METH_VARARGS),
+    DECLARE_METHOD(t_timezonenames, getMetaZoneID, METH_VARARGS),
+    DECLARE_METHOD(t_timezonenames, getReferenceZoneID, METH_VARARGS),
+    DECLARE_METHOD(t_timezonenames, getMetaZoneDisplayName, METH_VARARGS),
+    DECLARE_METHOD(t_timezonenames, getTimeZoneDisplayName, METH_VARARGS),
+    DECLARE_METHOD(t_timezonenames, getExemplarLocationName, METH_O),
+    DECLARE_METHOD(t_timezonenames, getDisplayName, METH_VARARGS),
+    DECLARE_METHOD(t_timezonenames, createInstance, METH_O | METH_CLASS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
+    DECLARE_METHOD(t_timezonenames, createTZDBInstance, METH_O | METH_CLASS),
+#endif
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(TimeZoneNames, t_timezonenames, UObject, TimeZoneNames,
+             abstract_init, NULL)
+
+#endif  // ICU >= 50
 
 
 /* TimeZoneRule */
@@ -1444,7 +1490,7 @@ static PyObject *t_basictimezone_getOffsetFromLocal(t_basictimezone *self,
     return PyErr_SetArgsError((PyObject *) self, "getOffsetFromLocal", args);
 }
 
-#endif  // ICU 69
+#endif  // ICU >= 69
 
 
 /* SimpleTimeZone */
@@ -1793,6 +1839,192 @@ static PyObject *t_vtimezone_createVTimeZoneFromBasicTimeZone(
 }
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+
+/* TimeZoneNames */
+
+static PyObject *t_timezonenames_getAvailableMetaZoneIDs(t_timezonenames *self, PyObject *args)
+{
+    UnicodeString *id, _id;
+    StringEnumeration *se;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        STATUS_CALL(se = self->object->getAvailableMetaZoneIDs(status));
+        return wrap_StringEnumeration(se, T_OWNED);
+
+      case 1:
+        if (!parseArgs(args, "S", &id, &_id))
+        {
+            STATUS_CALL(se = self->object->getAvailableMetaZoneIDs(*id, status));
+            return wrap_StringEnumeration(se, T_OWNED);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getAvailableMetaZoneIDs", args);
+}
+
+static PyObject *t_timezonenames_getMetaZoneID(t_timezonenames *self, PyObject *args)
+{
+    UnicodeString *tzID, _tzID;
+    UDate date;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "SD", &tzID, &_tzID, &date))
+        {
+            UnicodeString mzID;
+            self->object->getMetaZoneID(*tzID, date, mzID);
+            return PyUnicode_FromUnicodeString(&mzID);
+        }
+    }
+    
+    return PyErr_SetArgsError((PyObject *) self, "getMetaZoneID", args);
+}
+
+static PyObject *t_timezonenames_getReferenceZoneID(t_timezonenames *self, PyObject *args)
+{
+    UnicodeString *mzID, _mzID;
+    charsArg region;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "Sn", &mzID, &_mzID, &region))
+        {
+            UnicodeString tzID;
+            self->object->getReferenceZoneID(*mzID, region, tzID);
+            return PyUnicode_FromUnicodeString(&tzID);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getReferenceZoneID", args);
+}
+
+static PyObject *t_timezonenames_getMetaZoneDisplayName(t_timezonenames *self, PyObject *args)
+{
+    UnicodeString *mzID, _mzID;
+    UTimeZoneNameType type;
+
+    switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "S", &mzID, &_mzID))
+        {
+            UnicodeString name;
+            self->object->getMetaZoneDisplayName(*mzID, UTZNM_UNKNOWN, name);
+            return PyUnicode_FromUnicodeString(&name);
+        }
+      case 2:
+        if (!parseArgs(args, "Si", &mzID, &_mzID, &type))
+        {
+            UnicodeString name;
+            self->object->getMetaZoneDisplayName(*mzID, type, name);
+            return PyUnicode_FromUnicodeString(&name);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getMetaZoneDisplayName", args);
+}
+
+static PyObject *t_timezonenames_getTimeZoneDisplayName(t_timezonenames *self, PyObject *args)
+{
+    UnicodeString *tzID, _tzID;
+    UTimeZoneNameType type;
+
+    switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "S", &tzID, &_tzID))
+        {
+            UnicodeString name;
+            self->object->getTimeZoneDisplayName(*tzID, UTZNM_UNKNOWN, name);
+            return PyUnicode_FromUnicodeString(&name);
+        }
+      case 2:
+        if (!parseArgs(args, "Si", &tzID, &_tzID, &type))
+        {
+            UnicodeString name;
+            self->object->getTimeZoneDisplayName(*tzID, type, name);
+            return PyUnicode_FromUnicodeString(&name);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getTimeZoneDisplayName", args);
+}
+
+static PyObject *t_timezonenames_getExemplarLocationName(t_timezonenames *self, PyObject *arg)
+{
+    UnicodeString *tzID, _tzID;
+
+    if (!parseArg(arg, "S", &tzID, &_tzID))
+    {
+        UnicodeString name;
+        self->object->getExemplarLocationName(*tzID, name);
+        return PyUnicode_FromUnicodeString(&name);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getExemplarLocationName", arg);
+}
+
+static PyObject *t_timezonenames_getDisplayName(t_timezonenames *self, PyObject *args)
+{
+    UnicodeString *tzID, _tzID;
+    UTimeZoneNameType type;
+    UDate date;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "SD", &tzID, &_tzID, &date))
+        {
+            UnicodeString name;
+            self->object->getDisplayName(*tzID, UTZNM_UNKNOWN, date, name);
+            return PyUnicode_FromUnicodeString(&name);
+        }
+      case 3:
+        if (!parseArgs(args, "SiD", &tzID, &_tzID, &type, &date))
+        {
+            UnicodeString name;
+            self->object->getDisplayName(*tzID, type, date, name);
+            return PyUnicode_FromUnicodeString(&name);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getDisplayName", args);
+}
+
+static PyObject *t_timezonenames_createInstance(PyTypeObject *type, PyObject *arg)
+{
+    TimeZoneNames *tzn;
+    Locale *locale;
+
+    if (!parseArg(arg, "P", TYPE_CLASSID(Locale), &locale))
+    {
+        STATUS_CALL(tzn = TimeZoneNames::createInstance(*locale, status));
+        return wrap_TimeZoneNames(tzn, T_OWNED);
+    }
+
+    return PyErr_SetArgsError(type, "createInstance", arg);
+}
+
+#endif // ICU >= 50
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
+
+static PyObject *t_timezonenames_createTZDBInstance(PyTypeObject *type, PyObject *arg)
+{
+    TimeZoneNames *tzn;
+    Locale *locale;
+
+    if (!parseArg(arg, "P", TYPE_CLASSID(Locale), &locale))
+    {
+        STATUS_CALL(tzn = TimeZoneNames::createTZDBInstance(*locale, status));
+        return wrap_TimeZoneNames(tzn, T_OWNED);
+    }
+
+    return PyErr_SetArgsError(type, "createInstance", arg);
+}
+
+#endif // ICU >= 54
+
 void _init_timezone(PyObject *m)
 {
     TimeZoneRuleType_.tp_str = (reprfunc) t_timezonerule_str;
@@ -1802,6 +2034,9 @@ void _init_timezone(PyObject *m)
 
     INSTALL_CONSTANTS_TYPE(DateRuleType, m);
     INSTALL_CONSTANTS_TYPE(TimeRuleType, m);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UTimeZoneNameType, m);
+#endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
     INSTALL_CONSTANTS_TYPE(UTimeZoneLocalOption, m);
 #endif
@@ -1816,6 +2051,22 @@ void _init_timezone(PyObject *m)
     REGISTER_TYPE(RuleBasedTimeZone, m);
     REGISTER_TYPE(SimpleTimeZone, m);
     REGISTER_TYPE(VTimeZone, m);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+    REGISTER_TYPE(TimeZoneNames, m);
+#endif
+    
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
+    INSTALL_ENUM(UTimeZoneNameType, "UNKNOWN", UTZNM_UNKNOWN);
+    INSTALL_ENUM(UTimeZoneNameType, "LONG_GENERIC", UTZNM_LONG_GENERIC);
+    INSTALL_ENUM(UTimeZoneNameType, "LONG_STANDARD", UTZNM_LONG_STANDARD);
+    INSTALL_ENUM(UTimeZoneNameType, "LONG_DAYLIGHT", UTZNM_LONG_DAYLIGHT);
+    INSTALL_ENUM(UTimeZoneNameType, "SHORT_GENERIC", UTZNM_SHORT_GENERIC);
+    INSTALL_ENUM(UTimeZoneNameType, "SHORT_STANDARD", UTZNM_SHORT_STANDARD);
+    INSTALL_ENUM(UTimeZoneNameType, "SHORT_DAYLIGHT", UTZNM_SHORT_DAYLIGHT);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
+    INSTALL_ENUM(UTimeZoneNameType, "EXEMPLAR_LOCATION", UTZNM_EXEMPLAR_LOCATION);
+#endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
     INSTALL_ENUM(UTimeZoneLocalOption, "FORMER", UCAL_TZ_LOCAL_FORMER);

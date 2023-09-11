@@ -1,6 +1,7 @@
 Version 2.11 ->
 ---------------
   - fixed bug in RegexMatcher.reset() not retaining ownership of string
+  - added wrappers for TimeZoneNames class
   - 
 
 Version 2.10.2 -> 2.11

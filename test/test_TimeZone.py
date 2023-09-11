@@ -88,5 +88,16 @@ class TestTimeZone(TestCase):
                          datetime.datetime(2020, 12, 19, 6, 0, tzinfo=pytz))
 
 
+class TestTimeZoneNames(TestCase):
+
+    def testGetAvailableMetaZoneIDs(self):
+        if ICU_VERSION >= '50.0':
+            tzn = TimeZoneNames.createInstance(Locale.getFrance())
+            ids = list(tzn.getAvailableMetaZoneIDs("America/Chicago"))
+            self.assertEqual(['America_Central'], ids)
+            ids = list(tzn.getAvailableMetaZoneIDs("Asia/Calcutta"))
+            self.assertEqual(['India'], ids)
+
+
 if __name__ == "__main__":
     main()

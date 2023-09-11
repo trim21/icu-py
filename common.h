@@ -219,6 +219,7 @@ typedef intintobjargproc ssizessizeobjargproc;
 #if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
 #include <unicode/listformatter.h>
 #include <unicode/gender.h>
+#include <unicode/tznames.h>
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)

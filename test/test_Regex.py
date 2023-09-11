@@ -44,15 +44,16 @@ class TestRegexMatcher(TestCase):
         matcher = RegexMatcher('\\X')
         matcher.reset(us)
         results = []
+        finds = ['ད', 'པ', 'ལ', '་', 'ད', 'གོ', 'ན', '་', 'ཀླུ', '་', 'གྲུ', 'བ', '།']
         while matcher.find():
             results.append(matcher.group())
-        self.assertEqual(['ད', 'པ', 'ལ', '་', 'ད', 'གོ', 'ན', '་', 'ཀླུ', '་', 'གྲུ', 'བ', '།'], results)
+        self.assertEqual(finds, results)
 
         matcher.reset(s)
         results = []
         while matcher.find():
             results.append(matcher.group())
-        self.assertEqual(['ད', 'པ', 'ལ', '་', 'ད', 'གོ', 'ན', '་', 'ཀླུ', '་', 'གྲུ', 'བ', '།'], results)
+        self.assertEqual(finds, results)
 
         
 if __name__ == "__main__":
