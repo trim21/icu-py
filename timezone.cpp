@@ -2051,7 +2051,7 @@ void _init_timezone(PyObject *m)
     REGISTER_TYPE(RuleBasedTimeZone, m);
     REGISTER_TYPE(SimpleTimeZone, m);
     REGISTER_TYPE(VTimeZone, m);
-#if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
+#if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
     REGISTER_TYPE(TimeZoneNames, m);
 #endif
     
