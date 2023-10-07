@@ -565,7 +565,7 @@ static PyObject *t_umemory_str(t_umemory *self)
     if (self->object)
     {
         char buf[32];
-        sprintf(buf, "0x%llx", (unsigned long long) (intptr_t) self->object);
+        snprintf(buf, sizeof(buf), "0x%llx", (unsigned long long) (intptr_t) self->object);
 
         return PyString_FromString(buf);
     }
@@ -641,10 +641,10 @@ static PyObject *t_uobject_str(t_uobject *self)
     {
         char buf[32];
 #if U_ICU_VERSION_HEX < 0x04060000
-        sprintf(buf, "0x%lx",
+        snprintf(buf, sizeof(buf), "0x%lx",
 		(unsigned long) self->object->getDynamicClassID());
 #else
-        sprintf(buf, "0x%llx",
+        snprintf(buf, sizeof(buf), "0x%llx",
 		(unsigned long long) (intptr_t) self->object);
 #endif
         return PyString_FromString(buf);
