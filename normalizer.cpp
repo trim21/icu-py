@@ -128,6 +128,10 @@ static PyObject *t_normalizer2_getNFKDInstance(PyTypeObject *type);
 static PyObject *t_normalizer2_getNFKCCasefoldInstance(PyTypeObject *type);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+static PyObject *t_normalizer2_getNFKCSimpleCasefoldInstance(PyTypeObject *type);
+#endif
+
 static PyMethodDef t_normalizer2_methods[] = {
     DECLARE_METHOD(t_normalizer2, normalize, METH_VARARGS),
     DECLARE_METHOD(t_normalizer2, normalizeSecondAndAppend, METH_VARARGS),
@@ -145,6 +149,9 @@ static PyMethodDef t_normalizer2_methods[] = {
     DECLARE_METHOD(t_normalizer2, getNFKCInstance, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_normalizer2, getNFKDInstance, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_normalizer2, getNFKCCasefoldInstance, METH_NOARGS | METH_CLASS),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+    DECLARE_METHOD(t_normalizer2, getNFKCSimpleCasefoldInstance, METH_NOARGS | METH_CLASS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -730,6 +737,17 @@ static PyObject *t_normalizer2_getNFKCCasefoldInstance(PyTypeObject *type)
 }
 
 #endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+
+static PyObject *t_normalizer2_getNFKCSimpleCasefoldInstance(PyTypeObject *type) {
+    const Normalizer2 *normalizer;
+
+    STATUS_CALL(normalizer = Normalizer2::getNFKCSimpleCasefoldInstance(status));
+    return wrap_Normalizer2((Normalizer2 *) normalizer, 0);
+}
+
+#endif    
 
 /* FilteredNormalizer2 */
 

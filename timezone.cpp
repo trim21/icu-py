@@ -219,6 +219,9 @@ static PyObject *t_timezone_getWindowsID(PyTypeObject *type, PyObject *arg);
 #endif
 static PyObject *t_timezone_createDefault(PyTypeObject *type);
 static PyObject *t_timezone_setDefault(PyTypeObject *type, PyObject *arg);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+static PyObject *t_timezone_getIanaID(PyTypeObject *type, PyObject *args);
+#endif
 
 static PyMethodDef t_timezone_methods[] = {
     DECLARE_METHOD(t_timezone, getOffset, METH_VARARGS),
@@ -245,6 +248,9 @@ static PyMethodDef t_timezone_methods[] = {
 #endif
     DECLARE_METHOD(t_timezone, createDefault, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_timezone, setDefault, METH_O | METH_CLASS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+    DECLARE_METHOD(t_timezone, getIanaID, METH_O | METH_CLASS),
+#endif
     { NULL, NULL, 0, NULL }
 };
 
@@ -1222,6 +1228,25 @@ static PyObject *t_timezone_getWindowsID(PyTypeObject *type, PyObject *arg)
 
     return PyErr_SetArgsError(type, "getWindowsID", arg);
 }
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+
+static PyObject *t_timezone_getIanaID(PyTypeObject *type, PyObject *arg)
+{
+    UnicodeString *id, _id;
+
+    if (!parseArg(arg, "S", &id, &_id))
+    {
+        UnicodeString ianaId;
+
+        STATUS_CALL(TimeZone::getIanaID(*id, ianaId, status));
+        return PyUnicode_FromUnicodeString(&ianaId);
+    }
+
+    return PyErr_SetArgsError(type, "getIanaID", arg);
+}
+
 #endif
 
 static PyObject *t_timezone_createDefault(PyTypeObject *type)

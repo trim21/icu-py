@@ -642,10 +642,10 @@ static PyObject *t_uobject_str(t_uobject *self)
         char buf[32];
 #if U_ICU_VERSION_HEX < 0x04060000
         snprintf(buf, sizeof(buf), "0x%lx",
-		(unsigned long) self->object->getDynamicClassID());
+                 (unsigned long) self->object->getDynamicClassID());
 #else
         snprintf(buf, sizeof(buf), "0x%llx",
-		(unsigned long long) (intptr_t) self->object);
+                 (unsigned long long) (intptr_t) self->object);
 #endif
         return PyString_FromString(buf);
     }

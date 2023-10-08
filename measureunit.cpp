@@ -291,6 +291,10 @@ static PyObject *t_measureunit_createTonne(PyTypeObject *type);
 static PyObject *t_measureunit_createBeaufort(PyTypeObject *type);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+static PyObject *t_measureunit_createGasolineEnergyDensity(PyTypeObject *type);
+#endif
+
 static PyMethodDef t_measureunit_methods[] = {
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
     DECLARE_METHOD(t_measureunit, getType, METH_NOARGS),
@@ -527,6 +531,9 @@ static PyMethodDef t_measureunit_methods[] = {
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
     DECLARE_METHOD(t_measureunit, createBeaufort, METH_NOARGS | METH_CLASS),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+    DECLARE_METHOD(t_measureunit, createGasolineEnergyDensity, METH_NOARGS | METH_CLASS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -1153,6 +1160,10 @@ createMU(Tonne)
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(73, 0, 0)
 createMU(Beaufort)
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+createMU(GasolineEnergyDensity)
 #endif
 
 /* Measure */

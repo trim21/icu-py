@@ -60,6 +60,12 @@ static PyObject *t_spoofchecker_getInclusionUnicodeSet(PyTypeObject *type);
 static PyObject *t_spoofchecker_getRecommendedUnicodeSet(PyTypeObject *type);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+static PyObject *t_spoofchecker_getBidiSkeleton(t_spoofchecker *self, PyObject *arg);
+static PyObject *t_spoofchecker_areBidiConfusable(t_spoofchecker *self, PyObject *arg);
+#endif
+
+
 static PyMethodDef t_spoofchecker_methods[] = {
     DECLARE_METHOD(t_spoofchecker, setChecks, METH_O),
     DECLARE_METHOD(t_spoofchecker, getChecks, METH_NOARGS),
@@ -75,6 +81,10 @@ static PyMethodDef t_spoofchecker_methods[] = {
     DECLARE_METHOD(t_spoofchecker, getRestrictionLevel, METH_NOARGS),
     DECLARE_METHOD(t_spoofchecker, getInclusionUnicodeSet, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_spoofchecker, getRecommendedUnicodeSet, METH_NOARGS | METH_CLASS),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+    DECLARE_METHOD(t_spoofchecker, getBidiSkeleton, METH_VARARGS),
+    DECLARE_METHOD(t_spoofchecker, areBidiConfusable, METH_VARARGS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -311,6 +321,54 @@ static PyObject *t_spoofchecker_getRecommendedUnicodeSet(PyTypeObject *type)
 }
 
 #endif  /* 51 */
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+
+static PyObject *t_spoofchecker_getBidiSkeleton(t_spoofchecker *self, PyObject *args)
+{
+    UBiDiDirection direction;
+    UnicodeString *id, _id;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "iS", &direction, &id, &_id))
+        {
+            UErrorCode status = U_ZERO_ERROR;
+            UnicodeString dest;
+
+            uspoof_getBidiSkeletonUnicodeString(self->object, direction, *id, dest, &status);
+            if (U_SUCCESS(status))
+                return PyUnicode_FromUnicodeString(&dest);
+
+            return ICUException(status).reportError();
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getBidiSkeleton", args);
+}
+
+static PyObject *t_spoofchecker_areBidiConfusable(t_spoofchecker *self, PyObject *args)
+{
+    UBiDiDirection direction;
+    UnicodeString *s1, _s1, *s2, _s2;
+
+    switch (PyTuple_Size(args)) {
+      case 3:
+        if (!parseArgs(args, "iSS", &direction, &s1, &_s1, &s2, &_s2))
+        {
+            UErrorCode status = U_ZERO_ERROR;
+            uint32_t result = uspoof_areBidiConfusableUnicodeString(self->object, direction, *s1, *s2, &status);
+            if (U_SUCCESS(status))
+                return PyInt_FromLong((int32_t) result);
+
+            return ICUException(status).reportError();
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "areBidiConfusable", args);
+}
+
+#endif /* 74 */
 
 #endif  /* 4.2 */
 
