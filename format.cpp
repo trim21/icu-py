@@ -44,6 +44,11 @@
     DECLARE_CONSTANTS_TYPE(UFieldCategory)
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0)
+    DECLARE_CONSTANTS_TYPE(UListFormatterType)
+    DECLARE_CONSTANTS_TYPE(UListFormatterWidth)
+#endif
+
 /* FieldPosition */
 
 class t_fieldposition : public _wrapper {
@@ -1986,6 +1991,18 @@ static PyObject *t_listformatter_createInstance(PyTypeObject *type,
             return wrap_ListFormatter(formatter, T_OWNED);
         }
         break;
+#if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0)
+      case 3: {
+        UListFormatterType type;
+        UListFormatterWidth width;
+        if (!parseArgs(args, "Pii", TYPE_CLASSID(Locale), &locale, &type, &width))
+        {
+            STATUS_CALL(formatter = ListFormatter::createInstance(
+                *locale, type, width, status));
+            return wrap_ListFormatter(formatter, T_OWNED);
+        }
+      }
+#endif
     }
 
     return PyErr_SetArgsError(type, "createInstance", args);
@@ -2364,5 +2381,17 @@ void _init_format(PyObject *m)
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(69, 0, 0)
     INSTALL_ENUM(UFieldCategory, "NUMBER_RANGE_SPAN", UFIELD_CATEGORY_NUMBER_RANGE_SPAN);
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UListFormatterType, m);
+    INSTALL_ENUM(UListFormatterType, "AND", ULISTFMT_TYPE_AND);
+    INSTALL_ENUM(UListFormatterType, "OR", ULISTFMT_TYPE_OR);
+    INSTALL_ENUM(UListFormatterType, "UNITS", ULISTFMT_TYPE_UNITS);
+
+    INSTALL_CONSTANTS_TYPE(UListFormatterWidth, m);
+    INSTALL_ENUM(UListFormatterWidth, "WIDE", ULISTFMT_WIDTH_WIDE);
+    INSTALL_ENUM(UListFormatterWidth, "SHORT", ULISTFMT_WIDTH_SHORT);
+    INSTALL_ENUM(UListFormatterWidth, "NARROW", ULISTFMT_WIDTH_NARROW);
 #endif
 }

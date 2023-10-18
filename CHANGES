@@ -1,10 +1,11 @@
 Version 2.11 ->
----------------
+--------------------
   - fixed bug in RegexMatcher.reset() not retaining ownership of string
   - added wrappers for TimeZoneNames class
   - added wrapper for TimeZone.getIanaID()
   - added wrapper for Normalizer2.getNFKCSimpleCasefoldInstance()
-  - added wrappers for USpoofChecker.getBidiSkeleton|areBidiConfusable
+  - added wrappers for SpoofChecker.getBidiSkeleton(),areBidiConfusable()
+  - added wrappers for ListFormatter.createInstance(locale, type, width)
   - 
 
 Version 2.10.2 -> 2.11
