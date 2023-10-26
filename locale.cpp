@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #if defined(_MSC_VER) || defined(__WIN32)
 #include <windows.h>
