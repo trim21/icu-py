@@ -8,7 +8,7 @@ except ImportError:
 
 from distutils.spawn import find_executable
 
-VERSION = '2.11'
+VERSION = '2.12'
 ICU_MAX_MAJOR_VERSION = '74'  # max supported major version of ICU
 
 try:

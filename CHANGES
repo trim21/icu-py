@@ -1,4 +1,4 @@
-Version 2.11 ->
+Version 2.11 -> 2.12
 --------------------
   - fixed bug in RegexMatcher.reset() not retaining ownership of string
   - added wrappers for TimeZoneNames class
@@ -6,7 +6,7 @@ Version 2.11 ->
   - added wrapper for Normalizer2.getNFKCSimpleCasefoldInstance()
   - added wrappers for SpoofChecker.getBidiSkeleton(),areBidiConfusable()
   - added wrappers for ListFormatter.createInstance(locale, type, width)
-  - 
+  - added support for ICU 74.1
 
 Version 2.10.2 -> 2.11
 ----------------------
