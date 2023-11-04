@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2004-2019 Open Source Applications Foundation.
+ * Copyright (c) 2004-2023 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,11 +23,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #if defined(_MSC_VER) || defined(__WIN32)
 #include <windows.h>
 #else
+#include <unistd.h>
 #include <sys/fcntl.h>
 #include <sys/stat.h>
 #include <sys/mman.h>

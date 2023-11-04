@@ -1,3 +1,8 @@
+Version 2.12 ->
+---------------
+  - fixed build issues on Windows
+  - 
+
 Version 2.11 -> 2.12
 --------------------
   - fixed bug in RegexMatcher.reset() not retaining ownership of string
