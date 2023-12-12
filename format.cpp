@@ -136,10 +136,8 @@ public:
 };
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
-
 static int t_measureformat_init(t_measureformat *self,
                                 PyObject *args, PyObject *kwds);
-
 #endif
 
 static PyObject *t_measureformat_createCurrencyFormat(PyTypeObject *type,
@@ -1064,7 +1062,6 @@ static PyObject *t_measureformat_getUnitDisplayName(t_measureformat *self,
 
     return PyErr_SetArgsError((PyObject *) self, "getUnitDisplayName", arg);
 }
-
 #endif // ICU >= 58
 
 

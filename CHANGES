@@ -2,6 +2,8 @@ Version 2.12 ->
 ---------------
   - fixed build issues on Windows
   - added wrappers for MeasureUnit(locale, width) and getUnitDisplayName()
+  - added wrappers for DateFormatSymbols.getEra|ZodiacNames()
+  - added wrappers for DateFormatSymbols.getZoneStrings()
   - 
 
 Version 2.11 -> 2.12

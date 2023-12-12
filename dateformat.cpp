@@ -100,6 +100,11 @@ static PyObject *t_dateformatsymbols_getLocalPatternChars(t_dateformatsymbols *s
 static PyObject *t_dateformatsymbols_setLocalPatternChars(t_dateformatsymbols *self, PyObject *arg);
 static PyObject *t_dateformatsymbols_getLocale(t_dateformatsymbols *self,
                                                PyObject *args);
+static PyObject *t_dateformatsymbols_getEraNames(t_dateformatsymbols *self);
+static PyObject *t_dateformatsymbols_getZoneStrings(t_dateformatsymbols *self);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
+static PyObject *t_dateformatsymbols_getZodiacNames(t_dateformatsymbols *self, PyObject *args);
+#endif
 
 static PyMethodDef t_dateformatsymbols_methods[] = {
     DECLARE_METHOD(t_dateformatsymbols, getEras, METH_NOARGS),
@@ -117,6 +122,11 @@ static PyMethodDef t_dateformatsymbols_methods[] = {
     DECLARE_METHOD(t_dateformatsymbols, getLocalPatternChars, METH_VARARGS),
     DECLARE_METHOD(t_dateformatsymbols, setLocalPatternChars, METH_O),
     DECLARE_METHOD(t_dateformatsymbols, getLocale, METH_VARARGS),
+    DECLARE_METHOD(t_dateformatsymbols, getEraNames, METH_NOARGS),
+    DECLARE_METHOD(t_dateformatsymbols, getZoneStrings, METH_NOARGS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
+    DECLARE_METHOD(t_dateformatsymbols, getZodiacNames, METH_VARARGS),
+#endif
     { NULL, NULL, 0, NULL }
 };
 
@@ -571,6 +581,9 @@ static PyObject *fromUnicodeStringArray(const UnicodeString *strings,
 {
     PyObject *list = PyList_New(len);
 
+    if (list == NULL)
+        return NULL;
+
     for (int i = 0; i < len; i++) {
         UnicodeString *u = (UnicodeString *) (strings + i);
         PyList_SET_ITEM(list, i, PyUnicode_FromUnicodeString(u));
@@ -817,6 +830,50 @@ static PyObject *t_dateformatsymbols_getLocale(t_dateformatsymbols *self,
     return PyErr_SetArgsError((PyObject *) self, "getLocale", args);
 }
 
+static PyObject *t_dateformatsymbols_getEraNames(t_dateformatsymbols *self)
+{
+    int count;
+    const UnicodeString *names = self->object->getEraNames(count);
+
+    return fromUnicodeStringArray(names, count, 0);
+}
+
+static PyObject *t_dateformatsymbols_getZoneStrings(t_dateformatsymbols *self)
+{
+    int rowCount, columnCount;
+    const UnicodeString **zoneStrings = self->object->getZoneStrings(rowCount, columnCount);
+    PyObject *rows = PyList_New(rowCount);
+
+    if (rows == NULL)
+        return NULL;
+
+    for (int i = 0; i < rowCount; ++i) {
+        PyList_SET_ITEM(rows, i, fromUnicodeStringArray(zoneStrings[i], columnCount, 0));
+    }
+
+    return rows;
+}
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(54, 0, 0)
+static PyObject *t_dateformatsymbols_getZodiacNames(t_dateformatsymbols *self, PyObject *args)
+{
+    DateFormatSymbols::DtContextType context;
+    DateFormatSymbols::DtWidthType width;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "ii", &context, &width))
+        {
+            int count;
+            const UnicodeString *names = self->object->getZodiacNames(count, context, width);
+            return fromUnicodeStringArray(names, count, 0);
+        }
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getZodiacNames", args);
+}
+#endif // ICU >= 54
 
 /* DateFormat */
 
