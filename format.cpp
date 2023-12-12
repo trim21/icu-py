@@ -36,6 +36,10 @@
     DECLARE_CONSTANTS_TYPE(UTimeUnitFormatStyle)
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
+    DECLARE_CONSTANTS_TYPE(UMeasureFormatWidth)
+#endif
+
 #if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
     DECLARE_CONSTANTS_TYPE(UListFormatterField)
 #endif
@@ -131,6 +135,13 @@ public:
     PyObject *locale;
 };
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
+
+static int t_measureformat_init(t_measureformat *self,
+                                PyObject *args, PyObject *kwds);
+
+#endif
+
 static PyObject *t_measureformat_createCurrencyFormat(PyTypeObject *type,
                                                       PyObject *args);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
@@ -143,6 +154,10 @@ static PyObject *t_measureformat_formatMeasures(t_measureformat *self,
 static PyObject *t_measureformat_formatMeasurePerUnit(t_measureformat *self,
                                                       PyObject *args);
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(58, 0, 0)
+static PyObject *t_measureformat_getUnitDisplayName(t_measureformat *self,
+                                                    PyObject *arg);
+#endif
 
 static PyMethodDef t_measureformat_methods[] = {
     DECLARE_METHOD(t_measureformat, createCurrencyFormat, METH_VARARGS | METH_CLASS),
@@ -152,6 +167,9 @@ static PyMethodDef t_measureformat_methods[] = {
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(55, 0, 0)
     DECLARE_METHOD(t_measureformat, formatMeasurePerUnit, METH_VARARGS),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(58, 0, 0)
+    DECLARE_METHOD(t_measureformat, getUnitDisplayName, METH_O),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -167,8 +185,13 @@ static void t_measureformat_dealloc(t_measureformat *self)
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
+DECLARE_TYPE(MeasureFormat, t_measureformat, Format, MeasureFormat,
+             t_measureformat_init, t_measureformat_dealloc)
+#else
 DECLARE_TYPE(MeasureFormat, t_measureformat, Format, MeasureFormat,
              abstract_init, t_measureformat_dealloc)
+#endif
 
 #if U_ICU_VERSION_HEX >= 0x04020000
 
@@ -828,6 +851,37 @@ DEFINE_RICHCMP(Format, t_format)
 
 /* MeasureFormat */
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
+
+static int t_measureformat_init(t_measureformat *self,
+                                PyObject *args, PyObject *kwds)
+{
+    UMeasureFormatWidth width;
+    Locale *locale;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "Pi", TYPE_CLASSID(Locale), &locale, &width))
+        {
+            INT_STATUS_CALL(self->object = new MeasureFormat(*locale, width, status));
+            self->flags = T_OWNED;
+            break;
+        }
+        PyErr_SetArgsError((PyObject *) self, "__init__", args);
+        return -1;
+      default:
+        PyErr_SetArgsError((PyObject *) self, "__init__", args);
+        return -1;
+    }
+
+    if (self->object)
+        return 0;
+
+    return -1;
+}
+
+#endif
+
 static PyObject *t_measureformat_createCurrencyFormat(PyTypeObject *type,
                                                       PyObject *args)
 {
@@ -994,6 +1048,24 @@ static PyObject *t_measureformat_formatMeasurePerUnit(t_measureformat *self,
     return PyErr_SetArgsError((PyObject *) self, "formatMeasurePerUnit", args);
 }
 #endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(58, 0, 0)
+static PyObject *t_measureformat_getUnitDisplayName(t_measureformat *self,
+                                                    PyObject *arg)
+{
+    MeasureUnit *unit;
+    UnicodeString u;
+
+    if (!parseArg(arg, "P", TYPE_CLASSID(MeasureUnit), &unit))
+    {
+        STATUS_CALL(u = self->object->getUnitDisplayName(*unit, status));
+        return PyUnicode_FromUnicodeString(&u);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getUnitDisplayName", arg);
+}
+
+#endif // ICU >= 58
 
 
 #if U_ICU_VERSION_HEX >= 0x04020000
@@ -2361,6 +2433,14 @@ void _init_format(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UTimeUnitFormatStyle, m);
     INSTALL_ENUM(UTimeUnitFormatStyle, "FULL", UTMUTFMT_FULL_STYLE);
     INSTALL_ENUM(UTimeUnitFormatStyle, "ABBREVIATED", UTMUTFMT_ABBREVIATED_STYLE);
+#endif
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(53, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UMeasureFormatWidth, m)
+    INSTALL_ENUM(UMeasureFormatWidth, "WIDE", UMEASFMT_WIDTH_WIDE);
+    INSTALL_ENUM(UMeasureFormatWidth, "SHORT", UMEASFMT_WIDTH_SHORT);
+    INSTALL_ENUM(UMeasureFormatWidth, "NARROW", UMEASFMT_WIDTH_NARROW);
+    INSTALL_ENUM(UMeasureFormatWidth, "NUMERIC", UMEASFMT_WIDTH_NUMERIC);
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)

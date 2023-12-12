@@ -1,6 +1,7 @@
 Version 2.12 ->
 ---------------
   - fixed build issues on Windows
+  - added wrappers for MeasureUnit(locale, width) and getUnitDisplayName()
   - 
 
 Version 2.11 -> 2.12
