@@ -199,6 +199,7 @@ typedef intintobjargproc ssizessizeobjargproc;
 #if U_ICU_VERSION_HEX >= 0x04040000
 #include <unicode/normalizer2.h>
 #include <unicode/selfmt.h>
+#include <unicode/locdspnm.h>
 #endif
 
 #if U_ICU_VERSION_HEX >= 0x04060000

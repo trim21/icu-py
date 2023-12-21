@@ -4,6 +4,7 @@ Version 2.12 ->
   - added wrappers for MeasureUnit(locale, width) and getUnitDisplayName()
   - added wrappers for DateFormatSymbols.getEra|ZodiacNames()
   - added wrappers for DateFormatSymbols.getZoneStrings()
+  - added wrappers for LocaleDisplayNames
   - 
 
 Version 2.11 -> 2.12

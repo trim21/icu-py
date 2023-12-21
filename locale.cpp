@@ -48,6 +48,10 @@ DECLARE_CONSTANTS_TYPE(ULocaleDataExemplarSetType)
 DECLARE_CONSTANTS_TYPE(UMeasurementSystem)
 DECLARE_CONSTANTS_TYPE(UAcceptResult)
 
+#if U_ICU_VERSION_HEX >= 0x04040000
+DECLARE_CONSTANTS_TYPE(UDialectHandling)
+#endif
+
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
 DECLARE_CONSTANTS_TYPE(URegionType)
 #endif
@@ -535,7 +539,50 @@ static PyMethodDef t_localematcher_methods[] = {
 DECLARE_BY_VALUE_TYPE(LocaleMatcher, t_localematcher, UMemory,
                       LocaleMatcher, abstract_init)
 
+#endif  // ICU >= 65
+
+#if U_ICU_VERSION_HEX >= 0x04040000
+
+/* LocaleDisplayNames */
+
+class t_localedisplaynames : public _wrapper {
+public:
+  LocaleDisplayNames *object;
+};
+
+static PyObject *t_localedisplaynames_getLocale(t_localedisplaynames *self);
+static PyObject *t_localedisplaynames_getDialectHandling(t_localedisplaynames *self);
+static PyObject *t_localedisplaynames_getContext(t_localedisplaynames *self, PyObject *arg);
+static PyObject *t_localedisplaynames_localeDisplayName(t_localedisplaynames *self, PyObject *arg);
+static PyObject *t_localedisplaynames_languageDisplayName(t_localedisplaynames *self, PyObject *arg);
+static PyObject *t_localedisplaynames_scriptDisplayName(t_localedisplaynames *self, PyObject *arg);
+static PyObject *t_localedisplaynames_regionDisplayName(t_localedisplaynames *self, PyObject *arg);
+static PyObject *t_localedisplaynames_variantDisplayName(t_localedisplaynames *self, PyObject *arg);
+static PyObject *t_localedisplaynames_keyDisplayName(t_localedisplaynames *self, PyObject *arg);
+static PyObject *t_localedisplaynames_keyValueDisplayName(t_localedisplaynames *self, PyObject *args);
+static PyObject *t_localedisplaynames_createInstance(PyObject *type, PyObject *args);
+
+static PyMethodDef t_localedisplaynames_methods[] = {
+    DECLARE_METHOD(t_localedisplaynames, getLocale, METH_NOARGS),
+    DECLARE_METHOD(t_localedisplaynames, getDialectHandling, METH_NOARGS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
+    DECLARE_METHOD(t_localedisplaynames, getContext, METH_O),
 #endif
+    DECLARE_METHOD(t_localedisplaynames, localeDisplayName, METH_O),
+    DECLARE_METHOD(t_localedisplaynames, languageDisplayName, METH_O),
+    DECLARE_METHOD(t_localedisplaynames, scriptDisplayName, METH_O),
+    DECLARE_METHOD(t_localedisplaynames, regionDisplayName, METH_O),
+    DECLARE_METHOD(t_localedisplaynames, variantDisplayName, METH_O),
+    DECLARE_METHOD(t_localedisplaynames, keyDisplayName, METH_O),
+    DECLARE_METHOD(t_localedisplaynames, keyValueDisplayName, METH_VARARGS),
+    DECLARE_METHOD(t_localedisplaynames, createInstance, METH_VARARGS|METH_CLASS),
+    { NULL, NULL, 0, NULL }
+};
+
+DECLARE_TYPE(LocaleDisplayNames, t_localedisplaynames, UObject,
+             LocaleDisplayNames, abstract_init, NULL)
+
+#endif  // ICU > 4.4
 
 
 /* Locale */
@@ -2671,6 +2718,198 @@ static PyObject *t_localematcher_acceptLanguageFromHTTP(PyTypeObject *type,
 
 #endif  // ICU >= 65
 
+#if U_ICU_VERSION_HEX >= 0x04040000
+
+
+/* LocaleDisplayNames */
+
+static PyObject *t_localedisplaynames_createInstance(PyObject *type, PyObject *args)
+{
+    Locale *locale;
+    LocaleDisplayNames *ldn;
+    UDialectHandling dh;
+#if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
+    UDisplayContext *dcs;
+    int len;
+#endif
+
+    switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "P", TYPE_CLASSID(Locale), &locale))
+        {
+            ldn = LocaleDisplayNames::createInstance(*locale);
+            return wrap_LocaleDisplayNames(ldn, T_OWNED);
+        }
+      case 2:
+        if (!parseArgs(args, "Pi", TYPE_CLASSID(Locale), &locale, &dh))
+        {
+            ldn = LocaleDisplayNames::createInstance(*locale, dh);
+            return wrap_LocaleDisplayNames(ldn, T_OWNED);
+        }
+#if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
+        if (!parseArgs(args, "PH", TYPE_CLASSID(Locale), &locale, &dcs, &len))
+        {
+            ldn = LocaleDisplayNames::createInstance(*locale, (UDisplayContext *) dcs, len);
+            delete[] dcs;
+            return wrap_LocaleDisplayNames(ldn, T_OWNED);
+        }
+#endif
+    }
+
+    return PyErr_SetArgsError((PyObject *) type, "createInstance", args);
+}
+
+static PyObject *t_localedisplaynames_getLocale(t_localedisplaynames *self)
+{
+    return wrap_Locale(self->object->getLocale());
+}
+
+static PyObject *t_localedisplaynames_getDialectHandling(t_localedisplaynames *self)
+{
+    return PyInt_FromLong(self->object->getDialectHandling());
+}
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
+static PyObject *t_localedisplaynames_getContext(t_localedisplaynames *self, PyObject *arg)
+{
+    UDisplayContextType dct;
+
+    if (!parseArg(arg, "i", &dct))
+        return PyInt_FromLong(self->object->getContext(dct));
+            
+    return PyErr_SetArgsError((PyObject *) self, "getContext", arg);
+}
+#endif
+
+static PyObject *t_localedisplaynames_localeDisplayName(t_localedisplaynames *self, PyObject *arg)
+{
+    UnicodeString u;
+
+    {
+        Locale *locale;
+    
+        if (!parseArg(arg, "P", TYPE_CLASSID(Locale), &locale))
+        {
+            self->object->localeDisplayName(*locale, u);
+            return PyUnicode_FromUnicodeString(&u);
+        }
+    }
+
+    {
+        charsArg locale;
+
+        if (!parseArg(arg, "n", &locale))
+        {
+            self->object->localeDisplayName(locale.c_str(), u);
+            return PyUnicode_FromUnicodeString(&u);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "localeDisplayName", arg);
+}
+
+static PyObject *t_localedisplaynames_languageDisplayName(t_localedisplaynames *self, PyObject *arg)
+{
+    UnicodeString u;
+    charsArg lang;
+
+    if (!parseArg(arg, "n", &lang))
+    {
+        self->object->languageDisplayName(lang.c_str(), u);
+        return PyUnicode_FromUnicodeString(&u);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "languageDisplayName", arg);
+}
+
+static PyObject *t_localedisplaynames_scriptDisplayName(t_localedisplaynames *self, PyObject *arg)
+{
+    UnicodeString u;
+
+    {
+        charsArg script;
+
+        if (!parseArg(arg, "n", &script))
+        {
+            self->object->scriptDisplayName(script.c_str(), u);
+            return PyUnicode_FromUnicodeString(&u);
+        }
+    }
+    
+    {
+        UScriptCode script;
+
+        if (!parseArg(arg, "i", &script))
+        {
+            self->object->scriptDisplayName((UScriptCode) script, u);
+            return PyUnicode_FromUnicodeString(&u);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "scriptDisplayName", arg);
+}
+
+static PyObject *t_localedisplaynames_regionDisplayName(t_localedisplaynames *self, PyObject *arg)
+{
+    UnicodeString u;
+    charsArg region;
+
+    if (!parseArg(arg, "n", &region))
+    {
+        self->object->regionDisplayName(region.c_str(), u);
+        return PyUnicode_FromUnicodeString(&u);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "regionDisplayName", arg);
+}
+
+static PyObject *t_localedisplaynames_variantDisplayName(t_localedisplaynames *self, PyObject *arg)
+{
+    UnicodeString u;
+    charsArg variant;
+
+    if (!parseArg(arg, "n", &variant))
+    {
+        self->object->variantDisplayName(variant.c_str(), u);
+        return PyUnicode_FromUnicodeString(&u);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "variantDisplayName", arg);
+}
+
+static PyObject *t_localedisplaynames_keyDisplayName(t_localedisplaynames *self, PyObject *arg)
+{
+    UnicodeString u;
+    charsArg key;
+
+    if (!parseArg(arg, "n", &key))
+    {
+        self->object->keyDisplayName(key.c_str(), u);
+        return PyUnicode_FromUnicodeString(&u);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "keyDisplayName", arg);
+}
+
+static PyObject *t_localedisplaynames_keyValueDisplayName(t_localedisplaynames *self, PyObject *args)
+{
+    UnicodeString u;
+    charsArg key, value;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "nn", &key, &value))
+        {
+            self->object->keyValueDisplayName(key.c_str(), value.c_str(), u);
+            return PyUnicode_FromUnicodeString(&u);
+        }
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "keyValueDisplayName", args);
+}
+
+#endif  // ICU > 4.4
+
 
 void _init_locale(PyObject *m)
 {
@@ -2692,6 +2931,10 @@ void _init_locale(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UAcceptResult, m);
     REGISTER_TYPE(Locale, m);
     REGISTER_TYPE(ResourceBundle, m);
+#if U_ICU_VERSION_HEX >= 0x04040000
+    REGISTER_TYPE(LocaleDisplayNames, m);
+    INSTALL_CONSTANTS_TYPE(UDialectHandling, m);
+#endif    
     INSTALL_STRUCT(LocaleData, m);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
     REGISTER_TYPE(Region, m);
@@ -2759,6 +3002,11 @@ void _init_locale(PyObject *m)
     INSTALL_MODULE_INT(m, USET_IGNORE_SPACE);
     INSTALL_MODULE_INT(m, USET_CASE_INSENSITIVE);
     INSTALL_MODULE_INT(m, USET_ADD_CASE_MAPPINGS);
+
+#if U_ICU_VERSION_HEX >= 0x04040000
+    INSTALL_ENUM(UDialectHandling, "STANDARD_NAMES", ULDN_STANDARD_NAMES);
+    INSTALL_ENUM(UDialectHandling, "DIALECT_NAMES", ULDN_DIALECT_NAMES);
+#endif    
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
     INSTALL_ENUM(URegionType, "UNKNOWN", URGN_UNKNOWN);
