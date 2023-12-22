@@ -5,6 +5,7 @@ Version 2.12 ->
   - added wrappers for DateFormatSymbols.getEra|ZodiacNames()
   - added wrappers for DateFormatSymbols.getZoneStrings()
   - added wrappers for LocaleDisplayNames
+  - fixed bug dealloc calling wrong destructor on most types (Fredrik Roubert)
   - 
 
 Version 2.11 -> 2.12
