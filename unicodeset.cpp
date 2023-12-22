@@ -46,8 +46,8 @@ static PyMethodDef t_unicodefunctor_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UnicodeFunctor, t_unicodefunctor, UObject, UnicodeFunctor,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(UnicodeFunctor, t_unicodefunctor, UObject,
+                     UnicodeFunctor, abstract_init)
 
 
 /* UnicodeMatcher */
@@ -74,8 +74,8 @@ static PyMethodDef t_unicodematcher_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UnicodeMatcher, t_unicodematcher, UObject, UnicodeMatcher,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(UnicodeMatcher, t_unicodematcher, UObject,
+                     UnicodeMatcher, abstract_init)
 
 
 /* UnicodeFilter */
@@ -106,8 +106,8 @@ static PyMethodDef t_unicodefilter_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UnicodeFilter, t_unicodefilter, UObject, UnicodeFilter,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(UnicodeFilter, t_unicodefilter, UObject,
+                     UnicodeFilter, abstract_init)
 
 
 /* UnicodeSet */
@@ -201,8 +201,8 @@ static PyMethodDef t_unicodeset_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UnicodeSet, t_unicodeset, UnicodeFilter, UnicodeSet,
-             t_unicodeset_init, NULL)
+DECLARE_DEALLOC_TYPE(UnicodeSet, t_unicodeset, UnicodeFilter,
+                     UnicodeSet, t_unicodeset_init)
 
 
 /* UnicodeSetIterator */

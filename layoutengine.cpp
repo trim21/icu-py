@@ -340,8 +340,8 @@ static PyMethodDef t_lefontinstance_methods[] = {
 static int t_lefontinstance_init(t_lefontinstance *self,
                                  PyObject *args, PyObject *kwds);
 
-DECLARE_TYPE(LEFontInstance, t_lefontinstance, UObject, LEFontInstance,
-             t_lefontinstance_init, NULL)
+DECLARE_DEALLOC_TYPE(LEFontInstance, t_lefontinstance, UObject,
+                     LEFontInstance, t_lefontinstance_init)
 
 static int t_lefontinstance_init(t_lefontinstance *self,
                                  PyObject *args, PyObject *kwds)
@@ -387,8 +387,8 @@ static PyMethodDef t_layoutengine_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(LayoutEngine, t_layoutengine, UObject, LayoutEngine,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(LayoutEngine, t_layoutengine, UObject,
+                     LayoutEngine, abstract_init)
 
 
 static PyObject *t_layoutengine_layoutEngineFactory(PyTypeObject *type,

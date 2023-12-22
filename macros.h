@@ -211,7 +211,7 @@ PyObject *wrap_##name(icuClass *object, int flags)                        \
     Py_RETURN_NONE;                                                       \
 }
 
-#define DECLARE_BY_VALUE_TYPE(name, t_name, base, icuClass, init)     \
+#define DECLARE_DEALLOC_TYPE(name, t_name, base, icuClass, init)      \
 void t_name##_dealloc(t_name *self)                                   \
 {                                                                     \
     if (self->flags & T_OWNED)                                        \
@@ -219,7 +219,10 @@ void t_name##_dealloc(t_name *self)                                   \
     self->object = NULL;                                              \
     Py_TYPE(self)->tp_free((PyObject *) self);                        \
 }                                                                     \
-DECLARE_TYPE(name, t_name, base, icuClass, init, t_name##_dealloc)    \
+DECLARE_TYPE(name, t_name, base, icuClass, init, t_name##_dealloc)
+
+#define DECLARE_BY_VALUE_TYPE(name, t_name, base, icuClass, init)     \
+DECLARE_DEALLOC_TYPE(name, t_name, base, icuClass, init)              \
 PyObject *wrap_##name(icuClass &object)                               \
 {                                                                     \
     return wrap_##name(new icuClass(std::move(object)), T_OWNED);     \

@@ -58,8 +58,8 @@ static PyMethodDef t_messagepattern_part_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(MessagePattern_Part, t_messagepattern_part, UMemory,
-             MessagePattern::Part, abstract_init, NULL);
+DECLARE_DEALLOC_TYPE(MessagePattern_Part, t_messagepattern_part, UMemory,
+                     MessagePattern::Part, abstract_init);
 
 PyObject *wrap_MessagePattern_Part(const MessagePattern::Part &part)
 {
@@ -158,8 +158,8 @@ static PyMethodDef t_messagepattern_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(MessagePattern, t_messagepattern, UObject, MessagePattern,
-             t_messagepattern_init, NULL)
+DECLARE_DEALLOC_TYPE(MessagePattern, t_messagepattern, UObject,
+                     MessagePattern, t_messagepattern_init)
 
 static int t_messagepattern_init(t_messagepattern *self,
                                  PyObject *args, PyObject *kwds)

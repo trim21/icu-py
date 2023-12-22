@@ -81,8 +81,8 @@ static PyMethodDef t_fieldposition_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(FieldPosition, t_fieldposition, UObject, FieldPosition,
-             t_fieldposition_init, NULL)
+DECLARE_DEALLOC_TYPE(FieldPosition, t_fieldposition, UObject,
+                     FieldPosition, t_fieldposition_init)
 
 /* ParsePosition */
 
@@ -107,8 +107,8 @@ static PyMethodDef t_parseposition_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(ParsePosition, t_parseposition, UObject, ParsePosition,
-             t_parseposition_init, NULL)
+DECLARE_DEALLOC_TYPE(ParsePosition, t_parseposition, UObject,
+                     ParsePosition, t_parseposition_init)
 
 /* Format */
 
@@ -125,7 +125,7 @@ static PyMethodDef t_format_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Format, t_format, UObject, Format, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(Format, t_format, UObject, Format, abstract_init)
 
 /* MeasureFormat */
 
@@ -213,8 +213,8 @@ static PyMethodDef t_timeunitformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeUnitFormat, t_timeunitformat, MeasureFormat, TimeUnitFormat,
-             t_timeunitformat_init, NULL)
+DECLARE_DEALLOC_TYPE(TimeUnitFormat, t_timeunitformat, MeasureFormat,
+                     TimeUnitFormat, t_timeunitformat_init)
 
 #endif
 
@@ -279,8 +279,8 @@ static PyMethodDef t_messageformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(MessageFormat, t_messageformat, Format, MessageFormat,
-             t_messageformat_init, NULL)
+DECLARE_DEALLOC_TYPE(MessageFormat, t_messageformat, Format,
+                     MessageFormat, t_messageformat_init)
 
 #if U_ICU_VERSION_HEX >= 0x04000000
 
@@ -312,8 +312,8 @@ static PyMethodDef t_pluralrules_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(PluralRules, t_pluralrules, UObject, PluralRules,
-             t_pluralrules_init, NULL)
+DECLARE_DEALLOC_TYPE(PluralRules, t_pluralrules, UObject,
+                     PluralRules, t_pluralrules_init)
 
 /* PluralFormat */
 
@@ -384,8 +384,8 @@ static PyMethodDef t_selectformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(SelectFormat, t_selectformat, Format, SelectFormat,
-             t_selectformat_init, NULL)
+DECLARE_DEALLOC_TYPE(SelectFormat, t_selectformat, Format,
+                     SelectFormat, t_selectformat_init)
 
 #endif
 
@@ -413,8 +413,8 @@ static PyMethodDef t_listformatter_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(ListFormatter, t_listformatter, UObject, ListFormatter,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(ListFormatter, t_listformatter, UObject,
+                     ListFormatter, abstract_init)
 
 #endif
 
@@ -507,8 +507,9 @@ static PyMethodDef t_constrainedfieldposition_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(ConstrainedFieldPosition, t_constrainedfieldposition, UMemory,
-             ConstrainedFieldPosition, t_constrainedfieldposition_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    ConstrainedFieldPosition, t_constrainedfieldposition, UMemory,
+    ConstrainedFieldPosition, t_constrainedfieldposition_init)
 
 /* FormattedValue */
 
@@ -526,8 +527,8 @@ static PyMethodDef t_formattedvalue_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(FormattedValue, t_formattedvalue, UMemory,
-             FormattedValue, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(FormattedValue, t_formattedvalue, UMemory,
+                     FormattedValue, abstract_init)
 
 PyObject *wrap_FormattedValue(FormattedValue *value)
 {

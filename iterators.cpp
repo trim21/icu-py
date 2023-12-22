@@ -52,8 +52,9 @@ static PyMethodDef t_forwardcharacteriterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(ForwardCharacterIterator, t_forwardcharacteriterator, UObject,
-             ForwardCharacterIterator, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    ForwardCharacterIterator, t_forwardcharacteriterator, UObject,
+    ForwardCharacterIterator, abstract_init)
 
 /* CharacterIterator */
 
@@ -117,8 +118,9 @@ static PyMethodDef t_characteriterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CharacterIterator, t_characteriterator, ForwardCharacterIterator,
-             CharacterIterator, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    CharacterIterator, t_characteriterator, ForwardCharacterIterator,
+    CharacterIterator, abstract_init)
 
 /* UCharCharacterIterator */
 
@@ -318,9 +320,11 @@ static PyMethodDef t_dictionarybasedbreakiterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DictionaryBasedBreakIterator, t_dictionarybasedbreakiterator,
-             RuleBasedBreakIterator, DictionaryBasedBreakIterator,
-             t_dictionarybasedbreakiterator_init, NULL)
+DECLARE_DEALLOC_TYPE(DictionaryBasedBreakIterator,
+                     t_dictionarybasedbreakiterator,
+                     RuleBasedBreakIterator,
+                     DictionaryBasedBreakIterator,
+                     t_dictionarybasedbreakiterator_init)
 
 /* CanonicalIterator */
 
@@ -347,8 +351,8 @@ static PyMethodDef t_canonicaliterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CanonicalIterator, t_canonicaliterator, UObject,
-             CanonicalIterator, t_canonicaliterator_init, NULL)
+DECLARE_DEALLOC_TYPE(CanonicalIterator, t_canonicaliterator, UObject,
+                     CanonicalIterator, t_canonicaliterator_init)
 
 /* CollationElementIterator */
 
@@ -386,8 +390,9 @@ static PyMethodDef t_collationelementiterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CollationElementIterator, t_collationelementiterator, UObject,
-             CollationElementIterator, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    CollationElementIterator, t_collationelementiterator, UObject,
+    CollationElementIterator, abstract_init)
 
 
 /* ForwardCharacterIterator */

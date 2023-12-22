@@ -73,8 +73,8 @@ static PyMethodDef t_timezonerule_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeZoneRule, t_timezonerule,
-             UObject, TimeZoneRule, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(TimeZoneRule, t_timezonerule, UObject,
+                     TimeZoneRule, abstract_init)
 
 
 /* AnnualTimeZoneRule */
@@ -97,8 +97,8 @@ static PyMethodDef t_annualtimezonerule_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(AnnualTimeZoneRule, t_annualtimezonerule,
-             TimeZoneRule, AnnualTimeZoneRule, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(AnnualTimeZoneRule, t_annualtimezonerule, TimeZoneRule,
+                     AnnualTimeZoneRule, abstract_init)
 
 
 /* InitialTimeZoneRule */
@@ -112,8 +112,8 @@ static PyMethodDef t_initialtimezonerule_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(InitialTimeZoneRule, t_initialtimezonerule,
-             TimeZoneRule, InitialTimeZoneRule, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(InitialTimeZoneRule, t_initialtimezonerule, TimeZoneRule,
+                     InitialTimeZoneRule, abstract_init)
 
 
 /* TimeArrayTimeZoneRule */
@@ -134,8 +134,9 @@ static PyMethodDef t_timearraytimezonerule_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeArrayTimeZoneRule, t_timearraytimezonerule,
-             TimeZoneRule, TimeArrayTimeZoneRule, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    TimeArrayTimeZoneRule, t_timearraytimezonerule, TimeZoneRule,
+    TimeArrayTimeZoneRule, abstract_init)
 
 
 /* DateTimeRule */
@@ -164,8 +165,8 @@ static PyMethodDef t_datetimerule_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DateTimeRule, t_datetimerule, UObject, DateTimeRule,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(DateTimeRule, t_datetimerule, UObject,
+                     DateTimeRule, abstract_init)
 
 
 /* TimeZoneTransition */
@@ -186,9 +187,8 @@ static PyMethodDef t_timezonetransition_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeZoneTransition,
-             t_timezonetransition, UObject, TimeZoneTransition,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(TimeZoneTransition, t_timezonetransition, UObject,
+                     TimeZoneTransition, abstract_init)
 
 
 /* TimeZone */
@@ -254,7 +254,7 @@ static PyMethodDef t_timezone_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeZone, t_timezone, UObject, TimeZone, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(TimeZone, t_timezone, UObject, TimeZone, abstract_init)
 
 
 /* BasicTimeZone */
@@ -289,8 +289,8 @@ static PyMethodDef t_basictimezone_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(BasicTimeZone, t_basictimezone, TimeZone, BasicTimeZone,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(BasicTimeZone, t_basictimezone, TimeZone,
+                     BasicTimeZone, abstract_init)
 
 
 /* RuleBasedTimeZone */
@@ -304,9 +304,8 @@ static PyMethodDef t_rulebasedtimezone_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(RuleBasedTimeZone,
-             t_rulebasedtimezone, BasicTimeZone, RuleBasedTimeZone,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(RuleBasedTimeZone, t_rulebasedtimezone, BasicTimeZone,
+                     RuleBasedTimeZone, abstract_init)
 
 
 /* SimpleTimeZone */
@@ -338,8 +337,8 @@ static PyMethodDef t_simpletimezone_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(SimpleTimeZone, t_simpletimezone, BasicTimeZone, SimpleTimeZone,
-             t_simpletimezone_init, NULL)
+DECLARE_DEALLOC_TYPE(SimpleTimeZone, t_simpletimezone, BasicTimeZone,
+                     SimpleTimeZone, t_simpletimezone_init)
 
 
 /* VTimeZone */
@@ -372,8 +371,8 @@ static PyMethodDef t_vtimezone_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(VTimeZone, t_vtimezone, BasicTimeZone, VTimeZone,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(VTimeZone, t_vtimezone, BasicTimeZone,
+                     VTimeZone, abstract_init)
 
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(50, 0, 0)
@@ -413,8 +412,8 @@ static PyMethodDef t_timezonenames_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeZoneNames, t_timezonenames, UObject, TimeZoneNames,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(TimeZoneNames, t_timezonenames, UObject,
+                     TimeZoneNames, abstract_init)
 
 #endif  // ICU >= 50
 

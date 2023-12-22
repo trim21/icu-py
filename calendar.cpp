@@ -132,7 +132,8 @@ static PyMethodDef t_calendar_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Calendar, t_calendar, UObject, Calendar, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(Calendar, t_calendar, UObject,
+                     Calendar, abstract_init)
 
 /* GregorianCalendar */
 
@@ -154,8 +155,8 @@ static PyMethodDef t_gregoriancalendar_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(GregorianCalendar, t_gregoriancalendar, Calendar,
-             GregorianCalendar, t_gregoriancalendar_init, NULL)
+DECLARE_DEALLOC_TYPE(GregorianCalendar, t_gregoriancalendar, Calendar,
+                     GregorianCalendar, t_gregoriancalendar_init)
 
 
 /* Calendar */

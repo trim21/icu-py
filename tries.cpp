@@ -74,8 +74,8 @@ static PyMethodDef t_bytestriebuilder_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(BytesTrieBuilder, t_bytestriebuilder, StringTrieBuilder,
-             BytesTrieBuilder, t_bytestriebuilder_init, NULL)
+DECLARE_DEALLOC_TYPE(BytesTrieBuilder, t_bytestriebuilder, StringTrieBuilder,
+                     BytesTrieBuilder, t_bytestriebuilder_init)
 
 /* BytesTrieIterator */
 
@@ -101,8 +101,8 @@ static PyMethodDef t_bytestrieiterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(BytesTrieIterator, t_bytestrieiterator, UMemory,
-             BytesTrieIterator, t_bytestrieiterator_init, NULL)
+DECLARE_DEALLOC_TYPE(BytesTrieIterator, t_bytestrieiterator, UMemory,
+                     BytesTrieIterator, t_bytestrieiterator_init)
 
 /* BytesTrieState */
 
@@ -115,8 +115,8 @@ static PyMethodDef t_bytestriestate_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(BytesTrieState, t_bytestriestate, UMemory,
-             BytesTrieState, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(BytesTrieState, t_bytestriestate, UMemory,
+                     BytesTrieState, abstract_init)
 
 /* BytesTrie */
 
@@ -148,7 +148,7 @@ static PyMethodDef t_bytestrie_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(BytesTrie, t_bytestrie, UMemory, BytesTrie, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(BytesTrie, t_bytestrie, UMemory, BytesTrie, abstract_init)
 
 /* UCharsTrieBuilder */
 
@@ -172,8 +172,8 @@ static PyMethodDef t_ucharstriebuilder_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UCharsTrieBuilder, t_ucharstriebuilder, StringTrieBuilder,
-             UCharsTrieBuilder, t_ucharstriebuilder_init, NULL)
+DECLARE_DEALLOC_TYPE(UCharsTrieBuilder, t_ucharstriebuilder, StringTrieBuilder,
+                     UCharsTrieBuilder, t_ucharstriebuilder_init)
 
 /* UCharsTrieIterator */
 
@@ -199,8 +199,8 @@ static PyMethodDef t_ucharstrieiterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UCharsTrieIterator, t_ucharstrieiterator, UMemory,
-             UCharsTrieIterator, t_ucharstrieiterator_init, NULL)
+DECLARE_DEALLOC_TYPE(UCharsTrieIterator, t_ucharstrieiterator, UMemory,
+                     UCharsTrieIterator, t_ucharstrieiterator_init)
 
 /* UCharsTrieState */
 
@@ -213,8 +213,8 @@ static PyMethodDef t_ucharstriestate_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UCharsTrieState, t_ucharstriestate, UMemory,
-             UCharsTrieState, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(UCharsTrieState, t_ucharstriestate, UMemory,
+                     UCharsTrieState, abstract_init)
 
 /* UCharsTrie */
 
@@ -250,8 +250,8 @@ static PyMethodDef t_ucharstrie_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(UCharsTrie, t_ucharstrie, UMemory,
-             UCharsTrie, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(UCharsTrie, t_ucharstrie, UMemory,
+                     UCharsTrie, abstract_init)
 
 /* BytesTrieBuilder */
 
