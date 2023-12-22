@@ -538,8 +538,8 @@ static PyMethodDef t_measureunit_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(MeasureUnit, t_measureunit, UObject, MeasureUnit,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(MeasureUnit, t_measureunit, UObject,
+                     MeasureUnit, abstract_init)
 
 
 /* Measure */
@@ -562,9 +562,9 @@ static PyMethodDef t_measure_methods[] = {
 };
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(53, 1, 0)
-DECLARE_TYPE(Measure, t_measure, UObject, Measure, t_measure_init, NULL)
+DECLARE_DEALLOC_TYPE(Measure, t_measure, UObject, Measure, t_measure_init)
 #else
-DECLARE_TYPE(Measure, t_measure, UObject, Measure, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(Measure, t_measure, UObject, Measure, abstract_init)
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(60, 0, 0)
@@ -593,8 +593,7 @@ static PyMethodDef t_nounit_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(NoUnit, t_nounit, MeasureUnit, NoUnit_,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(NoUnit, t_nounit, MeasureUnit, NoUnit_, abstract_init)
 
 #endif
 
@@ -617,8 +616,8 @@ static PyMethodDef t_currencyunit_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CurrencyUnit, t_currencyunit, MeasureUnit, CurrencyUnit,
-             t_currencyunit_init, NULL)
+DECLARE_DEALLOC_TYPE(CurrencyUnit, t_currencyunit, MeasureUnit,
+                     CurrencyUnit, t_currencyunit_init)
 
 
 /* CurrencyAmount */
@@ -639,8 +638,8 @@ static PyMethodDef t_currencyamount_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CurrencyAmount, t_currencyamount, Measure, CurrencyAmount,
-             t_currencyamount_init, NULL)
+DECLARE_DEALLOC_TYPE(CurrencyAmount, t_currencyamount, Measure,
+                     CurrencyAmount, t_currencyamount_init)
 
 
 /* TimeUnit */
@@ -661,8 +660,7 @@ static PyMethodDef t_timeunit_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeUnit, t_timeunit, MeasureUnit, TimeUnit,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(TimeUnit, t_timeunit, MeasureUnit, TimeUnit, abstract_init)
 
 
 /* TimeUnitAmount */
@@ -683,8 +681,8 @@ static PyMethodDef t_timeunitamount_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(TimeUnitAmount, t_timeunitamount, Measure, TimeUnitAmount,
-             t_timeunitamount_init, NULL)
+DECLARE_DEALLOC_TYPE(TimeUnitAmount, t_timeunitamount, Measure,
+                     TimeUnitAmount, t_timeunitamount_init)
 
 #endif
 

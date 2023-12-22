@@ -58,8 +58,8 @@ static PyMethodDef t_collationkey_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CollationKey, t_collationkey, UObject, CollationKey,
-             t_collationkey_init, NULL)
+DECLARE_DEALLOC_TYPE(CollationKey, t_collationkey, UObject,
+                     CollationKey, t_collationkey_init)
 
 /* Collator */
 
@@ -119,7 +119,7 @@ static PyMethodDef t_collator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Collator, t_collator, UObject, Collator, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(Collator, t_collator, UObject, Collator, abstract_init)
 
 /* RuleBasedCollator */
 
@@ -368,8 +368,8 @@ static PyMethodDef t_immutableindex_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(ImmutableIndex, t_immutableindex, UObject,
-             ImmutableIndex, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(ImmutableIndex, t_immutableindex, UObject,
+                     ImmutableIndex, abstract_init)
 
 #endif
 

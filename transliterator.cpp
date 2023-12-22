@@ -106,8 +106,8 @@ static PyMethodDef t_transliterator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Transliterator, t_transliterator, UObject,
-             Transliterator, t_transliterator_init, NULL)
+DECLARE_DEALLOC_TYPE(Transliterator, t_transliterator, UObject,
+                     Transliterator, t_transliterator_init)
 
 
 /* PythonTransliterator */

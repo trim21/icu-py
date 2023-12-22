@@ -105,8 +105,8 @@ static PyMethodDef t_decimalformatsymbols_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DecimalFormatSymbols, t_decimalformatsymbols, UObject,
-             DecimalFormatSymbols, t_decimalformatsymbols_init, NULL)
+DECLARE_DEALLOC_TYPE(DecimalFormatSymbols, t_decimalformatsymbols, UObject,
+                     DecimalFormatSymbols, t_decimalformatsymbols_init)
 
 /* NumberFormat */
 
@@ -185,8 +185,8 @@ static PyMethodDef t_numberformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(NumberFormat, t_numberformat, Format, NumberFormat,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(NumberFormat, t_numberformat, Format,
+                     NumberFormat, abstract_init)
 
 #if U_ICU_VERSION_HEX >= 0x04020000
 
@@ -218,8 +218,8 @@ static PyMethodDef t_currencypluralinfo_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CurrencyPluralInfo, t_currencypluralinfo, UObject,
-             CurrencyPluralInfo, t_currencypluralinfo_init, NULL)
+DECLARE_DEALLOC_TYPE(CurrencyPluralInfo, t_currencypluralinfo, UObject,
+                     CurrencyPluralInfo, t_currencypluralinfo_init)
 
 /* NumberingSystem */
 
@@ -250,8 +250,8 @@ static PyMethodDef t_numberingsystem_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(NumberingSystem, t_numberingsystem, UObject,
-             NumberingSystem, t_numberingsystem_init, NULL)
+DECLARE_DEALLOC_TYPE(NumberingSystem, t_numberingsystem, UObject,
+                     NumberingSystem, t_numberingsystem_init)
 
 #endif
 
@@ -435,8 +435,8 @@ static PyMethodDef t_decimalformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DecimalFormat, t_decimalformat, NumberFormat, DecimalFormat,
-             t_decimalformat_init, NULL)
+DECLARE_DEALLOC_TYPE(DecimalFormat, t_decimalformat, NumberFormat,
+                     DecimalFormat, t_decimalformat_init)
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
 
@@ -455,8 +455,9 @@ static PyMethodDef t_compactdecimalformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(CompactDecimalFormat, t_compactdecimalformat, DecimalFormat,
-             CompactDecimalFormat, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    CompactDecimalFormat, t_compactdecimalformat, DecimalFormat,
+    CompactDecimalFormat, abstract_init)
 
 #endif
 
@@ -496,8 +497,9 @@ static PyMethodDef t_rulebasednumberformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(RuleBasedNumberFormat, t_rulebasednumberformat, NumberFormat,
-             RuleBasedNumberFormat, t_rulebasednumberformat_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    RuleBasedNumberFormat, t_rulebasednumberformat, NumberFormat,
+    RuleBasedNumberFormat, t_rulebasednumberformat_init)
 
 PyObject *wrap_NumberFormat(NumberFormat *format)
 {
@@ -537,8 +539,8 @@ static PyMethodDef t_choiceformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(ChoiceFormat, t_choiceformat, NumberFormat, ChoiceFormat,
-             t_choiceformat_init, NULL)
+DECLARE_DEALLOC_TYPE(ChoiceFormat, t_choiceformat, NumberFormat,
+                     ChoiceFormat, t_choiceformat_init)
 
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(60, 0, 0)
@@ -664,8 +666,8 @@ static PyMethodDef t_numberformatter_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(NumberFormatter, t_numberformatter, UMemory, NumberFormatter,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(NumberFormatter, t_numberformatter, UMemory,
+                     NumberFormatter, abstract_init)
 
 
 /* UnlocalizedNumberFormatter */
@@ -1217,8 +1219,8 @@ static PyMethodDef t_numberrangeformatter_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(NumberRangeFormatter, t_numberrangeformatter, UMemory,
-             NumberRangeFormatter, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(NumberRangeFormatter, t_numberrangeformatter, UMemory,
+                     NumberRangeFormatter, abstract_init)
 
 
 /* UnlocalizedNumberRangeFormatter */

@@ -213,7 +213,7 @@ static PyMethodDef t_locale_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Locale, t_locale, UObject, Locale, t_locale_init, NULL)
+DECLARE_DEALLOC_TYPE(Locale, t_locale, UObject, Locale, t_locale_init)
 
 PyObject *wrap_Locale(const Locale &locale)
 {
@@ -285,8 +285,8 @@ static PyMethodDef t_resourcebundle_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(ResourceBundle, t_resourcebundle, UObject,
-             ResourceBundle, t_resourcebundle_init, NULL)
+DECLARE_DEALLOC_TYPE(ResourceBundle, t_resourcebundle, UObject,
+                     ResourceBundle, t_resourcebundle_init)
 
 static PyObject *wrap_ResourceBundle(const ResourceBundle &resourcebundle)
 {
@@ -381,7 +381,7 @@ static PyMethodDef t_region_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Region, t_region, UObject, const Region, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(Region, t_region, UObject, const Region, abstract_init)
 
 #endif
 
@@ -426,8 +426,8 @@ static PyMethodDef t_localebuilder_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(LocaleBuilder, t_localebuilder, UObject, LocaleBuilder,
-             t_localebuilder_init, NULL)
+DECLARE_DEALLOC_TYPE(LocaleBuilder, t_localebuilder, UObject,
+                     LocaleBuilder, t_localebuilder_init)
 
 #endif
 
@@ -478,8 +478,8 @@ static PyMethodDef t_localematcherbuilder_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(LocaleMatcherBuilder, t_localematcherbuilder, UMemory,
-             LocaleMatcherBuilder, t_localematcherbuilder_init, NULL)
+DECLARE_BY_VALUE_TYPE(LocaleMatcherBuilder, t_localematcherbuilder, UMemory,
+                      LocaleMatcherBuilder, t_localematcherbuilder_init)
 
 /* LocaleMatcherResult */
 
@@ -579,8 +579,8 @@ static PyMethodDef t_localedisplaynames_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(LocaleDisplayNames, t_localedisplaynames, UObject,
-             LocaleDisplayNames, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(LocaleDisplayNames, t_localedisplaynames, UObject,
+                     LocaleDisplayNames, abstract_init)
 
 #endif  // ICU > 4.4
 

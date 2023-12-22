@@ -130,8 +130,8 @@ static PyMethodDef t_dateformatsymbols_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DateFormatSymbols, t_dateformatsymbols, UObject,
-             DateFormatSymbols, t_dateformatsymbols_init, NULL)
+DECLARE_DEALLOC_TYPE(DateFormatSymbols, t_dateformatsymbols, UObject,
+                     DateFormatSymbols, t_dateformatsymbols_init)
 
 /* DateFormat */
 
@@ -192,7 +192,8 @@ static PyMethodDef t_dateformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DateFormat, t_dateformat, Format, DateFormat, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(DateFormat, t_dateformat, Format,
+                     DateFormat, abstract_init)
 
 /* SimpleDateFormat */
 
@@ -229,8 +230,8 @@ static PyMethodDef t_simpledateformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(SimpleDateFormat, t_simpledateformat, DateFormat,
-             SimpleDateFormat, t_simpledateformat_init, NULL)
+DECLARE_DEALLOC_TYPE(SimpleDateFormat, t_simpledateformat, DateFormat,
+                     SimpleDateFormat, t_simpledateformat_init)
 
 PyObject *wrap_DateFormat(DateFormat *format)
 {
@@ -321,8 +322,9 @@ static PyMethodDef t_datetimepatterngenerator_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DateTimePatternGenerator, t_datetimepatterngenerator,
-             UObject, DateTimePatternGenerator, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    DateTimePatternGenerator, t_datetimepatterngenerator, UObject,
+    DateTimePatternGenerator, abstract_init)
 
 #if U_ICU_VERSION_HEX >= 0x04000000
 
@@ -344,8 +346,8 @@ static PyMethodDef t_dateinterval_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DateInterval, t_dateinterval, UObject, DateInterval,
-             t_dateinterval_init, NULL)
+DECLARE_DEALLOC_TYPE(DateInterval, t_dateinterval, UObject,
+                     DateInterval, t_dateinterval_init)
 
 /* DateIntervalInfo */
 
@@ -373,8 +375,8 @@ static PyMethodDef t_dateintervalinfo_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DateIntervalInfo, t_dateintervalinfo, UObject, DateIntervalInfo,
-             t_dateintervalinfo_init, NULL)
+DECLARE_DEALLOC_TYPE(DateIntervalInfo, t_dateintervalinfo, UObject,
+                     DateIntervalInfo, t_dateintervalinfo_init)
 
 /* DateIntervalFormat */
 
@@ -422,8 +424,8 @@ static PyMethodDef t_dateintervalformat_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(DateIntervalFormat, t_dateintervalformat, Format,
-             DateIntervalFormat, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(DateIntervalFormat, t_dateintervalformat, Format,
+                     DateIntervalFormat, abstract_init)
 
 #endif
 
@@ -479,8 +481,9 @@ static PyMethodDef t_relativedatetimeformatter_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(RelativeDateTimeFormatter, t_relativedatetimeformatter, UObject,
-             RelativeDateTimeFormatter, t_relativedatetimeformatter_init, NULL)
+DECLARE_DEALLOC_TYPE(
+    RelativeDateTimeFormatter, t_relativedatetimeformatter, UObject,
+    RelativeDateTimeFormatter, t_relativedatetimeformatter_init)
 
 #endif
 

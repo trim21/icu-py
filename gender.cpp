@@ -49,8 +49,8 @@ static PyMethodDef t_genderinfo_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(GenderInfo, t_genderinfo, UObject,
-             GenderInfo, abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(GenderInfo, t_genderinfo, UObject,
+                     GenderInfo, abstract_init)
 
 
 /* GenderInfo */

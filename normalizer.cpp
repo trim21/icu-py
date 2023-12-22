@@ -92,8 +92,8 @@ static PyMethodDef t_normalizer_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Normalizer, t_normalizer, UObject, Normalizer,
-             t_normalizer_init, NULL)
+DECLARE_DEALLOC_TYPE(Normalizer, t_normalizer, UObject,
+                     Normalizer, t_normalizer_init)
 
 
 #if U_ICU_VERSION_HEX >= 0x04040000
@@ -156,8 +156,8 @@ static PyMethodDef t_normalizer2_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-DECLARE_TYPE(Normalizer2, t_normalizer2, UObject, Normalizer2,
-             abstract_init, NULL)
+DECLARE_DEALLOC_TYPE(Normalizer2, t_normalizer2, UObject,
+                     Normalizer2, abstract_init)
 
 
 /* FilteredNormalizer2 */
