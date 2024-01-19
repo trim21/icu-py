@@ -1,5 +1,5 @@
  # ====================================================================
- # Copyright (c) 2004-2022 Open Source Applications Foundation.
+ # Copyright (c) 2004-2024 Open Source Applications Foundation.
  #
  # Permission is hereby granted, free of charge, to any person obtaining a
  # copy of this software and associated documentation files (the "Software"),
@@ -35,3 +35,4 @@ class InvalidArgsError(Exception):
 
 
 from ._icu_ import *
+from ._icu_ import __version__

@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 2004-2022 Open Source Applications Foundation.
+ * Copyright (c) 2004-2024 Open Source Applications Foundation.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -211,7 +211,9 @@ static PyObject *PyInit_icu_(PyObject *m)
     Py_INCREF(&ConstVariableDescriptorType);
 
     ver = PyString_FromString(PYICU_VER);
-    PyObject_SetAttrString(m, "VERSION", ver); Py_DECREF(ver);
+    PyObject_SetAttrString(m, "VERSION", ver);
+    PyObject_SetAttrString(m, "__version__", ver);
+    Py_DECREF(ver);
 
     ver = PyString_FromString(PYICU_ICU_MAX_VER);
     PyObject_SetAttrString(m, "ICU_MAX_MAJOR_VERSION", ver); Py_DECREF(ver);
@@ -241,6 +243,7 @@ static PyObject *PyInit_icu_(PyObject *m)
 
     PyExc_ICUError = PyObject_GetAttrString(module, "ICUError");
     PyExc_InvalidArgsError = PyObject_GetAttrString(module, "InvalidArgsError");
+
     Py_DECREF(module);
 
     _init_common(m);
