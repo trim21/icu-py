@@ -35,4 +35,4 @@ class InvalidArgsError(Exception):
 
 
 from ._icu_ import *
-from ._icu_ import __version__
+from ._icu_ import VERSION as __version__
