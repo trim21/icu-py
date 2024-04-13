@@ -6,6 +6,11 @@ Version 2.12 ->
   - added wrappers for DateFormatSymbols.getZoneStrings()
   - added wrappers for LocaleDisplayNames
   - fixed bug dealloc calling wrong destructor on most types (Fredrik Roubert)
+  - added support for ICU 75.1
+  - added wrappers for LocalizedNumber|Range|Formatter.withoutLocale()
+  - added wrappers for UIdentifierType, Char.hasIDType(), Char.getIDTypes()
+  - added wrappers for UIdentifierStatus
+  - added wrappers for UProperty.IDENTIFIER_TYPE, UProperty.IDENTIFIER_STATUS
   - 
 
 Version 2.11 -> 2.12

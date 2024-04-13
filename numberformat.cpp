@@ -837,6 +837,11 @@ static PyObject *t_localizednumberformatter_displayOptions(
     t_localizednumberformatter *self, PyObject *arg);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+static PyObject *t_localizednumberformatter_withoutLocale(
+    t_localizednumberformatter *self);
+#endif
+
 static PyMethodDef t_localizednumberformatter_methods[] = {
     DECLARE_METHOD(t_localizednumberformatter, unit, METH_O),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(61, 0, 0)
@@ -873,6 +878,9 @@ static PyMethodDef t_localizednumberformatter_methods[] = {
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
     DECLARE_METHOD(t_localizednumberformatter, displayOptions, METH_O),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+    DECLARE_METHOD(t_localizednumberformatter, withoutLocale, METH_NOARGS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -1301,6 +1309,10 @@ static PyObject *t_localizednumberrangeformatter_formatFormattableRangeToValue(
     t_localizednumberrangeformatter *self, PyObject *args);
 #endif
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+static PyObject *t_localizednumberrangeformatter_withoutLocale(t_localizednumberrangeformatter *self);
+#endif
+
 static PyMethodDef t_localizednumberrangeformatter_methods[] = {
     DECLARE_METHOD(t_localizednumberrangeformatter, numberFormatterBoth, METH_O),
     DECLARE_METHOD(t_localizednumberrangeformatter, numberFormatterFirst, METH_O),
@@ -1324,6 +1336,9 @@ static PyMethodDef t_localizednumberrangeformatter_methods[] = {
                    formatDecimalRangeToValue, METH_VARARGS),
     DECLARE_METHOD(t_localizednumberrangeformatter,
                    formatFormattableRangeToValue, METH_VARARGS),
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+    DECLARE_METHOD(t_localizednumberrangeformatter, withoutLocale, METH_NOARGS),
 #endif
     { NULL, NULL, 0, NULL }
 };
@@ -3854,7 +3869,6 @@ static PyObject *t_unlocalizednumberformatter_displayOptions(
 
 #endif  // ICU >= 72
 
-
 /* LocalizedNumberFormatter */
 
 static int t_localizednumberformatter_init(t_localizednumberformatter *self,
@@ -4296,6 +4310,15 @@ static PyObject *t_localizednumberformatter_displayOptions(
 }
 
 #endif  // ICU >= 72
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+
+static PyObject *t_localizednumberformatter_withoutLocale(t_localizednumberformatter *self)
+{
+    return wrap_UnlocalizedNumberFormatter(self->object->withoutLocale());
+}
+
+#endif // ICU >= 75
 
 /* Notation */
 
@@ -5355,6 +5378,15 @@ static PyObject *t_localizednumberrangeformatter_formatFormattableRangeToValue(
     return PyErr_SetArgsError(
         (PyObject *) self, "formatFormattableRangeToValue", args);
 }
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+
+static PyObject *t_localizednumberrangeformatter_withoutLocale(t_localizednumberrangeformatter *self)
+{
+    return wrap_UnlocalizedNumberRangeFormatter(self->object->withoutLocale());
+}
+
+#endif  // ICU >= 75
 
 #endif  // ICU >= 64
 

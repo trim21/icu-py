@@ -51,7 +51,10 @@ DECLARE_CONSTANTS_TYPE(UIndicPositionalCategory)
 DECLARE_CONSTANTS_TYPE(UIndicSyllabicCategory)
 DECLARE_CONSTANTS_TYPE(UVerticalOrientation)
 #endif
-
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+DECLARE_CONSTANTS_TYPE(UIdentifierType)
+DECLARE_CONSTANTS_TYPE(UIdentifierStatus)
+#endif
 
 /* Char */
 
@@ -130,6 +133,10 @@ static PyObject *t_char_forDigit(PyTypeObject *type, PyObject *args);
 static PyObject *t_char_charAge(PyTypeObject *type, PyObject *arg);
 static PyObject *t_char_getUnicodeVersion(PyTypeObject *type);
 static PyObject *t_char_getFC_NFKC_Closure(PyTypeObject *type, PyObject *arg);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+static PyObject *t_char_hasIDType(PyTypeObject *type, PyObject *args);
+static PyObject *t_char_getIDTypes(PyTypeObject *type, PyObject *arg);
+#endif
 
 static PyMethodDef t_char_methods[] = {
     DECLARE_METHOD(t_char, hasBinaryProperty, METH_VARARGS | METH_CLASS),
@@ -194,6 +201,10 @@ static PyMethodDef t_char_methods[] = {
     DECLARE_METHOD(t_char, charAge, METH_O | METH_CLASS),
     DECLARE_METHOD(t_char, getUnicodeVersion, METH_NOARGS | METH_CLASS),
     DECLARE_METHOD(t_char, getFC_NFKC_Closure, METH_O | METH_CLASS),
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+    DECLARE_METHOD(t_char, hasIDType, METH_VARARGS | METH_CLASS),
+    DECLARE_METHOD(t_char, getIDTypes, METH_O | METH_CLASS),
+#endif
     { NULL, NULL, 0, NULL }
 };
 
@@ -937,6 +948,47 @@ static PyObject *t_char_getFC_NFKC_Closure(PyTypeObject *type, PyObject *arg)
     return PyUnicode_FromUnicodeString(buffer, size);
 }
 
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+static PyObject *t_char_hasIDType(PyTypeObject *type, PyObject *args)
+{
+    UChar32 c;
+    int idType;
+
+    switch (PyTuple_Size(args)) {
+      case 2:
+        if (!parseArgs(args, "ii", &c, &idType))
+            Py_RETURN_BOOL(u_hasIDType(c, (UIdentifierType) idType));
+        break;
+    }
+
+    return PyErr_SetArgsError((PyObject *) type, "hasIDType", args);
+}
+
+static PyObject *t_char_getIDTypes(PyTypeObject *type, PyObject *arg)
+{
+    UChar32 c;
+
+    if (!parseArg(arg, "i", &c))
+    {
+        UIdentifierType types[64]; // more than there are enum values
+        int32_t size;
+        STATUS_CALL(size = u_getIDTypes(c, types, sizeof(types)/sizeof(UIdentifierType), &status));
+        PyObject *result = PyTuple_New(size);
+
+        if (result != NULL)
+        {
+            for (int i = 0; i < size; ++i)
+                PyTuple_SET_ITEM(result, i, PyInt_FromLong(types[i]));
+        }
+
+        return result;
+    }
+
+    return PyErr_SetArgsError((PyObject *) type, "getIDTypes", arg);
+}
+#endif  // ICU >= 75
+
+
 void _init_char(PyObject *m)
 {
     INSTALL_CONSTANTS_TYPE(UProperty, m);
@@ -957,6 +1009,10 @@ void _init_char(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UIndicPositionalCategory, m);
     INSTALL_CONSTANTS_TYPE(UIndicSyllabicCategory, m);
     INSTALL_CONSTANTS_TYPE(UVerticalOrientation, m);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+    INSTALL_CONSTANTS_TYPE(UIdentifierType, m);
+    INSTALL_CONSTANTS_TYPE(UIdentifierStatus, m);
 #endif
     INSTALL_STRUCT(Char, m);
 
@@ -1097,6 +1153,10 @@ void _init_char(PyObject *m)
     INSTALL_ENUM(UProperty, "RGI_EMOJI_TAG_SEQUENCE", UCHAR_RGI_EMOJI_TAG_SEQUENCE);
     INSTALL_ENUM(UProperty, "RGI_EMOJI_ZWJ_SEQUENCE", UCHAR_RGI_EMOJI_ZWJ_SEQUENCE);
     INSTALL_ENUM(UProperty, "RGI_EMOJI", UCHAR_RGI_EMOJI);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+    INSTALL_ENUM(UProperty, "IDENTIFIER_STATUS", UCHAR_IDENTIFIER_STATUS);
+    INSTALL_ENUM(UProperty, "IDENTIFIER_TYPE", UCHAR_IDENTIFIER_TYPE);
 #endif
     INSTALL_ENUM(UProperty, "INVALID_CODE ", UCHAR_INVALID_CODE );
 
@@ -1755,4 +1815,22 @@ void _init_char(PyObject *m)
     INSTALL_ENUM(UHangulSyllableType, "TRAILING_JAMO", U_HST_TRAILING_JAMO);
     INSTALL_ENUM(UHangulSyllableType, "LV_SYLLABLE", U_HST_LV_SYLLABLE);
     INSTALL_ENUM(UHangulSyllableType, "LVT_SYLLABLE", U_HST_LVT_SYLLABLE);
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+    INSTALL_ENUM(UIdentifierType, "NOT_CHARACTER", U_ID_TYPE_NOT_CHARACTER);
+    INSTALL_ENUM(UIdentifierType, "DEPRECATED", U_ID_TYPE_DEPRECATED);
+    INSTALL_ENUM(UIdentifierType, "DEFAULT_IGNORABLE", U_ID_TYPE_DEFAULT_IGNORABLE);
+    INSTALL_ENUM(UIdentifierType, "NOT_NFKC", U_ID_TYPE_NOT_NFKC);
+    INSTALL_ENUM(UIdentifierType, "NOT_XID", U_ID_TYPE_NOT_XID);
+    INSTALL_ENUM(UIdentifierType, "EXCLUSION", U_ID_TYPE_EXCLUSION);
+    INSTALL_ENUM(UIdentifierType, "OBSOLETE", U_ID_TYPE_OBSOLETE);
+    INSTALL_ENUM(UIdentifierType, "TECHNICAL", U_ID_TYPE_TECHNICAL);
+    INSTALL_ENUM(UIdentifierType, "COMMON_USE", U_ID_TYPE_UNCOMMON_USE);
+    INSTALL_ENUM(UIdentifierType, "LIMITED_USE", U_ID_TYPE_LIMITED_USE);
+    INSTALL_ENUM(UIdentifierType, "INCLUSION", U_ID_TYPE_INCLUSION);
+    INSTALL_ENUM(UIdentifierType, "RECOMMENDED", U_ID_TYPE_RECOMMENDED);
+
+    INSTALL_ENUM(UIdentifierStatus, "ALLOWED", U_ID_STATUS_ALLOWED);
+    INSTALL_ENUM(UIdentifierStatus, "RESTRICTED", U_ID_STATUS_RESTRICTED);
+#endif    
 }

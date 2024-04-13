@@ -157,7 +157,7 @@ static PyObject *t_script_getCode(PyTypeObject *type, PyObject *arg)
 
     return PyErr_SetArgsError((PyObject *) type, "getCode", arg);
 }
-
+ 
 static PyObject *t_script_getScript(PyTypeObject *type, PyObject *arg)
 {
     UnicodeString *u, _u;
@@ -588,6 +588,9 @@ void _init_script(PyObject *m)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(72, 0, 0)
     INSTALL_ENUM(UScriptCode, "KAWI", USCRIPT_KAWI);
     INSTALL_ENUM(UScriptCode, "NAG_MUNDARI", USCRIPT_NAG_MUNDARI);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
+    INSTALL_ENUM(UScriptCode, "ARABIC_NASTALIQ", USCRIPT_ARABIC_NASTALIQ);
 #endif
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(51, 0, 0)
