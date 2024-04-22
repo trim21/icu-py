@@ -66,7 +66,7 @@ pre-built binary packages of ICU and PyICU, see below.
     ```
 
   - Ubuntu: similar to Debian, there is a pyicu
-    [package](https://packages.ubuntu.com/source/xenial/python/pyicu)
+    [package](https://packages.ubuntu.com/source/noble/python/pyicu)
     available via ``apt``.
 
   - Alpine Linux: there is a pyicu
