@@ -8,7 +8,7 @@ except ImportError:
 
 from distutils.spawn import find_executable
 
-VERSION = '2.13'
+VERSION = '2.13.1'
 ICU_MAX_MAJOR_VERSION = '75'  # max supported major version of ICU
 
 try:
@@ -135,12 +135,12 @@ PEDANTIC_FLAGS = {
 }
 
 CFLAGS = {
-    'darwin': ['-std=c++11'],
-    'linux': ['-std=c++11'],
-    'freebsd': ['-std=c++11'],
+    'darwin': ['-std=c++17'],
+    'linux': ['-std=c++17'],
+    'freebsd': ['-std=c++17'],
     'win32': ['/Zc:wchar_t', '/EHsc'],
-    'sunos5': ['-std=c++11'],
-    'cygwin': ['-D_GNU_SOURCE=1', '-std=c++11'],
+    'sunos5': ['-std=c++17'],
+    'cygwin': ['-D_GNU_SOURCE=1', '-std=c++17'],
 }
 
 # added to CFLAGS when setup is invoked with --debug
@@ -197,7 +197,7 @@ else:
             raise RuntimeError('''
 Please install pkg-config on your system or set the PYICU_CFLAGS environment 
 variable to the flags required by the C++ compiler to find the header files
-for ICU, and possibly -std=c++11 if using ICU version >= 60
+for ICU, and possibly -std=c++11 if using ICU version >= 60 or -std=c++17 if using ICU version >= 75
             ''')
 
 if '--debug' in sys.argv:

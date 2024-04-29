@@ -1,3 +1,7 @@
+Version 2.13 -> 2.13.1
+----------------------
+  - change c++11 to c++17 in setup.py as current versions of ICU require it
+
 Version 2.12 -> 2.13
 --------------------
   - fixed build issues on Windows

@@ -100,8 +100,9 @@ PyICU is built from sources with ``setuptools`` or with ``build`` and ``pip``:
      If this command returns an error or doesn't return the paths expected
      then ensure that the ``INCLUDES``, ``LFLAGS``, ``CFLAGS`` and ``LIBRARIES``
      dictionaries in ``setup.py`` contain correct values for your platform.
-     Starting with ICU 60, ``-std=c++11`` must appear in your CFLAGS or be the
-     default for your C++ compiler.
+     With ICU versions [60, 74] ``-std=c++11`` must appear in your CFLAGS or
+     be the default for your C++ compiler. Starting with ICU 75 ``-std=c++17``
+     must appear in your CFLAGS or be the default for your C++ compiler.
 
    - **either** build and install PyICU with ``setuptools``
      ```sh
