@@ -70,6 +70,7 @@ static int t_char_init(t_char *self, PyObject *args, PyObject *kwds);
 static PyObject *t_char_hasBinaryProperty(PyTypeObject *type, PyObject *args);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
 static PyObject *t_char_getBinaryPropertySet(PyTypeObject *type, PyObject *arg);
+static PyObject *t_char_getIntPropertyMap(PyTypeObject *type, PyObject *arg);
 #endif
 static PyObject *t_char_getIntPropertyValue(PyTypeObject *type, PyObject *args);
 static PyObject *t_char_getIntPropertyMinValue(PyTypeObject *type,
@@ -142,6 +143,7 @@ static PyMethodDef t_char_methods[] = {
     DECLARE_METHOD(t_char, hasBinaryProperty, METH_VARARGS | METH_CLASS),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
     DECLARE_METHOD(t_char, getBinaryPropertySet, METH_O | METH_CLASS),
+    DECLARE_METHOD(t_char, getIntPropertyMap, METH_O | METH_CLASS),
 #endif
     DECLARE_METHOD(t_char, getIntPropertyValue, METH_VARARGS | METH_CLASS),
     DECLARE_METHOD(t_char, getIntPropertyMinValue, METH_O | METH_CLASS),
@@ -215,6 +217,33 @@ static void t_char_dealloc(t_char *self)
 
 DECLARE_STRUCT(Char, t_char, UNone, t_char_init, t_char_dealloc)
 
+/* UCPMap */
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
+
+class t_ucpmap : public _wrapper {
+public:
+    UCPMap *object;
+};
+
+static PyObject *t_ucpmap_get(t_ucpmap *self, PyObject *arg);
+static PyObject *t_ucpmap_getRange(t_ucpmap *self, PyObject *arg);
+
+static PyMethodDef t_ucpmap_methods[] = {
+    DECLARE_METHOD(t_ucpmap, get, METH_O),
+    DECLARE_METHOD(t_ucpmap, getRange, METH_O),
+    { NULL, NULL, 0, NULL }
+};
+
+static void t_ucpmap_dealloc(t_char *self)
+{
+    Py_TYPE(self)->tp_free((PyObject *) self);
+}
+
+DECLARE_STRUCT(UCPMap, t_ucpmap, UCPMap, abstract_init, t_ucpmap_dealloc)
+
+#endif  // ICU >= 63
+
 /* Char */
 
 static int t_char_init(t_char *self, PyObject *args, PyObject *kwds)
@@ -249,6 +278,7 @@ static PyObject *t_char_hasBinaryProperty(PyTypeObject *type, PyObject *args)
 }
 
 #if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
+
 static PyObject *t_char_getBinaryPropertySet(PyTypeObject *type, PyObject *arg)
 {
     UProperty prop;
@@ -264,7 +294,23 @@ static PyObject *t_char_getBinaryPropertySet(PyTypeObject *type, PyObject *arg)
 
     return PyErr_SetArgsError((PyObject *) type, "getBinaryPropertySet", arg);
 }
-#endif
+
+static PyObject *t_char_getIntPropertyMap(PyTypeObject *type, PyObject *arg)
+{
+    UProperty prop;
+
+    if (!parseArg(arg, "i", &prop))
+    {
+        const UCPMap *map;
+        STATUS_CALL(map = u_getIntPropertyMap(prop, &status));
+
+        return wrap_UCPMap(const_cast<UCPMap *>(map), 0);
+    }
+
+    return PyErr_SetArgsError((PyObject *) type, "getIntPropertyMap", arg);
+}
+
+#endif  // ICU >= 63
 
 static PyObject *t_char_getIntPropertyValue(PyTypeObject *type, PyObject *args)
 {
@@ -988,6 +1034,36 @@ static PyObject *t_char_getIDTypes(PyTypeObject *type, PyObject *arg)
 }
 #endif  // ICU >= 75
 
+/* UCPMap */
+
+#if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
+
+static PyObject *t_ucpmap_get(t_ucpmap *self, PyObject *arg)
+{
+    UChar32 c;
+
+    if (!parseArg(arg, "i", &c))
+    {
+        return PyInt_FromLong(ucpmap_get(self->object, c));
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "get", arg);
+}
+
+static PyObject *t_ucpmap_getRange(t_ucpmap *self, PyObject *arg)
+{
+    UChar32 start;
+
+    if (!parseArg(arg, "i", &start))
+    {
+        return PyInt_FromLong(ucpmap_getRange(self->object, start, UCPMAP_RANGE_NORMAL, 0, NULL, NULL, NULL));
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getRange", arg);
+}
+
+#endif  // ICU >= 63
+
 
 void _init_char(PyObject *m)
 {
@@ -1014,7 +1090,11 @@ void _init_char(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UIdentifierType, m);
     INSTALL_CONSTANTS_TYPE(UIdentifierStatus, m);
 #endif
+
     INSTALL_STRUCT(Char, m);
+#if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
+    INSTALL_STRUCT(UCPMap, m);
+#endif
 
     INSTALL_ENUM(Char, "FOLD_CASE_DEFAULT", U_FOLD_CASE_DEFAULT);
     INSTALL_ENUM(Char, "FOLD_CASE_EXCLUDE_SPECIAL_I", U_FOLD_CASE_EXCLUDE_SPECIAL_I);
@@ -1079,6 +1159,7 @@ void _init_char(PyObject *m)
 #endif
     INSTALL_ENUM(UProperty, "BIDI_CLASS", UCHAR_BIDI_CLASS);
     INSTALL_ENUM(UProperty, "INT_START", UCHAR_INT_START);
+    INSTALL_ENUM(UProperty, "INT_LIMIT", UCHAR_INT_LIMIT);
     INSTALL_ENUM(UProperty, "BLOCK", UCHAR_BLOCK);
     INSTALL_ENUM(UProperty, "CANONICAL_COMBINING_CLASS", UCHAR_CANONICAL_COMBINING_CLASS);
     INSTALL_ENUM(UProperty, "DECOMPOSITION_TYPE", UCHAR_DECOMPOSITION_TYPE);

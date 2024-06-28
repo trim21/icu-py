@@ -1,3 +1,8 @@
+Version 2.13.1 ->
+----------------------
+  - added wrappers for UCPMap.get|getRange and Char.getIntPropertyMap
+  - 
+
 Version 2.13 -> 2.13.1
 ----------------------
   - change c++11 to c++17 in setup.py as current versions of ICU require it
