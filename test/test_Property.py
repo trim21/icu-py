@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ====================================================================
 # Copyright (c) 2024 Open Source Applications Foundation.
 #
@@ -26,15 +27,19 @@ from icu import *
 
 class TestIntPropertyMap(TestCase):
 
+    def setUp(self):
+        if ICU_VERSION < '63.0':
+            self.skipTest(ICU_VERSION)
+
     def testGet(self):
 
         eastAsianWidthMap = Char.getIntPropertyMap(UProperty.EAST_ASIAN_WIDTH)
-        self.assertEqual(0, eastAsianWidthMap.get(ord(u'क')))  # Neutral
-        self.assertEqual(1, eastAsianWidthMap.get(ord(u'○')))  # Ambiguous
-        self.assertEqual(2, eastAsianWidthMap.get(ord(u'ｶ')))  # Halfwidth
-        self.assertEqual(3, eastAsianWidthMap.get(ord(u'ａ')))  # Fullwidth
-        self.assertEqual(4, eastAsianWidthMap.get(ord(u'a')))  # Narrow
-        self.assertEqual(5, eastAsianWidthMap.get(ord(u'😄')))  # Wide
+        self.assertEqual(0, eastAsianWidthMap.get(ord('क')))  # Neutral
+        self.assertEqual(1, eastAsianWidthMap.get(ord('○')))  # Ambiguous
+        self.assertEqual(2, eastAsianWidthMap.get(ord('ｶ')))  # Halfwidth
+        self.assertEqual(3, eastAsianWidthMap.get(ord('ａ')))  # Fullwidth
+        self.assertEqual(4, eastAsianWidthMap.get(ord('a')))  # Narrow
+        self.assertEqual(5, eastAsianWidthMap.get(ord('😄')))  # Wide
 
 
 if __name__ == "__main__":
