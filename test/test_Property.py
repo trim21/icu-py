@@ -41,6 +41,10 @@ class TestIntPropertyMap(TestCase):
         self.assertEqual(4, eastAsianWidthMap.get(ord('a')))  # Narrow
         self.assertEqual(5, eastAsianWidthMap.get(ord('😄')))  # Wide
 
+    def testGetRange(self):
+        eastAsianWidthMap = Char.getIntPropertyMap(UProperty.EAST_ASIAN_WIDTH)
+        self.assertEqual(42124, eastAsianWidthMap.getRange(ord('\u4E00')))
+
 
 if __name__ == "__main__":
     main()

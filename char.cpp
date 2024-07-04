@@ -50,6 +50,7 @@ DECLARE_CONSTANTS_TYPE(UBidiPairedBracketType)
 DECLARE_CONSTANTS_TYPE(UIndicPositionalCategory)
 DECLARE_CONSTANTS_TYPE(UIndicSyllabicCategory)
 DECLARE_CONSTANTS_TYPE(UVerticalOrientation)
+DECLARE_CONSTANTS_TYPE(UCPMapRangeOption)
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
 DECLARE_CONSTANTS_TYPE(UIdentifierType)
@@ -227,11 +228,11 @@ public:
 };
 
 static PyObject *t_ucpmap_get(t_ucpmap *self, PyObject *arg);
-static PyObject *t_ucpmap_getRange(t_ucpmap *self, PyObject *arg);
+static PyObject *t_ucpmap_getRange(t_ucpmap *self, PyObject *args);
 
 static PyMethodDef t_ucpmap_methods[] = {
     DECLARE_METHOD(t_ucpmap, get, METH_O),
-    DECLARE_METHOD(t_ucpmap, getRange, METH_O),
+    DECLARE_METHOD(t_ucpmap, getRange, METH_VARARGS),
     { NULL, NULL, 0, NULL }
 };
 
@@ -1050,16 +1051,27 @@ static PyObject *t_ucpmap_get(t_ucpmap *self, PyObject *arg)
     return PyErr_SetArgsError((PyObject *) self, "get", arg);
 }
 
-static PyObject *t_ucpmap_getRange(t_ucpmap *self, PyObject *arg)
+static PyObject *t_ucpmap_getRange(t_ucpmap *self, PyObject *args)
 {
     UChar32 start;
+    int option, surrogateValue;
 
-    if (!parseArg(arg, "i", &start))
-    {
-        return PyInt_FromLong(ucpmap_getRange(self->object, start, UCPMAP_RANGE_NORMAL, 0, NULL, NULL, NULL));
+    switch (PyTuple_Size(args)) {
+      case 1:
+        if (!parseArgs(args, "i", &start))
+        {
+            return PyInt_FromLong(ucpmap_getRange(self->object, start, UCPMAP_RANGE_NORMAL, 0, NULL, NULL, NULL));
+        }
+        break;
+      case 3:
+        if (!parseArgs(args, "iii", &start, &option, &surrogateValue))
+        {
+            return PyInt_FromLong(ucpmap_getRange(self->object, start, (UCPMapRangeOption) option, (uint32_t) surrogateValue, NULL, NULL, NULL));
+        }
+        break;
     }
 
-    return PyErr_SetArgsError((PyObject *) self, "getRange", arg);
+    return PyErr_SetArgsError((PyObject *) self, "getRange", args);
 }
 
 #endif  // ICU >= 63
@@ -1085,6 +1097,7 @@ void _init_char(PyObject *m)
     INSTALL_CONSTANTS_TYPE(UIndicPositionalCategory, m);
     INSTALL_CONSTANTS_TYPE(UIndicSyllabicCategory, m);
     INSTALL_CONSTANTS_TYPE(UVerticalOrientation, m);
+    INSTALL_CONSTANTS_TYPE(UCPMapRangeOption, m);
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
     INSTALL_CONSTANTS_TYPE(UIdentifierType, m);
@@ -1736,6 +1749,10 @@ void _init_char(PyObject *m)
     INSTALL_ENUM(UVerticalOrientation, "TRANSFORMED_ROTATED", U_VO_TRANSFORMED_ROTATED);
     INSTALL_ENUM(UVerticalOrientation, "TRANSFORMED_UPRIGHT", U_VO_TRANSFORMED_UPRIGHT);
     INSTALL_ENUM(UVerticalOrientation, "UPRIGHT", U_VO_UPRIGHT);
+
+    INSTALL_ENUM(UCPMapRangeOption, "NORMAL", UCPMAP_RANGE_NORMAL);
+    INSTALL_ENUM(UCPMapRangeOption, "FIXED_LEAD_SURROGATES", UCPMAP_RANGE_FIXED_LEAD_SURROGATES);
+    INSTALL_ENUM(UCPMapRangeOption, "FIXED_ALL_SURROGATES", UCPMAP_RANGE_FIXED_ALL_SURROGATES);
 #endif  // ICU >= 63
 
 #if U_ICU_VERSION_HEX >= 0x04000000
