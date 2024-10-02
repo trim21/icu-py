@@ -1,6 +1,9 @@
 Version 2.13.1 ->
 ----------------------
   - added wrappers for UCPMap.get|getRange and Char.getIntPropertyMap
+  - added wrapper for Locale.getUnicodeKeywordValue
+  - added wrapper for UnicodeString.remove, UnicodeString.removeBetween
+  - added wrapper for UnicodeString.retainBetween, UnicodeString.truncate
   - 
 
 Version 2.13 -> 2.13.1

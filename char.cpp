@@ -1054,13 +1054,19 @@ static PyObject *t_ucpmap_get(t_ucpmap *self, PyObject *arg)
 static PyObject *t_ucpmap_getRange(t_ucpmap *self, PyObject *args)
 {
     UChar32 start;
-    int option, surrogateValue;
+    int option, surrogateValue = 0;
 
     switch (PyTuple_Size(args)) {
       case 1:
         if (!parseArgs(args, "i", &start))
         {
             return PyInt_FromLong(ucpmap_getRange(self->object, start, UCPMAP_RANGE_NORMAL, 0, NULL, NULL, NULL));
+        }
+        break;
+      case 2:
+        if (!parseArgs(args, "ii", &start, &option))
+        {
+            return PyInt_FromLong(ucpmap_getRange(self->object, start, (UCPMapRangeOption) option, (uint32_t) surrogateValue, NULL, NULL, NULL));
         }
         break;
       case 3:
@@ -1247,6 +1253,11 @@ void _init_char(PyObject *m)
     INSTALL_ENUM(UProperty, "RGI_EMOJI_TAG_SEQUENCE", UCHAR_RGI_EMOJI_TAG_SEQUENCE);
     INSTALL_ENUM(UProperty, "RGI_EMOJI_ZWJ_SEQUENCE", UCHAR_RGI_EMOJI_ZWJ_SEQUENCE);
     INSTALL_ENUM(UProperty, "RGI_EMOJI", UCHAR_RGI_EMOJI);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
+    INSTALL_ENUM(UProperty, "IDS_UNARY_OPERATOR", UCHAR_IDS_UNARY_OPERATOR);
+    INSTALL_ENUM(UProperty, "ID_COMPAT_MATH_START", UCHAR_ID_COMPAT_MATH_START);
+    INSTALL_ENUM(UProperty, "ID_COMPAT_MATH_CONTINUE", UCHAR_ID_COMPAT_MATH_CONTINUE);
 #endif
 #if U_ICU_VERSION_HEX >= VERSION_HEX(75, 0, 0)
     INSTALL_ENUM(UProperty, "IDENTIFIER_STATUS", UCHAR_IDENTIFIER_STATUS);
@@ -1671,6 +1682,17 @@ void _init_char(PyObject *m)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(74, 0, 0)
     INSTALL_ENUM(UBlockCode, "CJK_UNIFIED_IDEOGRAPHS_EXTENSION_I", UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_I);
 #endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(76, 0, 0)
+    INSTALL_ENUM(UBlockCode, "EGYPTIAN_HIEROGLYPHS_EXTENDED_A", UBLOCK_EGYPTIAN_HIEROGLYPHS_EXTENDED_A);
+    INSTALL_ENUM(UBlockCode, "GARAY", UBLOCK_GARAY);
+    INSTALL_ENUM(UBlockCode, "GURUNG_KHEMA", UBLOCK_GURUNG_KHEMA);
+    INSTALL_ENUM(UBlockCode, "MYANMAR_EXTENDED_C", UBLOCK_MYANMAR_EXTENDED_C);
+    INSTALL_ENUM(UBlockCode, "OL_ONAL", UBLOCK_OL_ONAL);
+    INSTALL_ENUM(UBlockCode, "SUNUWAR", UBLOCK_SUNUWAR);
+    INSTALL_ENUM(UBlockCode, "SYMBOLS_FOR_LEGACY_COMPUTING_SUPPLEMENT", UBLOCK_SYMBOLS_FOR_LEGACY_COMPUTING_SUPPLEMENT);
+    INSTALL_ENUM(UBlockCode, "TODHRI", UBLOCK_TODHRI);
+    INSTALL_ENUM(UBlockCode, "TULU_TIGALARI", UBLOCK_TULU_TIGALARI);
+#endif
     INSTALL_ENUM(UBlockCode, "INVALID_CODE", UBLOCK_INVALID_CODE);
 
     INSTALL_ENUM(UCharNameChoice, "UNICODE_CHAR_NAME", U_UNICODE_CHAR_NAME);
@@ -1744,7 +1766,10 @@ void _init_char(PyObject *m)
     INSTALL_ENUM(UIndicSyllabicCategory, "VOWEL", U_INSC_VOWEL);
     INSTALL_ENUM(UIndicSyllabicCategory, "VOWEL_DEPENDENT", U_INSC_VOWEL_DEPENDENT);
     INSTALL_ENUM(UIndicSyllabicCategory, "VOWEL_INDEPENDENT", U_INSC_VOWEL_INDEPENDENT);
-
+#if U_ICU_VERSION_HEX >= VERSION_HEX(76, 0, 0)
+    INSTALL_ENUM(UIndicSyllabicCategory, "REORDERING_KILLER", U_INSC_REORDERING_KILLER);
+#endif
+    
     INSTALL_ENUM(UVerticalOrientation, "ROTATED", U_VO_ROTATED);
     INSTALL_ENUM(UVerticalOrientation, "TRANSFORMED_ROTATED", U_VO_TRANSFORMED_ROTATED);
     INSTALL_ENUM(UVerticalOrientation, "TRANSFORMED_UPRIGHT", U_VO_TRANSFORMED_UPRIGHT);
@@ -1851,6 +1876,9 @@ void _init_char(PyObject *m)
 #if U_ICU_VERSION_HEX >= VERSION_HEX(70, 0, 0)
     INSTALL_ENUM(UJoiningGroup, "THIN_YEH", U_JG_THIN_YEH);
     INSTALL_ENUM(UJoiningGroup, "VERTICAL_TAIL", U_JG_VERTICAL_TAIL);
+#endif
+#if U_ICU_VERSION_HEX >= VERSION_HEX(76, 0, 0)
+    INSTALL_ENUM(UJoiningGroup, "KASHMIRI_YEH", U_JG_KASHMIRI_YEH);
 #endif
 
     INSTALL_ENUM(ULineBreak, "INSEPARABLE", U_LB_INSEPARABLE);

@@ -125,15 +125,27 @@ class TestNumberRangeFormatter(TestCase):
         if ICU_VERSION < '63.0':
             self.skipTest(ICU_VERSION)
 
-    def testBasic(self):
+    if ICU_VERSION < '76.0':
+        def testBasic(self):
 
-        text = NumberRangeFormatter.withLocale(Locale.getItaly()) \
-            .formatIntRange(1234, 5678)
-        self.assertEqual(text, u'1.234-5.678')
+            text = NumberRangeFormatter.withLocale(Locale.getItaly()) \
+                .formatIntRange(1234, 5678)
+            self.assertEqual(text, u'1.234-5.678')
 
-        text = LocalizedNumberRangeFormatter(Locale.getItaly()) \
-            .formatIntRange(1234, 5678)
-        self.assertEqual(text, u'1.234-5.678')
+            text = LocalizedNumberRangeFormatter(Locale.getItaly()) \
+                .formatIntRange(1234, 5678)
+            self.assertEqual(text, u'1.234-5.678')
+
+    if ICU_VERSION >= '76.0':
+        def testBasic(self):
+
+            text = NumberRangeFormatter.withLocale(Locale.getItaly()) \
+                .formatIntRange(1234, 5678)
+            self.assertEqual(text, u'1234-5678')
+
+            text = LocalizedNumberRangeFormatter(Locale.getItaly()) \
+                .formatIntRange(1234, 5678)
+            self.assertEqual(text, u'1234-5678')
 
     def testFormattedNumberRange(self):
 

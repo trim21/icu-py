@@ -391,7 +391,11 @@ static PyObject *t_unicodestring_indexOf(t_unicodestring *self, PyObject *args);
 static PyObject *t_unicodestring_lastIndexOf(t_unicodestring *self,
                                              PyObject *args);
 static PyObject *t_unicodestring_trim(t_unicodestring *self);
-static PyObject *t_unicodestring_reverse(t_unicodestring *self);
+static PyObject *t_unicodestring_truncate(t_unicodestring *self, PyObject *arg);
+static PyObject *t_unicodestring_reverse(t_unicodestring *self, PyObject *args);
+static PyObject *t_unicodestring_remove(t_unicodestring *self, PyObject *args);
+static PyObject *t_unicodestring_removeBetween(t_unicodestring *self, PyObject *args);
+static PyObject *t_unicodestring_retainBetween(t_unicodestring *self, PyObject *args);
 static PyObject *t_unicodestring_toUpper(t_unicodestring *self, PyObject *args);
 static PyObject *t_unicodestring_toLower(t_unicodestring *self, PyObject *args);
 static PyObject *t_unicodestring_toTitle(t_unicodestring *self, PyObject *args);
@@ -434,7 +438,11 @@ static PyMethodDef t_unicodestring_methods[] = {
     DECLARE_METHOD(t_unicodestring, indexOf, METH_VARARGS),
     DECLARE_METHOD(t_unicodestring, lastIndexOf, METH_VARARGS),
     DECLARE_METHOD(t_unicodestring, trim, METH_NOARGS),
-    DECLARE_METHOD(t_unicodestring, reverse, METH_NOARGS),
+    DECLARE_METHOD(t_unicodestring, truncate, METH_O),
+    DECLARE_METHOD(t_unicodestring, reverse, METH_VARARGS),
+    DECLARE_METHOD(t_unicodestring, remove, METH_VARARGS),
+    DECLARE_METHOD(t_unicodestring, removeBetween, METH_VARARGS),
+    DECLARE_METHOD(t_unicodestring, retainBetween, METH_VARARGS),
     DECLARE_METHOD(t_unicodestring, toUpper, METH_VARARGS),
     DECLARE_METHOD(t_unicodestring, toLower, METH_VARARGS),
     DECLARE_METHOD(t_unicodestring, toTitle, METH_VARARGS),
@@ -1502,10 +1510,110 @@ static PyObject *t_unicodestring_trim(t_unicodestring *self)
     Py_RETURN_SELF();
 }
 
-static PyObject *t_unicodestring_reverse(t_unicodestring *self)
+static PyObject *t_unicodestring_truncate(t_unicodestring *self, PyObject *arg)
 {
-    self->object->reverse();
-    Py_RETURN_SELF();
+    int32_t length;
+
+    if (!parseArg(arg, "i", &length))
+    {
+        self->object->truncate(length);
+        Py_RETURN_SELF();
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "truncate", arg);
+}
+
+static PyObject *t_unicodestring_reverse(t_unicodestring *self, PyObject *args)
+{
+    int32_t start, length;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        self->object->reverse();
+        Py_RETURN_SELF();
+      case 2:
+        if (!parseArgs(args, "ii", &start, &length))
+        {
+            self->object->reverse(start, length);
+            Py_RETURN_SELF();
+        }
+    }
+        
+    return PyErr_SetArgsError((PyObject *) self, "reverse", args);
+}
+
+static PyObject *t_unicodestring_remove(t_unicodestring *self, PyObject *args)
+{
+    int32_t start, length;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        self->object->remove();
+        Py_RETURN_SELF();
+      case 1:
+        if (!parseArgs(args, "i", &start))
+        {
+            self->object->remove(start);
+            Py_RETURN_SELF();
+        }
+      case 2:
+        if (!parseArgs(args, "ii", &start, &length))
+        {
+            self->object->remove(start, length);
+            Py_RETURN_SELF();
+        }
+    }
+        
+    return PyErr_SetArgsError((PyObject *) self, "remove", args);
+}
+
+static PyObject *t_unicodestring_removeBetween(t_unicodestring *self, PyObject *args)
+{
+    int32_t start, length;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        self->object->remove();
+        Py_RETURN_SELF();
+      case 1:
+        if (!parseArgs(args, "i", &start))
+        {
+            self->object->removeBetween(start);
+            Py_RETURN_SELF();
+        }
+      case 2:
+        if (!parseArgs(args, "ii", &start, &length))
+        {
+            self->object->removeBetween(start, length);
+            Py_RETURN_SELF();
+        }
+    }
+        
+    return PyErr_SetArgsError((PyObject *) self, "removeBetween", args);
+}
+
+static PyObject *t_unicodestring_retainBetween(t_unicodestring *self, PyObject *args)
+{
+    int32_t start, length;
+
+    switch (PyTuple_Size(args)) {
+      case 0:
+        Py_RETURN_SELF();
+      case 1:
+        if (!parseArgs(args, "i", &start))
+        {
+            self->object->retainBetween(start);
+            Py_RETURN_SELF();
+        }
+      case 2:
+        if (!parseArgs(args, "ii", &start, &length))
+        {
+            self->object->retainBetween(start, length);
+            Py_RETURN_SELF();
+        }
+    }
+        
+    return PyErr_SetArgsError((PyObject *) self, "retainBetween", args);
 }
 
 static PyObject *t_unicodestring_toUpper(t_unicodestring *self, PyObject *args)

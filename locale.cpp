@@ -91,6 +91,7 @@ static PyObject *t_locale_getDisplayName(t_locale *self, PyObject *args);
 static PyObject *t_locale_createKeywords(t_locale *self);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
 static PyObject *t_locale_createUnicodeKeywords(t_locale *self);
+static PyObject *t_locale_getUnicodeKeywordValue(t_locale *self, PyObject *arg);
 #endif
 static PyObject *t_locale_getKeywordValue(t_locale *self, PyObject *arg);
 #if U_ICU_VERSION_HEX >= VERSION_HEX(49, 0, 0)
@@ -160,11 +161,12 @@ static PyMethodDef t_locale_methods[] = {
     DECLARE_METHOD(t_locale, createKeywords, METH_NOARGS),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(63, 0, 0)
     DECLARE_METHOD(t_locale, createUnicodeKeywords, METH_NOARGS),
+    DECLARE_METHOD(t_locale, getUnicodeKeywordValue, METH_O),
 #endif
+    DECLARE_METHOD(t_locale, getKeywordValue, METH_O),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(67, 0, 0)
     DECLARE_METHOD(t_locale, canonicalize, METH_NOARGS),
 #endif
-    DECLARE_METHOD(t_locale, getKeywordValue, METH_O),
 #if U_ICU_VERSION_HEX >= VERSION_HEX(49, 0, 0)
     DECLARE_METHOD(t_locale, setKeywordValue, METH_VARARGS),
     DECLARE_METHOD(t_locale, removeKeywordValue, METH_O),
@@ -1264,6 +1266,27 @@ static PyObject *t_locale_toLanguageTag(t_locale *self)
     STATUS_CALL(self->object->toLanguageTag(sbs, status));
 
     return PyUnicode_FromUnicodeString(&buffer.u);
+}
+
+static PyObject *t_locale_getUnicodeKeywordValue(t_locale *self, PyObject *arg)
+{
+    struct sink {
+        UnicodeString u;
+        void append(const char *data, int32_t n)
+        {
+            u.append(UnicodeString(data, n, US_INV));
+        }
+    } buffer;
+    StringByteSink<struct sink> sbs(&buffer);
+    charsArg name;
+
+    if (!parseArg(arg, "n", &name))
+    {
+        STATUS_CALL(self->object->getUnicodeKeywordValue(name.c_str(), sbs, status))
+        return PyUnicode_FromUnicodeString(&buffer.u);
+    }
+
+    return PyErr_SetArgsError((PyObject *) self, "getUnicodeKeywordValue", arg);
 }
 
 #endif  // ICU >= 63

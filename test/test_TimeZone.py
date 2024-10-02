@@ -35,11 +35,17 @@ class TestTimeZone(TestCase):
         self.assertTrue(isinstance(tz, BasicTimeZone))
         self.assertEqual(str(tz), "America/Los_Angeles")
 
-    def testGetRegion(self):
+    if ICU_VERSION >= '4.8' and ICU_VERSION < '76.0':
+        def testGetRegion(self):
 
-        if ICU_VERSION >= '4.8':
             self.assertEqual('US', TimeZone.getRegion("America/Los_Angeles"))
             self.assertEqual('001', TimeZone.getRegion("CET"))
+
+    if ICU_VERSION > '76.0':
+        def testGetRegion(self):
+
+            self.assertEqual('US', TimeZone.getRegion("America/Los_Angeles"))
+            self.assertEqual('BE', TimeZone.getRegion("CET"))
 
     def testGetRules(self):
 
