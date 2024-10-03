@@ -669,7 +669,7 @@ static PyObject *t_regexmatcher_hasTransparentBounds(t_regexmatcher *self)
 static PyObject *t_regexmatcher_useTransparentBounds(t_regexmatcher *self,
                                                      PyObject *arg)
 {
-    UBool b;
+    int b;
 
     if (!parseArg(arg, "B", &b))
     {
@@ -689,7 +689,7 @@ static PyObject *t_regexmatcher_hasAnchoringBounds(t_regexmatcher *self)
 static PyObject *t_regexmatcher_useAnchoringBounds(t_regexmatcher *self,
                                                    PyObject *arg)
 {
-    UBool b;
+    int b;
 
     if (!parseArg(arg, "B", &b))
     {

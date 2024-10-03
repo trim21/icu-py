@@ -251,7 +251,7 @@ static PyObject *t_charsetdetector_detectAll(t_charsetdetector *self)
 static PyObject *t_charsetdetector_enableInputFilter(t_charsetdetector *self,
                                                      PyObject *arg)
 {
-    UBool filter;
+    int filter;
 
     if (!parseArg(arg, "B", &filter))
     {

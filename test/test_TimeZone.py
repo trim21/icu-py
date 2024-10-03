@@ -41,7 +41,7 @@ class TestTimeZone(TestCase):
             self.assertEqual('US', TimeZone.getRegion("America/Los_Angeles"))
             self.assertEqual('001', TimeZone.getRegion("CET"))
 
-    if ICU_VERSION > '76.0':
+    if ICU_VERSION >= '76.0':
         def testGetRegion(self):
 
             self.assertEqual('US', TimeZone.getRegion("America/Los_Angeles"))
