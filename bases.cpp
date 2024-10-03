@@ -1512,7 +1512,7 @@ static PyObject *t_unicodestring_trim(t_unicodestring *self)
 
 static PyObject *t_unicodestring_truncate(t_unicodestring *self, PyObject *arg)
 {
-    int32_t length;
+    int length;
 
     if (!parseArg(arg, "i", &length))
     {
@@ -1525,7 +1525,7 @@ static PyObject *t_unicodestring_truncate(t_unicodestring *self, PyObject *arg)
 
 static PyObject *t_unicodestring_reverse(t_unicodestring *self, PyObject *args)
 {
-    int32_t start, length;
+    int start, length;
 
     switch (PyTuple_Size(args)) {
       case 0:
@@ -1545,7 +1545,7 @@ static PyObject *t_unicodestring_reverse(t_unicodestring *self, PyObject *args)
 
 static PyObject *t_unicodestring_remove(t_unicodestring *self, PyObject *args)
 {
-    int32_t start, length;
+    int start, length;
 
     switch (PyTuple_Size(args)) {
       case 0:
@@ -1572,7 +1572,7 @@ static PyObject *t_unicodestring_remove(t_unicodestring *self, PyObject *args)
 
 static PyObject *t_unicodestring_removeBetween(t_unicodestring *self, PyObject *args)
 {
-    int32_t start, limit;
+    int start, limit;
 
     switch (PyTuple_Size(args)) {
       case 0:
@@ -1599,7 +1599,7 @@ static PyObject *t_unicodestring_removeBetween(t_unicodestring *self, PyObject *
 
 static PyObject *t_unicodestring_retainBetween(t_unicodestring *self, PyObject *args)
 {
-    int32_t start, limit;
+    int start, limit;
 
     switch (PyTuple_Size(args)) {
       case 0:
@@ -1821,8 +1821,8 @@ static PyObject *t_unicodestring_encode(t_unicodestring *self, PyObject *arg)
 static PyObject *t_unicodestring_countChar32(t_unicodestring *self,
                                              PyObject *args)
 {
-    int32_t start = 0, length = INT32_MAX;
-    int32_t len;
+    int start = 0, length = INT32_MAX;
+    int len;
 
     switch (PyTuple_Size(args)) {
       case 0:
@@ -2183,7 +2183,7 @@ static int t_unicodestring_ass_item(t_unicodestring *self,
 
     if (n >= 0 && n < len)
     {
-        int32_t i;
+        int i;
 
         if (!parseArg(arg, "i", &i))
         {

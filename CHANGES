@@ -4,6 +4,7 @@ Version 2.13.1 ->
   - added wrapper for Locale.getUnicodeKeywordValue
   - added wrapper for UnicodeString.remove, UnicodeString.removeBetween
   - added wrapper for UnicodeString.retainBetween, UnicodeString.truncate
+  - fixed bogus UBool uses on stack instead of int (Martin Jansche)
   - 
 
 Version 2.13 -> 2.13.1
