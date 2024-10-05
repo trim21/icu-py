@@ -32,8 +32,8 @@ pre-built binary packages of ICU and PyICU, see below.
       brew install pkg-config icu4c
 
       # let setup.py discover keg-only icu4c via pkg-config
-      export PATH="/usr/local/opt/icu4c/bin:/usr/local/opt/icu4c/sbin:$PATH"
-      export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/icu4c/lib/pkgconfig"
+      export PATH="$(brew --prefix)/opt/icu4c/bin:$(brew --prefix)/opt/icu4c/sbin:$PATH"
+      export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(brew --prefix)/opt/icu4c/lib/pkgconfig"
       ```
     - Install PyICU **with the same C++ compiler as your Python distribution**
       ([more info](https://gitlab.pyicu.org/main/pyicu/merge_requests/140#issuecomment-782283491)):
