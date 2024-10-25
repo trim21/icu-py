@@ -15,7 +15,7 @@ jobs:
 
           #          - { os: macos-14, cibw_arch: arm64, cibw_build: "*" }
 
-          #          - { os: windows-latest, cibw_arch: AMD64, cibw_build: "*[02468]-* *[02468]t-*" }
+          - { os: windows-latest, cibw_arch: AMD64, cibw_build: "*" }
           #          - { os: windows-latest, cibw_arch: AMD64, cibw_build: "*[13579]-* *[13579]t-*" }
 
           - { os: ubuntu-latest, cibw_arch: x86_64, cibw_build: "*" }
@@ -36,6 +36,13 @@ jobs:
           key: 'cibuildwheel-${{ runner.os }}-${{ matrix.cibw_arch }}-${{ matrix.cibw_build }}'
           restore-keys: |
             cibuildwheel-${{ runner.os }}-${{ matrix.cibw_arch }}
+
+
+
+      - name: build icu for windows
+        if: runner.os == 'windows'
+        run: msbuild source\allinone\allinone.sln /p:Configuration=Release /p:Platform=x64
+        working-directory: ./vendor/icu/icu4c/
 
       - run: pipx install uv
 
