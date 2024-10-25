@@ -8,6 +8,7 @@ jobs:
     name: Build wheels
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           #          - { os: macos-13, cibw_arch: x86_64, cibw_build: "*[02468]-* *[02468]t-*" }
