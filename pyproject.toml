@@ -1,7 +1,19 @@
-
 [build-system]
-requires = [
-    "setuptools",
-    "wheel",
-]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+#[project]
+#require-python = '~3.9'
+
+[tool.cibuildwheel]
+build = 'cp310*'
+build-frontend = 'build[uv]'
+free-threaded-support = false
+manylinux-x86_64-image = "manylinux_2_28"
+skip = 'pp*'
+
+test-requires = ['pytest', 'six']
+test-command = "pytest"
+
+[tool.cibuildwheel.linux]
+before-all = 'cd vendor/icu/icu4c/source/ && /bin/sh ./configure && make && make install'
