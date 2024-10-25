@@ -174,6 +174,8 @@ if "PYICU_INCLUDES" in os.environ:
 else:
     _includes = INCLUDES[platform]
 
+_includes.append('./vendor/icu/icu4c/source/common')
+
 if "PYICU_CFLAGS" in os.environ:
     _cflags = os.environ["PYICU_CFLAGS"].split(os.pathsep)
 else:
