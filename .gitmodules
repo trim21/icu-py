@@ -1,0 +1,4 @@
+[submodule "vendor/icu"]
+	path = vendor/icu
+	url = https://github.com/unicode-org/icu.git
+
