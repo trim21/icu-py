@@ -6,7 +6,7 @@ import shutil
 
 from subprocess import check_output as subprocess_check_output
 
-from setuptools.command.build_ext import build_exts, build_ext
+from setuptools.command.build_ext import build_ext
 
 VERSION = "2.13.1"
 
