@@ -38,6 +38,9 @@ jobs:
             cibuildwheel-${{ runner.os }}-${{ matrix.cibw_arch }}
 
 
+      - name: Add msbuild to PATH
+        if: runner.os == 'windows'
+        uses: microsoft/setup-msbuild@v2
 
       - name: build icu for windows
         if: runner.os == 'windows'
