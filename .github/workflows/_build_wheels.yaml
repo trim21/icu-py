@@ -41,7 +41,7 @@ jobs:
 
       - name: build icu for windows
         if: runner.os == 'windows'
-        run: msbuild source\allinone\allinone.sln /p:Configuration=Release /p:Platform=x64
+        run: msbuild.exe source\allinone\allinone.sln /p:Configuration=Release /p:Platform=x64
         working-directory: ./vendor/icu/icu4c/
 
       - run: pipx install uv
