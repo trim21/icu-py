@@ -60,7 +60,6 @@ CONFIGURE_WITH_ICU_CONFIG = {
     "freebsd": False,  # not tested
     "win32": False,  # no icu-config
     "sunos5": False,  # not tested
-    "cygwin": False,  # not tested
 }
 
 CONFIGURE_WITH_PKG_CONFIG = {
@@ -69,7 +68,6 @@ CONFIGURE_WITH_PKG_CONFIG = {
     "freebsd": False,  # not tested
     "win32": False,  # no pkg-config ?
     "sunos5": False,  # not tested
-    "cygwin": False,  # not tested
 }
 
 os.environ['ICU_VERSION'] = '76.1'
@@ -93,8 +91,7 @@ Please install pkg-config on your system or set the ICU_VERSION environment
 variable to the version of ICU you have installed.
         """
             )
-    if sys.version_info >= (3,):
-        ICU_VERSION = str(ICU_VERSION, "ascii")
+    ICU_VERSION = str(ICU_VERSION, "ascii")
 
 print(
     """
@@ -109,7 +106,7 @@ INCLUDES = {
         '/usr/local/include',  # cibuildwheel
     ],
     "freebsd": ["/usr/local/include"],
-    "win32": ["c:/icu/include"],
+    "win32": ["./vendor/icu/icu4c/source/common"],
     "sunos5": [],
     "cygwin": [],
 }
@@ -157,7 +154,7 @@ LFLAGS = {
     "darwin": [],
     "linux": [],
     "freebsd": ["-L/usr/local/lib"],
-    "win32": ["/LIBPATH:c:/icu/lib"],
+    "win32": ["/LIBPATH:.\\vendor\\icu\\icu4c\\lib64"],
     "sunos5": [],
     "cygwin": [],
 }
@@ -198,7 +195,7 @@ if "PYICU_LFLAGS" in os.environ:
     _lflags = os.environ["PYICU_LFLAGS"].split(os.pathsep)
 else:
     # if platform == "linux":
-        # _lflags = ['-L/usr/local/lib', '-licui18n', '-licuuc','-licudata']
+    # _lflags = ['-L/usr/local/lib', '-licui18n', '-licuuc','-licudata']
     # else:
     _lflags = LFLAGS[platform]
     if CONFIGURE_WITH_ICU_CONFIG[platform]:
