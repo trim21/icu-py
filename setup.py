@@ -105,7 +105,9 @@ Building PyICU %s for ICU %s (max ICU major version supported: %s)
 
 INCLUDES = {
     "darwin": [],
-    "linux": [],
+    "linux": [
+        '/usr/local/include',  # cibuildwheel
+    ],
     "freebsd": ["/usr/local/include"],
     "win32": ["c:/icu/include"],
     "sunos5": [],
@@ -174,8 +176,6 @@ if "PYICU_INCLUDES" in os.environ:
 else:
     _includes = INCLUDES[platform]
 
-_includes.append('./vendor/icu/icu4c/source/common')
-
 if "PYICU_CFLAGS" in os.environ:
     _cflags = os.environ["PYICU_CFLAGS"].split(os.pathsep)
 else:
@@ -197,25 +197,32 @@ _cflags += VER_FLAGS
 if "PYICU_LFLAGS" in os.environ:
     _lflags = os.environ["PYICU_LFLAGS"].split(os.pathsep)
 else:
-    if platform == "linux":
-        _lflags = []
-    else:
-        _lflags = LFLAGS[platform]
-        if CONFIGURE_WITH_ICU_CONFIG[platform]:
-            try:
-                configure_with_icu_config(_lflags, ("--ldflags",), "LFLAGS")
-            except:
-                if CONFIGURE_WITH_PKG_CONFIG[platform]:
-                    configure_with_pkg_config(_lflags, ("--libs",), "LFLAGS")
-                else:
-                    raise
-        elif CONFIGURE_WITH_PKG_CONFIG[platform]:
-            configure_with_pkg_config(_lflags, ("--libs",), "LFLAGS")
+    # if platform == "linux":
+        # _lflags = ['-L/usr/local/lib', '-licui18n', '-licuuc','-licudata']
+    # else:
+    _lflags = LFLAGS[platform]
+    if CONFIGURE_WITH_ICU_CONFIG[platform]:
+        try:
+            configure_with_icu_config(_lflags, ("--ldflags",), "LFLAGS")
+        except:
+            if CONFIGURE_WITH_PKG_CONFIG[platform]:
+                configure_with_pkg_config(_lflags, ("--libs",), "LFLAGS")
+            else:
+                raise
+    elif CONFIGURE_WITH_PKG_CONFIG[platform]:
+        configure_with_pkg_config(_lflags, ("--libs",), "LFLAGS")
 
 if "PYICU_LIBRARIES" in os.environ:
     _libraries = os.environ["PYICU_LIBRARIES"].split(os.pathsep)
 else:
     _libraries = LIBRARIES[platform]
+
+print(dict(
+    include_dirs=_includes,
+    extra_compile_args=_cflags,
+    extra_link_args=_lflags,
+    libraries=_libraries,
+))
 
 setup(
     name="PyICU",
