@@ -106,7 +106,7 @@ INCLUDES = {
         '/usr/local/include',  # cibuildwheel
     ],
     "freebsd": ["/usr/local/include"],
-    "win32": ["./vendor/icu/icu4c/source/common"],
+    "win32": ["./vendor/icu/icu4c/include"],
     "sunos5": [],
     "cygwin": [],
 }
@@ -135,7 +135,7 @@ CFLAGS = {
     "darwin": ["-std=c++17"],
     "linux": ["-std=c++17"],
     "freebsd": ["-std=c++17"],
-    "win32": ["/Zc:wchar_t", "/EHsc"],
+    "win32": ["/Zc:wchar_t", "/EHsc", '/std:c++17', "/utf-8"],
     "sunos5": ["-std=c++17"],
     "cygwin": ["-D_GNU_SOURCE=1", "-std=c++17"],
 }
