@@ -16,4 +16,4 @@ test-requires = ['pytest', 'six']
 test-command = "pytest {project}/test"
 
 [tool.cibuildwheel.linux]
-before-all = 'cd vendor/icu/icu4c/source/ && /bin/sh ./configure && make && make install'
+before-all = 'cd vendor/icu/icu4c/source/ && /bin/sh ./configure && make install'
